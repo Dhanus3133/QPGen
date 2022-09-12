@@ -8,7 +8,7 @@ A Question paper generating tool!
 
 2. Clone the repository using 
     ```bash
-    git clone https://github.com/QPGEN/QPGen
+    git clone https://github.com/Dhanus3133/QPGen
     ```
 
 3. Go into the project directory 
