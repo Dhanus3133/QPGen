@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from questions.models import BloomsTaxonomyLevel, Course, Degree, Department, Lesson, MarkRange, PreviousYearsQP, Programme, Regulation, Subject, Syllabus
-
+from users.models import User
 
 class Command(BaseCommand):
     help = "Initilize Basic data"
@@ -51,6 +51,7 @@ class Command(BaseCommand):
                 degree=Degree.objects.get(name='BE'),
                 branch='Computer Science Engineering',
                 branch_code='CSE',
+                hod=User.objects.first(),
             )
         except:
             pass

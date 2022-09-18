@@ -48,9 +48,10 @@ services:
       - django
 
   db:
-    image: postgres:12.0-alpine
+    image: postgres:12-alpine
+    container_name: qpgen-db
     ports:
-      - 5432:5432
+      - 5431:5432
     env_file: ./.env.dev
     volumes:
       - postgres_data:/var/lib/postgresql/data

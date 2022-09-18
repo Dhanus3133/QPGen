@@ -71,4 +71,4 @@ class QuestionModelAdmin(admin.ModelAdmin):
     # formfield_overrides = {
     #     models.TextField: {'widget': VditorWidget}
     # }
-    prepopulated_fields = {'slug': ('title',)}
+    pass

@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator, ValidationError
 from django.utils import timezone
+from django.utils.text import slugify
 from vditor.fields import VditorTextField
 from core.models import TimeStampedModel
 from users.models import User
@@ -96,6 +97,9 @@ class Department(models.Model):
     )
     branch = models.CharField(max_length=80)
     branch_code = models.CharField(max_length=10)
+    hod = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='departments'
+    )
 
     class Meta:
         unique_together = ['programme', 'degree', 'branch_code']
@@ -111,6 +115,11 @@ class Subject(models.Model):
     code = models.CharField(max_length=15)
     subject_name = models.CharField(max_length=70)
     co = models.CharField(max_length=7)
+    co_description = models.CharField(max_length=200)
+    course_outcome = models.TextField()
+    coe = models.ManyToManyField(
+        User, related_name='subjects', blank=True
+    )
 
     class Meta:
         unique_together = ['code', 'co']
@@ -175,7 +184,7 @@ class Syllabus(models.Model):
         unique_together = ['course', 'unit', 'lesson']
 
     def __str__(self):
-        return f'{self.course} | {self.unit} | {self.subject}'
+        return f'{self.course} | {self.unit} | {self.lesson}'
 
 
 class MarkRange(models.Model):
@@ -234,29 +243,49 @@ class Question(TimeStampedModel):
         (DIFFICULTY_HARD, 'Hard'),
     )
 
-    title = models.CharField(max_length=250)
-    slug = models.SlugField(max_length=250)
+    slug = models.SlugField(max_length=250, blank=True)
     lesson = models.ForeignKey(
         Lesson, on_delete=models.CASCADE, related_name='quesions'
     )
-    quesion = models.TextField()
+    question = models.TextField()
     answer = models.TextField()
     mark = models.ForeignKey(
-        MarkRange, on_delete=models.CASCADE, related_name='questions'
+        MarkRange, on_delete=models.CASCADE, related_name='questions', null=True, blank=False
     )
+    start_mark = models.IntegerField(blank=True)
+    end_mark = models.IntegerField(blank=True)
     btl = models.ForeignKey(
         BloomsTaxonomyLevel, on_delete=models.CASCADE, related_name='questions'
     )
     difficulty = models.CharField(
         max_length=2, choices=DIFFICULTY_CHOICES
     )
-    previous_years = models.ManyToManyField(
-        PreviousYearsQP, related_name='questions'
+    created_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='questions'
     )
+    previous_years = models.ManyToManyField(
+        PreviousYearsQP, related_name='questions', blank=True
+    )
+    # COE -> only one -> Expert for the subject model
 
     class Meta:
         pass
         # TODO: unique to together for slug and subject code
 
+    def save(self, *args, **kwargs):
+        self.start_mark = self.mark.start
+        self.end_mark = self.mark.end
+        self.slug = slugify(self.question)
+        super().save(*args, **kwargs)
+        # super().save(*args, **kwargs, saved_slug=False)
+        # if not kwargs['saved_slug']:
+        #     print("Not found")
+        #     self.slug = slugify(self.id, self.question)
+        # else:
+        #     print('Now found')
+        # super().save(*args, **kwargs, saved_slug=True)
+        #
+        # self.save(update_fields=['slug'])
+
     def __str__(self):
-        return f'{self.title}'
+        return f'{self.question}'

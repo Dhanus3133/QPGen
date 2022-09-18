@@ -1,5 +1,0 @@
-build:
-  docker:
-    nginx: Nginx/Dockerfile
-    nextjs: Frontend/Dockerfile
-    django: Backend/Dockerfile
