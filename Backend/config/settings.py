@@ -33,6 +33,9 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     'django_extensions',
+    'debug_toolbar',
+    'strawberry_django_jwt.refresh_token',
+    'strawberry_django_plus',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + [
@@ -49,6 +52,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'strawberry_django_plus.middlewares.debug_toolbar.DebugToolbarMiddleware',
+]
+
+AUTHENTICATION_BACKENDS = [
+    'strawberry_django_jwt.backends.JSONWebTokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -137,4 +146,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.USER'
 
-CSRF_TRUSTED_ORIGINS = ['https://0344-182-19-35-177.in.ngrok.io']
+# CSRF_TRUSTED_ORIGINS = ['https://0344-182-19-35-177.in.ngrok.io']
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+    'localhost',
+]
+
+if DEBUG:
+    import socket
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS += [ip[:-1] + '1' for ip in ips]

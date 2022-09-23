@@ -1,10 +1,10 @@
-import strawberry
-from strawberry import auto
-from .models import Question
+from strawberry_django_plus import gql
 from typing import List
+from questions.models import Question
 
 
-@strawberry.django.type(Question)
-class Question:
-    id: auto
-    question: auto
+@gql.django.type(Question)
+class Question(gql.Node):
+    id: gql.auto
+    question: str
+    answer: str

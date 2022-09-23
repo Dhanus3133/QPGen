@@ -14,8 +14,8 @@ COPY ./requirements.txt .
 RUN apk add --update --no-cache postgresql-client
 # install temp dependencies for build of pyscopg2 etc
 RUN apk add --update --no-cache --virtual .tmp-build-deps \
-  postgresql-dev \
-  && pip install -r requirements.txt \
+  postgresql-dev
+RUN pip install -r requirements.txt \
   && apk del --no-cache .tmp-build-deps
 
 # copy entrypoint.sh
@@ -26,4 +26,3 @@ COPY . .
 
 # run entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
-
