@@ -71,4 +71,5 @@ class QuestionModelAdmin(admin.ModelAdmin):
     # formfield_overrides = {
     #     models.TextField: {'widget': VditorWidget}
     # }
-    pass
+    list_filter = ('start_mark', 'end_mark', 'lesson',)
+    # pass

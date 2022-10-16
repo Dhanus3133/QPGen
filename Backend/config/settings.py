@@ -36,6 +36,7 @@ THIRD_PARTY_APPS = [
     'debug_toolbar',
     'strawberry_django_jwt.refresh_token',
     'strawberry_django_plus',
+    'corsheaders',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + [
@@ -44,14 +45,16 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + [
     'questions.apps.QuestionsConfig',
 ]
 
+# from django.contrib.sessions.middleware import SessionMiddleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'config.middleware.MyAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'strawberry_django_plus.middlewares.debug_toolbar.DebugToolbarMiddleware',
 ]
 
@@ -85,18 +88,18 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'qpgen',
-        'USER': 'admin',
-        'PASSWORD': 'admin',
-        'HOST': 'qpgen-db',
-        'PORT': '5432',
-    }
     # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'qpgen',
+    #     'USER': 'admin',
+    #     'PASSWORD': 'admin',
+    #     'HOST': 'qpgen-db',
+    #     'PORT': '5432',
     # }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 
@@ -146,11 +149,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.USER'
 
-# CSRF_TRUSTED_ORIGINS = ['https://0344-182-19-35-177.in.ngrok.io']
+# CSRF_TRUSTED_ORIGINS = ['http://qpgen.lol']
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = (
+    'http://127.0.0.1',
+    'http://qpgen.lol',
+)
+
+GRAPHQL_JWT = {"JWT_AUTHENTICATE_INTROSPECTION": False}
 
 INTERNAL_IPS = [
     "127.0.0.1",
     'localhost',
+    '172.18.*',
+    '172.18.0.5'
 ]
 
 if DEBUG:
