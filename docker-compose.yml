@@ -19,15 +19,15 @@ services:
   django:
     build: ./Backend
     container_name: qpgen-django
-    command: python manage.py runserver 0.0.0.0:8000
+    command: uvicorn config.asgi:application --host 0.0.0.0 --port 8000 --reload
     ports:
       - 8001:8000
     env_file:
       - ./.env.dev
     volumes:
       - ./Backend/:/app
-      - static:/app/static
-      - media:/app/media
+      - ./Backend/static:/app/static
+      - ./Backend/media:/app/media
     depends_on:
       - db
 
