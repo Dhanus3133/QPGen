@@ -4,10 +4,10 @@ export default function List({ data }) {
       style={{
         display: "grid",
         grid: "auto / repeat(auto-fit, minmax(15em,1fr))",
-        gap: "1rem",
+        gap: "1rem"
       }}
     >
-      {[...data].map((item) => {
+      {data?.map((item) => {
         return (
           <ul
             key={item.id}
@@ -16,7 +16,7 @@ export default function List({ data }) {
               padding: "1rem",
               listStyle: "none",
               background: "#eee",
-              borderRadius: ".5rem",
+              borderRadius: ".5rem"
             }}
           >
             {Object.entries(item).map(([key, value]) => {

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { QUERY } from "../lib/apollo-client";
+import { allUsersQuery } from "../src/graphql/queries/users";
 
 import List from "../components/List";
 
-export default function IndexPage() {
-  const { data, loading, error } = useQuery(QUERY, { ssr: true });
+export default function SSR() {
+  const { data, loading, error } = useQuery(allUsersQuery, { ssr: true });
 
   console.log({ loading, error });
 
@@ -29,5 +29,7 @@ export default function IndexPage() {
     </div>
   );
 }
+      // <h1>{data?.users[3].email}</h1>
+      // <List data={data?.users} />
 // <h1>{data?.users[3]["email"]}</h1>
 // <h2>{data?.jobs}</h2>
