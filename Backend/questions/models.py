@@ -226,6 +226,9 @@ class FacultiesHandling(models.Model):
     def __str__(self):
         return f'{self.course} | {self.subject}'
 
+    class Meta:
+        unique_together = ['course', 'subject']
+
     # TODO: Check the subject in syllabus before saving
 
 
