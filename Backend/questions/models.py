@@ -96,7 +96,7 @@ class Department(models.Model):
         Degree, on_delete=models.CASCADE, related_name='departments'
     )
     branch = models.CharField(max_length=80)
-    branch_code = models.CharField(max_length=10)
+    branch_code = models.CharField(max_length=10, unique=True)
     hod = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='departments'
     )
