@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { useQuery } from "@apollo/client";
 import { allUsersQuery } from "../src/graphql/queries/users";
 
@@ -21,6 +22,9 @@ export default function IndexPage() {
   // console.log(data?.users.map);
   return (
     <div>
+      <Link href="/dashboard">
+        <h1 className="text-3xl font-bold cursor-pointer">Dashboard</h1>
+      </Link>
       <p>
         This page's data was fetched on the{" "}
         <strong>{cached ? "Next.js server" : "client"}</strong>.{" "}

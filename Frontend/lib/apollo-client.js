@@ -8,8 +8,8 @@ let CLIENT;
 export function getApolloClient(forceNew) {
   if (!CLIENT || forceNew) {
     CLIENT = new ApolloClient({
-      ssrMode: isServer,
-      uri: "/graphql/",
+      // ssrMode: isServer,
+      uri: "http://qpgen.lol/graphql/",//http://localhost/graphql/",
       cache: new InMemoryCache().restore(windowApolloState || {}),
 
       /**
@@ -32,3 +32,5 @@ export function getApolloClient(forceNew) {
 
   return CLIENT;
 }
+
+export const client = getApolloClient();

@@ -1,16 +1,12 @@
-import React from "react";
+import '../styles/globals.css'
 
 import { ApolloProvider } from "@apollo/client";
-import { getApolloClient } from "../lib/apollo-client";
-
-import Header from "../components/Header";
+import { client } from "../lib/apollo-client";
 
 export default function MyApp({ Component, pageProps }) {
-  const client = getApolloClient();
 
   return (
     <ApolloProvider client={client}>
-      <Header />
       <Component {...pageProps} />
     </ApolloProvider>
   );

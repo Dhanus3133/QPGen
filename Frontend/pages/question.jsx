@@ -54,7 +54,7 @@ const Home = () => {
       />
       <button
         onClick={() => {
-          console.log(vQuestion.getHTML());
+          console.log(vQuestion.getValue());
             // exportPDF(vQuestion);
             // console.log(getMarkdown(vQuestion));
         }}
