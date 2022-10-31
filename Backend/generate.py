@@ -2,7 +2,6 @@ from django.db.models import F, Q
 import json
 import yaml
 import os
-from secrets import choice
 import django
 import random
 
@@ -15,7 +14,8 @@ from questions.models import Lesson, Question
 choosen_questions = []
 
 lids = [1, 3, 4, 5, 6]
-questions = Question.objects.filter(lesson__in=lids).select_related('lesson')
+# questions = Question.objects.filter(lesson__in=lids).select_related('lesson')
+questions = Question.objects.filter(lesson__in=lids).select_related('lesson', 'mark', 'btl', 'lesson__subject')
 
 
 # @sync_to_async
@@ -107,9 +107,9 @@ def get_different_questions(lesson, mark, start_mark_range, question_number, opt
     #         f'\t{question_number}{chr(option) if option!=None else ""}. {question[0].question}'
     #     )
 
-lids = [3, 4]
+lids = [1]
 marks = [2, 12, 16]
-count = [5, 2, 1]
+count = [5, 2, 6]
 choices = [False, True, True]
 
 
@@ -165,13 +165,14 @@ def generate_questions(lids, marks, count, choices):
                 question_number += 1
 
         print()
-    j = json.dumps(data, indent=4)
+    j = json.dumps(data)
     print(j)
+    print(len(questions))
     return j
 
 
 
-generate_questions(lids, marks, count, choices)
+# generate_questions(lids, marks, count, choices)
 
 # def get_different_questions(lesson, mark, start_mark_range):
 # filtered_questions = questions.filter(lesson=lesson).filter(

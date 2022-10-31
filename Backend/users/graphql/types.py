@@ -1,9 +1,11 @@
+from logging import info
+from typing import Any
 from strawberry_django_plus import gql
 from django.contrib.auth import get_user_model
 
 
 @gql.django.type(get_user_model())
-class UserType(gql.Node):
+class UserType(gql.relay.Node):
     id: gql.auto
     email: gql.auto
     first_name: gql.auto
@@ -24,3 +26,5 @@ class UserSignupInput:
 class UserLoginInput:
     email: gql.auto
     password: gql.auto
+
+from strawberry import BasePermission

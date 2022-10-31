@@ -25,19 +25,16 @@ class PreviousYearsQPType(gql.Node):
     year: gql.auto
 
 
-@gql.interface
-class NameInterface(gql.Node):
+@gql.django.type(Programme)
+class ProgrammeType(gql.Node):
     id: gql.auto
     name: gql.auto
 
 
-@gql.django.type(Programme)
-class ProgrammeType(NameInterface):
-    pass
-
-
 @gql.django.type(Degree)
-class DegreeType(NameInterface):
+class DegreeType(gql.Node):
+    id: gql.auto
+    name: gql.auto
     full_form: gql.auto
 
 
@@ -121,3 +118,5 @@ class QuestionType(gql.Node):
     difficulty: gql.auto
     created_by: UserType
     previous_years: List[PreviousYearsQPType]
+    created_at: gql.auto
+    updated_at: gql.auto

@@ -96,9 +96,9 @@ class Department(models.Model):
         Degree, on_delete=models.CASCADE, related_name='departments'
     )
     branch = models.CharField(max_length=80)
-    branch_code = models.CharField(max_length=10, unique=True)
+    branch_code = models.CharField(max_length=10)
     hod = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='departments'
+        User, on_delete=models.CASCADE, related_name='departments', blank=True, null=True
     )
 
     class Meta:
@@ -278,7 +278,7 @@ class Question(TimeStampedModel):
     def save(self, *args, **kwargs):
         self.start_mark = self.mark.start
         self.end_mark = self.mark.end
-        self.slug = slugify(self.question)
+        self.slug = slugify(self.question[:200])
         super().save(*args, **kwargs)
         # super().save(*args, **kwargs, saved_slug=False)
         # if not kwargs['saved_slug']:

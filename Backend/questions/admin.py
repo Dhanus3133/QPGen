@@ -72,4 +72,5 @@ class QuestionModelAdmin(admin.ModelAdmin):
     #     models.TextField: {'widget': VditorWidget}
     # }
     list_filter = ('start_mark', 'end_mark', 'lesson',)
+    search_fields = ('question',)
     # pass

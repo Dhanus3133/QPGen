@@ -1,6 +1,12 @@
+from datetime import timedelta
 from pathlib import Path
+from typing import Optional
 import django
 from django.utils.encoding import force_str
+from gqlauth.settings_type import GqlAuthSettings
+from gqlauth.settings_type import email_field
+# from strawberry.annotation import StrawberryAnnotation
+# from strawberry.field import StrawberryField
 
 django.utils.encoding.force_text = force_str
 
@@ -34,9 +40,11 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'django_extensions',
     'debug_toolbar',
-    'strawberry_django_jwt.refresh_token',
+    # 'strawberry_django_jwt',
+    # 'strawberry_django_jwt.refresh_token',
     'strawberry_django_plus',
     'corsheaders',
+    'gqlauth',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + [
@@ -51,7 +59,8 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'config.middleware.MyAuthenticationMiddleware',
+    # 'config.middleware.MyAuthenticationMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -59,9 +68,20 @@ MIDDLEWARE = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'strawberry_django_jwt.backends.JSONWebTokenBackend',
+    # 'strawberry_django_jwt.backends.JSONWebTokenBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+GQL_AUTH = GqlAuthSettings(
+    LOGIN_FIELDS=[email_field],
+    REGISTER_MUTATION_FIELDS=[email_field],
+    LOGIN_REQUIRE_CAPTCHA=False,
+    REGISTER_REQUIRE_CAPTCHA=False,
+    SEND_ACTIVATION_EMAIL=False,
+    JWT_LONG_RUNNING_REFRESH_TOKEN=True,
+    JWT_EXPIRATION_DELTA=timedelta(minutes=60*3),
+    JWT_REFRESH_EXPIRATION_DELTA=timedelta(days=3),
+)
 
 ROOT_URLCONF = 'config.urls'
 
@@ -88,18 +108,18 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #     'NAME': 'qpgen',
-    #     'USER': 'admin',
-    #     'PASSWORD': 'admin',
-    #     'HOST': 'qpgen-db',
-    #     'PORT': '5432',
-    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'qpgen',
+        'USER': 'admin',
+        'PASSWORD': 'admin',
+        'HOST': 'qpgen-db',
+        'PORT': '5432',
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
 }
 
 
@@ -127,7 +147,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -149,14 +169,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.USER'
 
-# CSRF_TRUSTED_ORIGINS = ['http://qpgen.lol']
+# CSRF_TRUSTED_ORIGINS = ['https://01a2-49-204-134-157.in.ngrok.io']
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1',
     'http://qpgen.lol',
 )
 
-GRAPHQL_JWT = {"JWT_AUTHENTICATE_INTROSPECTION": False}
+# GRAPHQL_JWT = {"JWT_AUTHENTICATE_INTROSPECTION": False}
 
 INTERNAL_IPS = [
     "127.0.0.1",

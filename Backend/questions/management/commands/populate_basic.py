@@ -84,6 +84,8 @@ class Command(BaseCommand):
 
         try:
             Lesson.objects.create(name='Lists', subject=subject)
+            Lesson.objects.create(name='Stacks and Queues', subject=subject)
+            Lesson.objects.create(name='Trees', subject=subject)
         except:
             pass
 

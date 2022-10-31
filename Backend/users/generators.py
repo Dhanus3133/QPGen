@@ -11,10 +11,10 @@ class UserFactory(factory.django.DjangoModelFactory):
 
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
-    username = factory.LazyAttributeSequence(
-        lambda x, n: f'{x.first_name.lower()}{x.last_name.lower()}{n+random.randrange(1,100)}'
-    )
+    # username = factory.LazyAttributeSequence(
+    #     lambda x, n: f'{x.first_name.lower()}{x.last_name.lower()}{n+random.randrange(1,100)}'
+    # )
     email = factory.LazyAttributeSequence(
-        lambda x, n: f'{x.username}@gmail.com'
+        lambda x, n: f'{x.first_name.lower()}{x.last_name.lower()}{n+random.randrange(1,100)}@gmail.com'
     )
     password = make_password('123')

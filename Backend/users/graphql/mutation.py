@@ -1,60 +1,46 @@
-from types import NoneType
-from typing import Optional
-from django.contrib.auth import get_user_model
+from gqlauth.core.directives import TokenRequired
+import strawberry
+from gqlauth.core.field_ import field
+from gqlauth.user import relay as mutations
+from gqlauth.user.arg_mutations import Captcha
+from typing import Optional, Union
+from gqlauth.core.types_ import GQLAuthError
+
 from strawberry.django import auth
-from strawberry.types import Info
-from strawberry_django_plus import gql
-import strawberry_django_jwt.mutations as jwt_mutations
-from strawberry_django_jwt.decorators import login_required
 
-from users.models import User
-from .types import UserType
-from .input import UserInput, UserInputPartial
+from users.graphql.types import UserType
+
+@strawberry.type
+class AuthMutation:
+    # include here your mutations that interact with a user object from a token.
+
+    verify_token = mutations.VerifyToken.field
+    update_account = mutations.UpdateAccount.field
+    archive_account = mutations.ArchiveAccount.field
+    delete_account = mutations.DeleteAccount.field
+    password_change = mutations.PasswordChange.field
+    # swap_emails = mutations.SwapEmails.field
 
 
-@gql.type
+@strawberry.type
 class Mutation:
+    @field(directives=[TokenRequired()])
+    def auth_entry(self) -> Union[AuthMutation, GQLAuthError]:
+        return AuthOutput(node=AuthMutation())
 
-    """
-    mutation Login {
-      login(password: "admin", username: "admin@admin.com") {
-        id
-      }
-    }
-    """
+    # these are mutation that does not require authentication.
+    captcha = Captcha.field
+    token_auth = mutations.ObtainJSONWebToken.field
+    register = mutations.Register.field
+    verify_account = mutations.VerifyAccount.field
+    resend_activation_email = mutations.ResendActivationEmail.field
+    send_password_reset_email = mutations.SendPasswordResetEmail.field
+    password_reset = mutations.PasswordReset.field
+    password_set = mutations.PasswordSet.field
+    refresh_token = mutations.RefreshToken.field
+    revoke_token = mutations.RevokeToken.field
+    # verify_secondary_email = mutations.VerifySecondaryEmail.field
+
 
     login: Optional[UserType] = auth.login()
 
-    """
-    mutation Logout {
-        logout
-    }
-    """
-
-    logout: NoneType = auth.logout()
-
-    """
-    mutation Register {
-        register(
-            data: {username: "admin", email: "admin@admin.com", password: "admin123"}
-        ) {
-            id
-        }
-    }
-    """
-
-    register: UserType = auth.register(UserInput)
-
-    token_auth = jwt_mutations.ObtainJSONWebTokenAsync.obtain
-    verify_token = jwt_mutations.VerifyAsync.verify
-    refresh_token = jwt_mutations.RefreshAsync.refresh
-    delete_token_cookie = jwt_mutations.DeleteJSONWebTokenCookieAsync.delete_cookie
-
-    @gql.django.field
-    @login_required
-    def update_user(self, info: Info, data: UserInputPartial) -> UserType:
-        user = info.context.request.user
-        [user.__setattr__(key, val) if val else "" for key,
-         val in data.__dict__.items()]
-        user.save()
-        return user
