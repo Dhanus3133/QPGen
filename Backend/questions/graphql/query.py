@@ -6,7 +6,7 @@ from typing import Any, Iterable, List, Optional
 from asgiref.sync import sync_to_async
 from strawberry_django_plus.permissions import IsAuthenticated
 from strawberry_django_plus.utils.resolvers import async_to_sync
-from generate import generate_questions
+# from generate import generate_questions
 import strawberry
 from strawberry.scalars import ID, JSON, Base16
 from strawberry.types import Info
@@ -57,14 +57,14 @@ class Query:
         #     course__department__degree__name=degree,
         # ).distinct('lesson__subject')
 
-    @gql.django.field
-    def hello(self, info: Info) -> JSON:
-        # lids = [3, 4]
-        lids = [1]
-        marks = [2]
-        count = [10]
-        choices = [False]
-        return generate_questions(lids, marks, count, choices)
+    # @gql.django.field
+    # def hello(self, info: Info) -> JSON:
+    #     # lids = [3, 4]
+    #     lids = [1]
+    #     marks = [2]
+    #     count = [10]
+    #     choices = [False]
+    #     return generate_questions(lids, marks, count, choices)
         # return {"hello": "COme on"}
 
     @gql.django.field

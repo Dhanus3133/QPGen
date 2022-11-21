@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BackButton from "./Back";
 
 export default function LessonCard({ data, currentPath }) {
   if (data?.length == 0)
@@ -6,6 +7,7 @@ export default function LessonCard({ data, currentPath }) {
 
   return (
     <>
+      <BackButton />
       {data?.map((lesson) => {
         return (
           <div key={lesson["id"]} className="text-center">

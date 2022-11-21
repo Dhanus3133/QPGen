@@ -19,6 +19,7 @@ export default function IndexPage() {
   if (loading) return "Loading...";
 
   console.log(data?.users);
+  console.log(data);
   // console.log(data?.users.map);
   return (
     <div>

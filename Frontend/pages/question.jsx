@@ -1,3 +1,4 @@
+import RenderVditor from "components/renderVditor";
 import { useState, useEffect } from "react";
 import Vditor from "vditor";
 
@@ -17,7 +18,6 @@ import CustomVditor from "../components/vditor";
 // };
 // console.log(getMarkdown);
 
-
 // const exportPDF = (vditor) => {
 //
 //     vditor.tip.show(window.VditorI18n.generate, 3800);
@@ -29,15 +29,15 @@ import CustomVditor from "../components/vditor";
 //     iframe.contentDocument.close();
 //     setTimeout(() => {
 //         console.log("hello");
-//         
+//
 //         // iframe.contentWindow.postMessage(getMarkdown(vditor), "*");
 //     }, 200);
 // };
 
-
 const Home = () => {
   const [vQuestion, vSetQuestion] = useState(null);
   const [vAnswer, vSetAnswer] = useState(null);
+  // const sanitizer = dompurify.sanitize;
   return (
     <div>
       <CustomVditor
@@ -55,13 +55,32 @@ const Home = () => {
       <button
         onClick={() => {
           console.log(vQuestion.getValue());
-            // exportPDF(vQuestion);
-            // console.log(getMarkdown(vQuestion));
+          // exportPDF(vQuestion);
+          // console.log(getMarkdown(vQuestion));
         }}
       >
         Submit
       </button>
+      <div className="vditor-reset" id="preview">
+        <p>
+          <code>Vditor</code> is awesome!
+          <span className="language-math">{`\\utilde{AB}`}</span>
+        </p>
+      </div>
+      <div
+        id="myown"
+        dangerouslySetInnerHTML={{
+          __html: vQuestion ? vQuestion.getHTML() : "Loading...",
+        }}
+      ></div>
+      <RenderVditor id="preview" />
+      <RenderVditor id="myown" />
     </div>
   );
 };
 export default Home;
+// {vQuestion ? <RenderVditor id="myown" /> : ""}
+// {vQuestion
+//         ? console.log(vQuestion.getHTML().replace(/class=/g, "className="))
+//         : `Loading`}
+// {vQuestion ? <RenderVditor id="question" /> : `Loading`}

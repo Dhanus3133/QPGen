@@ -72,6 +72,14 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+GRAPHQL_JWT = {
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    'JWT_EXPIRATION_DELTA': timedelta(minutes=60*24),
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),
+    "JWT_AUTHENTICATE_INTROSPECTION": True
+}
+
 GQL_AUTH = GqlAuthSettings(
     LOGIN_FIELDS=[email_field],
     REGISTER_MUTATION_FIELDS=[email_field],
@@ -176,7 +184,6 @@ CORS_ORIGIN_WHITELIST = (
     'http://qpgen.lol',
 )
 
-# GRAPHQL_JWT = {"JWT_AUTHENTICATE_INTROSPECTION": False}
 
 INTERNAL_IPS = [
     "127.0.0.1",

@@ -39,7 +39,6 @@ class Mutation:
     password_set = mutations.PasswordSet.field
     refresh_token = mutations.RefreshToken.field
     revoke_token = mutations.RevokeToken.field
-    # verify_secondary_email = mutations.VerifySecondaryEmail.field
 
 
     login: Optional[UserType] = auth.login()

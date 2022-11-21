@@ -13,7 +13,9 @@ export default function SubjectCard({ data, currentPath, branch }) {
             <Link
               href={`${currentPath}/${encodeURIComponent(subject["code"])}`}
             >
-              <h3 className="cursor-pointer">{subject["subjectName"]} | {subject["code"]}</h3>
+              <h3 className="cursor-pointer">
+                {subject["subjectName"]} | {subject["code"]}
+              </h3>
             </Link>
           </div>
         );
@@ -21,4 +23,4 @@ export default function SubjectCard({ data, currentPath, branch }) {
     </>
   );
 }
-              // href={`${currentPath}/${encodeURIComponent(subject["code"])}`}
+// href={`${currentPath}/${encodeURIComponent(subject["code"])}`}

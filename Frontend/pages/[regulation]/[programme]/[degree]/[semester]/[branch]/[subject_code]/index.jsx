@@ -10,6 +10,7 @@ export default function Subject() {
 
   const { data, loading, error } = useQuery(getLessonsQuery, {
     ssr: false,
+    skip: !router.isReady,
     variables: {
       regulation: parseInt(regulation),
       programme: programme,
@@ -19,12 +20,10 @@ export default function Subject() {
       subjectCode: subject_code,
     },
   });
-  console.log(data?.getLessons);
-  //
-  // if (loading) return "Loading...";
-  // if (error) return <p>Error: {error.message}</p>;
 
-  // console.log(data?.getSubjects);
+  if (!router.isReady || loading) return "Loading...";
+  if (error) return <p>Error: {error.message}</p>;
+
   return (
     <>
       <LessonCard data={data?.getLessons} currentPath={router.asPath} />

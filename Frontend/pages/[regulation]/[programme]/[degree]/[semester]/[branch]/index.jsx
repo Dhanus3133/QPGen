@@ -1,7 +1,8 @@
 import { getSubjectsQuery } from "@/src/graphql/queries/getSubjects";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import SubjectCard from "components/SubjectCard";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function Branch() {
   const router = useRouter();
@@ -9,6 +10,7 @@ export default function Branch() {
 
   const { data, loading, error } = useQuery(getSubjectsQuery, {
     ssr: false,
+    skip: !router.isReady,
     variables: {
       regulation: parseInt(regulation),
       programme: programme,
@@ -18,8 +20,10 @@ export default function Branch() {
     },
   });
 
-  if (loading) return "Loading...";
+  if (!router.isReady || loading) return "Loading...";
   if (error) return <p>Error: {error.message}</p>;
+
+  console.log(data);
 
   if (data?.getSubjects.length == 0)
     return <h1 className="text-center">You have no permission to access!</h1>;
