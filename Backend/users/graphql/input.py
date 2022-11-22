@@ -4,7 +4,7 @@ from strawberry_django_plus import gql
 
 @gql.django.input(get_user_model())
 class UserInput:
-    username: gql.auto
+    # username: gql.auto
     email: gql.auto
     password: gql.auto
     first_name: gql.auto

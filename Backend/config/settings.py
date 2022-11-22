@@ -40,11 +40,11 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'django_extensions',
     'debug_toolbar',
-    # 'strawberry_django_jwt',
-    # 'strawberry_django_jwt.refresh_token',
+    'strawberry_django_jwt',
+    'strawberry_django_jwt.refresh_token',
     'strawberry_django_plus',
     'corsheaders',
-    'gqlauth',
+    # 'gqlauth',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + [
@@ -59,7 +59,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    # 'config.middleware.MyAuthenticationMiddleware',
+    'config.middleware.MyAuthenticationMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -68,7 +68,7 @@ MIDDLEWARE = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    # 'strawberry_django_jwt.backends.JSONWebTokenBackend',
+    'strawberry_django_jwt.backends.JSONWebTokenBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 

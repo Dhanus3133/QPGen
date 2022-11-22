@@ -18,7 +18,8 @@ export default function ProgrammeCard({ data, currentPath }) {
               <h3 className="cursor-pointer">
                 {course["department"]["programme"]["name"]} |{" "}
                 {course["department"]["degree"]["name"]} |{" "}
-                {course["department"]["branchCode"]}
+                {course["department"]["branchCode"]} |{" "}
+                {course["semester"]}
               </h3>
             </Link>
           </div>

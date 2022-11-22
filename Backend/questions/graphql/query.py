@@ -12,7 +12,7 @@ from strawberry.scalars import ID, JSON, Base16
 from strawberry.types import Info
 from strawberry_django.auth.queries import resolve_current_user
 from strawberry_django_plus import gql
-# from strawberry_django_jwt.decorators import login_required
+from strawberry_django_jwt.decorators import login_required
 from core.utils import decode_id_from_gql_id, get_current_user_from_info, get_lazy_query_set_as_list
 
 from questions.graphql.types import FacultiesHandlingType, QuestionType, SubjectType, SyllabusType
@@ -40,7 +40,7 @@ class Query:
         return Question.objects.filter(question__icontains=question)
 
     @gql.django.field
-    # @login_required
+    @login_required
     async def get_subjects(self, info: Info, regulation: int, programme: str, degree: str, semester: int, department: str) -> List[FacultiesHandlingType]:
         user = await get_current_user_from_info(info)
         return await sync_to_async(list)(user.faculties.filter(
@@ -68,7 +68,7 @@ class Query:
         # return {"hello": "COme on"}
 
     @gql.django.field
-    # @login_required
+    @login_required
     async def departments_access_to(self, info: Info) -> List[FacultiesHandlingType]:
         user = await get_current_user_from_info(info)
         # return await sync_to_async(list)(user.faculties.filter(course__active=True).prefetch_related('course', 'subject'))

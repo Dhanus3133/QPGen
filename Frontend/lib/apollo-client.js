@@ -1,15 +1,36 @@
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
+import { onError } from "apollo-link-error";
+import Router from "next/router";
 
 const isServer = typeof window === "undefined";
 const windowApolloState = !isServer && window.__NEXT_DATA__.apolloState;
 
 let CLIENT;
 
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors)
+    graphQLErrors.forEach(({ message, locations, path }) =>
+      console.log(
+        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+      )
+    );
+  if (networkError) {
+    console.log(`[Network error]: ${networkError}`);
+    if (networkError.statusCode === 401) {
+      Router.push("/login");
+    }
+  }
+});
+
 export function getApolloClient(forceNew) {
   if (!CLIENT || forceNew) {
+    const link = new createHttpLink({
+      uri: "http://qpgen.lol/graphql/",
+    });
+
     CLIENT = new ApolloClient({
       // ssrMode: isServer,
-      uri: "http://qpgen.lol/graphql/",//http://localhost/graphql/",
+      link: errorLink.concat(link),
       cache: new InMemoryCache().restore(windowApolloState || {}),
 
       /**

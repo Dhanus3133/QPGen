@@ -17,7 +17,8 @@ export default function DegreeCard({ data, currentPath }) {
             >
               <h3 className="cursor-pointer">
                 {course["department"]["degree"]["name"]} |{" "}
-                {course["department"]["branchCode"]}
+                {course["department"]["branchCode"]} |{" "}
+                {course["semester"]}
               </h3>
             </Link>
           </div>

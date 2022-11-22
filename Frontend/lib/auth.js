@@ -6,7 +6,6 @@ import {
   InMemoryCache,
 } from "@apollo/client";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { deleteCookie, getCookie, setCookie } from "cookies-next";
 
 const authContext = createContext();
 
@@ -28,7 +27,7 @@ export const useAuth = () => {
 
 function useProvideAuth() {
   const [authToken, setAuthToken] = useState(getCookie("token")); // useState(null); //useCookies(["token"]);
-  console.log(authToken);
+  // console.log(authToken);
 
   const isSignedIn = () => {
     if (authToken) {
@@ -62,11 +61,8 @@ function useProvideAuth() {
     const client = createApolloClient();
     const LoginMutation = gql`
       mutation signIn($email: String!, $password: String!) {
-        tokenAuth(input: { email: $email, password: $password }) {
-          token {
-            token
-          }
-          errors
+        tokenAuth(email: $email, password: $password) {
+          token
         }
       }
     `;

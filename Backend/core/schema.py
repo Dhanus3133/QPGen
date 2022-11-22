@@ -1,5 +1,5 @@
 import strawberry
-# from strawberry_django_jwt.middleware import JSONWebTokenMiddleware, AsyncJSONWebTokenMiddleware
+from strawberry_django_jwt.middleware import JSONWebTokenMiddleware, AsyncJSONWebTokenMiddleware
 from strawberry.tools import merge_types
 from strawberry_django_plus.directives import SchemaDirectiveExtension
 from strawberry_django_plus.optimizer import DjangoOptimizerExtension
@@ -26,6 +26,6 @@ Mutations = merge_types(
 
 schema = strawberry.Schema(
     query=Queries, mutation=Mutations, extensions=[
-        SchemaDirectiveExtension, DjangoOptimizerExtension, ApolloTracingExtension
+        AsyncJSONWebTokenMiddleware, SchemaDirectiveExtension, DjangoOptimizerExtension, ApolloTracingExtension
     ]
 )
