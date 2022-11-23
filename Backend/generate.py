@@ -1,3 +1,4 @@
+from questions.models import Lesson, Question
 from django.db.models import F, Q
 import json
 import yaml
@@ -9,19 +10,20 @@ from django.db.models.query import sync_to_async
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
-from questions.models import Lesson, Question
 
 choosen_questions = []
 
-lids = [1, 3, 4, 5, 6]
+lids = [1, 2, 3, 4, 5, 6]
 # questions = Question.objects.filter(lesson__in=lids).select_related('lesson')
-questions = Question.objects.filter(lesson__in=lids).select_related('lesson', 'mark', 'btl', 'lesson__subject')
+questions = Question.objects.filter(lesson__in=lids).select_related(
+    'lesson', 'mark', 'btl', 'lesson__subject')
 
 
 # @sync_to_async
 def int_to_roman(number):
     num = [1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000]
-    sym = ["i", "iv", "v", "ix", "x", "xl", "l", "xc", "c", "cd", "d", "cm", "m"]
+    sym = ["i", "iv", "v", "ix", "x", "xl",
+           "l", "xc", "c", "cd", "d", "cm", "m"]
     i = 12
     roman = ''
     while number:
@@ -43,7 +45,7 @@ def find_a_question_with_exact_mark(lesson, mark, add_to_list):
         return None
     if add_to_list:
         choosen_questions.append(question.id)
-    return {"q":question, "m":mark}
+    return {"q": question, "m": mark}
 
 
 # @sync_to_async
@@ -68,7 +70,10 @@ def get_different_questions(lesson, mark, start_mark_range, question_number, opt
             if s != question:
                 for q in s:
                     if q != None:
-                        choosen_questions.remove(q.id)
+                        try:
+                            choosen_questions.remove(q.id)
+                        except:
+                            pass
         selected.remove(question)
         question = random.choice(selected)
 
@@ -84,14 +89,15 @@ def get_different_questions(lesson, mark, start_mark_range, question_number, opt
     for i in range(len(question)):
         dataQuestion = {}
         print(f'\t{question_number}{chr(option) if option!=None else ""}. ', end='')
-        print(f'({int_to_roman(1+i)})' if option else '',end='')
+        print(f'({int_to_roman(1+i)})' if option else '', end='')
         print(question[i]['q'].question)
         dataQuestion['number'] = question_number
-        dataQuestion['option'] = chr(option) if option!=None else None
+        dataQuestion['option'] = chr(option) if option != None else None
         dataQuestion['roman'] = int_to_roman(1+i) if option else None
         dataQuestion['question'] = question[i]['q'].question
         dataQuestion['btl'] = question[i]['q'].btl.name
-        dataQuestion['co'] = question[i]['q'].lesson.subject.co + '.' + str(question[i]['q'].lesson.syllabuses.first().unit)
+        dataQuestion['co'] = question[i]['q'].lesson.subject.co + \
+            '.' + str(question[i]['q'].lesson.syllabuses.first().unit)
         prev = []
         for i in question[i]['q'].previous_years.all():
             prev.append(str(i))
@@ -101,13 +107,13 @@ def get_different_questions(lesson, mark, start_mark_range, question_number, opt
 
     return questions
 
-
     # else:
     #     print(
     #         f'\t{question_number}{chr(option) if option!=None else ""}. {question[0].question}'
     #     )
 
-lids = [1]
+
+lids = [1, 2]
 marks = [2, 12, 16]
 count = [5, 2, 6]
 choices = [False, True, True]
@@ -145,7 +151,6 @@ def generate_questions(lids, marks, count, choices):
                     questions = []
                 question_number += 1
 
-
         if current_count != total_count:
             for i in range(total_count-current_count):
                 questions.append(get_different_questions(
@@ -169,7 +174,6 @@ def generate_questions(lids, marks, count, choices):
     print(j)
     print(len(questions))
     return j
-
 
 
 # generate_questions(lids, marks, count, choices)

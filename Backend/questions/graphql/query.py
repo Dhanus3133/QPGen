@@ -4,9 +4,8 @@ from django.contrib.auth.hashers import base64
 from strawberry_django_plus.gql import relay
 from typing import Any, Iterable, List, Optional
 from asgiref.sync import sync_to_async
-from strawberry_django_plus.permissions import IsAuthenticated
 from strawberry_django_plus.utils.resolvers import async_to_sync
-# from generate import generate_questions
+from generate import generate_questions as gen_ques
 import strawberry
 from strawberry.scalars import ID, JSON, Base16
 from strawberry.types import Info
@@ -15,10 +14,10 @@ from strawberry_django_plus import gql
 from strawberry_django_jwt.decorators import login_required
 from core.utils import decode_id_from_gql_id, get_current_user_from_info, get_lazy_query_set_as_list
 
-from questions.graphql.types import FacultiesHandlingType, QuestionType, SubjectType, SyllabusType
+from questions.graphql.types import CourseType, FacultiesHandlingType, QuestionType, SubjectType, SyllabusType, LessonType
 from strawberry.django import auth
 
-from questions.models import FacultiesHandling, Question, Subject, Syllabus
+from questions.models import Course, FacultiesHandling, Lesson, Question, Subject, Syllabus
 
 
 @strawberry.type
@@ -57,14 +56,14 @@ class Query:
         #     course__department__degree__name=degree,
         # ).distinct('lesson__subject')
 
-    # @gql.django.field
-    # def hello(self, info: Info) -> JSON:
-    #     # lids = [3, 4]
-    #     lids = [1]
-    #     marks = [2]
-    #     count = [10]
-    #     choices = [False]
-    #     return generate_questions(lids, marks, count, choices)
+    @gql.django.field
+    def generate_questions(self, info: Info, lids: List[int], marks: List[int], counts: List[int], choices: List[bool]) -> JSON:
+        # lids = [3, 4]
+        # lids = [1, 2]
+        # marks = [2, 12, 16]
+        # count = [5, 2, 1]
+        # choices = [False, True, True]
+        return gen_ques(lids, marks, counts, choices)
         # return {"hello": "COme on"}
 
     @gql.django.field
@@ -75,7 +74,7 @@ class Query:
         return await sync_to_async(list)(user.faculties.filter(course__active=True).select_related('course__regulation', 'course__department', 'course__department__programme', 'course__department__degree').distinct('course__regulation', 'course__department', 'course__semester'))
 
     @gql.django.field
-    # @login_required
+    @login_required
     async def get_lessons(self, info: Info, regulation: int, programme: str, degree: str, semester: int, department: str, subject_code: str) -> List[SyllabusType]:
         user = await get_current_user_from_info(info)
         # return await sync_to_async(list)(user.faculties.filter(course__active=True).prefetch_related('course', 'subject'))
@@ -89,7 +88,8 @@ class Query:
         ).order_by('unit'))
         # user.faculties.filter(course__active=True).select_related('course__regulation', 'course__department', 'course__department__programme', 'course__department__degree').distinct('course__regulation', 'course__department', 'course__semester'))
 
-    @relay.connection(directives=[IsAuthenticated()])
+    @relay.connection()
+    # @login_required
     def get_questions(self, info: Info, regulation: int, programme: str, degree: str, semester: int, department: str, subject_code: str, unit: int) -> List[QuestionType]:
         return Question.objects.filter(
             lesson__syllabuses__course__regulation__year=regulation,
@@ -100,3 +100,20 @@ class Query:
             lesson__syllabuses__lesson__subject__code=subject_code,
             lesson__syllabuses__unit=unit
         ).order_by('-created_at')
+
+    @gql.django.field
+    @login_required
+    # def get_courses(self, lessons: List[int]) -> List[CourseType]:
+    #     print(lessons)
+    async def get_courses(self) -> List[CourseType]:
+        return await sync_to_async(list)(Course.objects.filter(active=True))
+
+    @gql.django.field
+    @login_required
+    async def get_subjects_by_id(self, course_id: int) -> List[SubjectType]:
+        return await sync_to_async(list)(Subject.objects.filter(lessons__syllabuses__course__id=course_id).distinct("lessons__subject"))
+
+    @gql.django.field
+    @login_required
+    async def get_lessons_by_id(self, course_id: int, subject_id: int) -> List[LessonType]:
+        return await sync_to_async(list)(Lesson.objects.filter(subject=subject_id, syllabuses__course__id=course_id).order_by('syllabuses__unit'))

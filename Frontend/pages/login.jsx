@@ -2,7 +2,7 @@ import { client } from "@/lib/apollo-client";
 import { loginMutation } from "@/src/graphql/mutations/login";
 import { logoutMutation } from "@/src/graphql/mutations/logout";
 import { useMutation } from "@apollo/client";
-import { getCookie, hasCookie } from "cookies-next";
+// import { getCookie, hasCookie } from "cookies-next";
 import Router from "next/router";
 import { useEffect, useState } from "react";
 
@@ -18,7 +18,7 @@ export default function SignIn() {
     e.preventDefault();
     Login({ variables: { email: email, password: password } });
     client.refetchQueries({ include: "active" });
-    // Router.push("/dashboard");
+    Router.push("/dashboard");
   }
 
   function logOut() {
