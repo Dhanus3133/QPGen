@@ -4,7 +4,7 @@ import { useQuery } from "@apollo/client";
 import { Autocomplete, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 
-export default function Courses({ setCourse }) {
+export default function Courses({ setCourse, setSemester }) {
   const { data, loading, error } = useQuery(getCoursesQuery);
   const [courses, setCourses] = useState([]);
 
@@ -21,6 +21,7 @@ export default function Courses({ setCourse }) {
       onChange={(event, course) => {
         const id = course ? parseInt(getID(course["id"])) : null;
         setCourse(id);
+        setSemester(course["semester"]);
       }}
       getOptionLabel={(option) =>
         `${option["regulation"]["year"]} | ${option["department"]["programme"]["name"]} | ${option["department"]["degree"]["name"]} | ${option["department"]["branchCode"]} | ${option["semester"]}`

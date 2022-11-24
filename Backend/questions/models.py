@@ -246,12 +246,12 @@ class Question(TimeStampedModel):
         (DIFFICULTY_HARD, 'Hard'),
     )
 
-    slug = models.SlugField(max_length=250, blank=True)
+    # slug = models.SlugField(max_length=250, blank=True)
     lesson = models.ForeignKey(
         Lesson, on_delete=models.CASCADE, related_name='quesions'
     )
     question = models.TextField()
-    answer = models.TextField()
+    answer = models.TextField(blank=True, null=True)
     mark = models.ForeignKey(
         MarkRange, on_delete=models.CASCADE, related_name='questions', null=True, blank=False
     )
@@ -264,7 +264,7 @@ class Question(TimeStampedModel):
         max_length=2, choices=DIFFICULTY_CHOICES
     )
     created_by = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='questions'
+        User, on_delete=models.CASCADE, related_name='questions', blank=True
     )
     previous_years = models.ManyToManyField(
         PreviousYearsQP, related_name='questions', blank=True
@@ -278,7 +278,7 @@ class Question(TimeStampedModel):
     def save(self, *args, **kwargs):
         self.start_mark = self.mark.start
         self.end_mark = self.mark.end
-        self.slug = slugify(self.question[:200])
+        self.question = self.question.strip()
         super().save(*args, **kwargs)
         # super().save(*args, **kwargs, saved_slug=False)
         # if not kwargs['saved_slug']:

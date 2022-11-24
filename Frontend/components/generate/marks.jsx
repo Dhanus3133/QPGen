@@ -1,4 +1,4 @@
-import { Button, Checkbox, TextField } from "@mui/material";
+import { Autocomplete, Button, Checkbox, TextField } from "@mui/material";
 import { useState } from "react";
 
 function Marks({
@@ -8,10 +8,16 @@ function Marks({
   setCounts,
   choices,
   setChoices,
+  total,
+  setTotal,
+  units,
+  setUnits,
+  time,
+  setTime,
   valid,
   setValid,
 }) {
-  const [total, setTotal] = useState(50);
+  const [custom, setCustom] = useState(false);
 
   let num = 0;
 
@@ -31,99 +37,174 @@ function Marks({
     setValid(false);
   }
 
+  const types = [
+    {
+      label: "Assessment 1",
+      total: 50,
+      marks: [2, 12, 16],
+      counts: [5, 2, 1],
+      choices: [false, true, true],
+      units: [1],
+      time: "1.30",
+      custom: false,
+    },
+    {
+      label: "Assessment 2",
+      total: 50,
+      marks: [2, 12, 16],
+      counts: [5, 2, 1],
+      choices: [false, true, true],
+      units: [2, 3],
+      time: "1.30",
+      custom: false,
+    },
+    {
+      label: "Model",
+      total: 100,
+      marks: [2, 16],
+      counts: [10, 5],
+      choices: [false, true],
+      units: [1, 2, 3, 4, 5],
+      time: "3",
+      custom: false,
+    },
+    {
+      label: "Custom",
+      total: null,
+      marks: [],
+      counts: [],
+      choices: [],
+      units: [],
+      time: null,
+      custom: true,
+    },
+  ];
+
   return (
     <>
-      <div className="text-center">
-        <TextField
-          id="total-marks"
-          key="total"
-          label="Total Marks"
-          type="number"
-          variant="outlined"
-          defaultValue={total}
-          InputProps={{
-            inputProps: { min: 1 },
-          }}
-          onChange={(e) => {
-            const val = e.target.value;
-            setTotal(val ? parseInt(val) : null);
-          }}
-        />
-      </div>
-      <ul>
-        {marks.map((mark, idx) => {
-          return (
-            <div key={idx} className="p-3 pl-0">
-              <TextField
-                id={`${idx}-mark`}
-                key={`mark-${marks[idx]}`}
-                label="Mark"
-                type="number"
-                variant="outlined"
-                defaultValue={marks[idx]}
-                InputProps={{
-                  inputProps: { min: 1 },
-                }}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  marks[idx] = val ? parseInt(val) : null;
-                  setMarks([...marks]);
-                }}
-              />
-              <TextField
-                id={`${idx}-count`}
-                key={`count-${counts[idx]}`}
-                label="Count"
-                type="number"
-                variant="outlined"
-                defaultValue={counts[idx]}
-                InputProps={{
-                  inputProps: { min: 1 },
-                }}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  counts[idx] = val ? parseInt(val) : null;
-                  setCounts([...counts]);
-                }}
-              />
-              <Checkbox
-                checked={choices[idx]}
-                onChange={(e) => {
-                  choices[idx] = e.target.checked;
-                  setChoices([...choices]);
-                }}
-              />
-              <Button
-                variant="outlined"
-                color="error"
-                onClick={() => {
-                  console.log(idx);
-                  marks.splice(idx, 1);
-                  counts.splice(idx, 1);
-                  choices.splice(idx, 1);
-                  setMarks([...marks]);
-                  setCounts([...counts]);
-                  setChoices([...choices]);
-                }}
-              >
-                Delete
-              </Button>
-            </div>
-          );
-        })}
-      </ul>
-      <div className="text-center">
-        <Button
-          variant="outlined"
-          onClick={() => {
-            setMarks([...marks, null]);
-            setCounts([...counts, 1]);
-            setChoices([...choices, true]);
-          }}
-        >
-          Add
-        </Button>
-      </div>
+      <Autocomplete
+        id="type"
+        options={types}
+        onChange={(event, type) => {
+          if (type) {
+            setMarks(type["marks"]);
+            setCounts(type["counts"]);
+            setChoices(type["choices"]);
+            setUnits(type["units"]);
+            setTime(type["time"]);
+            setTotal(type["total"]);
+            setCustom(type["custom"]);
+          } else {
+            setMarks([]);
+            setCounts([]);
+            setChoices([]);
+            setUnits([]);
+            setTime(null);
+            setTotal(null);
+            setCustom(false);
+          }
+        }}
+        getOptionLabel={(option) => {
+          return option["label"];
+        }}
+        sx={{ width: 300 }}
+        renderInput={(params) => <TextField {...params} label="Exam" />}
+      />
+      {custom && (
+        <>
+          <div className="text-center">
+            <TextField
+              id="total-marks"
+              key="total"
+              label="Total Marks"
+              type="number"
+              variant="outlined"
+              defaultValue={total}
+              InputProps={{
+                inputProps: { min: 1 },
+              }}
+              onChange={(e) => {
+                const val = e.target.value;
+                setTotal(val ? parseInt(val) : null);
+              }}
+            />
+          </div>
+          <ul>
+            {marks.map((mark, idx) => {
+              return (
+                <div key={idx} className="p-3 pl-0">
+                  <TextField
+                    id={`${idx}-mark`}
+                    key={`mark-${marks[idx]}`}
+                    label="Mark"
+                    type="number"
+                    variant="outlined"
+                    defaultValue={marks[idx]}
+                    InputProps={{
+                      inputProps: { min: 1 },
+                    }}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      marks[idx] = val ? parseInt(val) : null;
+                      setMarks([...marks]);
+                    }}
+                  />
+                  <TextField
+                    id={`${idx}-count`}
+                    key={`count-${counts[idx]}`}
+                    label="Count"
+                    type="number"
+                    variant="outlined"
+                    defaultValue={counts[idx]}
+                    InputProps={{
+                      inputProps: { min: 1 },
+                    }}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      counts[idx] = val ? parseInt(val) : null;
+                      setCounts([...counts]);
+                    }}
+                  />
+                  <Checkbox
+                    checked={choices[idx]}
+                    onChange={(e) => {
+                      choices[idx] = e.target.checked;
+                      setChoices([...choices]);
+                    }}
+                  />
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => {
+                      console.log(idx);
+                      marks.splice(idx, 1);
+                      counts.splice(idx, 1);
+                      choices.splice(idx, 1);
+                      setMarks([...marks]);
+                      setCounts([...counts]);
+                      setChoices([...choices]);
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              );
+            })}
+          </ul>
+          <div className="text-center">
+            <Button
+              variant="outlined"
+              onClick={() => {
+                setMarks([...marks, null]);
+                setCounts([...counts, 1]);
+                setChoices([...choices, true]);
+              }}
+            >
+              Add
+            </Button>
+          </div>
+        </>
+      )}
     </>
   );
 }

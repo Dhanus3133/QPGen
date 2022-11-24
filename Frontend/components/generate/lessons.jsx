@@ -15,6 +15,8 @@ import { useEffect, useState } from "react";
 export default function Lessons({
   course,
   subject,
+  units,
+  setUnits,
   lessonsIDs,
   setLessonsIDs,
 }) {
@@ -39,21 +41,29 @@ export default function Lessons({
     }
   }, [course, subject]);
 
-  // console.log(lessons);
+  useEffect(() => {
+    let l = [];
+    lessons?.map((lesson) => {
+      if (units.includes(lesson["unit"])) {
+        l.push(parseInt(getID(lesson["lesson"]["id"])));
+      }
+    });
+    setLessonsIDs([...l]);
+  }, [subject, units]);
 
   if (error) return <p>Error: {error.message}</p>;
   if (loading) return "Loading...";
+  console.log(units);
 
-  const handleChange = (e, id) => {
+  const handleChange = (e, unit) => {
     const checked = e.target.checked;
     if (checked) {
-      setLessonsIDs([...lessonsIDs, id]);
+      setUnits([...units, unit]);
     } else {
-      lessonsIDs.splice(lessonsIDs.indexOf(id), 1);
-      setLessonsIDs([...lessonsIDs]);
+      units.splice(units.indexOf(unit), 1);
+      setUnits([...units]);
     }
   };
-  console.log(lessonsIDs);
 
   return (
     <div className="m-2 mt-5">
@@ -71,9 +81,12 @@ export default function Lessons({
               className="m-1 flex items-center rounded-md p-2 shadow-md"
             >
               <Checkbox
-                onChange={(e) => handleChange(e, parseInt(getID(lesson["id"])))}
+                checked={units.includes(lesson["unit"])}
+                onChange={(e) => handleChange(e, lesson["unit"])}
               />
-              <h2 className="p-2">{lesson["name"]}</h2>
+              <h2 className="p-2">
+                {lesson["unit"]} - {lesson["lesson"]["name"]}
+              </h2>
             </li>
           );
         })}

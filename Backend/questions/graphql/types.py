@@ -107,7 +107,6 @@ class FacultiesHandlingType(gql.Node):
 @gql.django.type(Question)
 class QuestionType(gql.Node):
     id: gql.auto
-    slug: gql.auto
     lesson: LessonType
     question: gql.auto
     answer: gql.auto

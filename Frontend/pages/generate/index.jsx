@@ -13,18 +13,17 @@ const { getCoursesQuery } = require("@/src/graphql/queries/getCourses");
 const { useQuery } = require("@apollo/client");
 
 export default function Generate() {
-  // const { data, loading, error } = useQuery(getCoursesQuery);
-  // variables: {
-  //   lessons: [1, 2, 3],
-  // },
-  // const { data, loading, error } = useQuery(generateQuestionsQuery);
   const [courses, setCourses] = useState([]);
   const [course, setCourse] = useState(null);
-  const [marks, setMarks] = useState([2, 12, 16]);
-  const [counts, setCounts] = useState([5, 2, 1]);
-  const [choices, setChoices] = useState([false, true, true]);
+  const [semester, setSemester] = useState(null);
+  const [total, setTotal] = useState(null);
+  const [marks, setMarks] = useState([]);
+  const [counts, setCounts] = useState([]);
+  const [choices, setChoices] = useState([]);
+  const [time, setTime] = useState(null);
   const [valid, setValid] = useState(false);
   const [subject, setSubject] = useState(null);
+  const [units, setUnits] = useState([]);
   const [lessonsIDs, setLessonsIDs] = useState([]);
   const [generate, setGenerate] = useState(false);
 
@@ -32,14 +31,17 @@ export default function Generate() {
   //   setCourse(1);
   //   setSubject(1);
   // }, [course, subject]);
-
-  // if (loading) return "Loading...";
-  // if (error) return <p>Error: {error.message}</p>;
+  console.log("semester", semester);
   if (!generate) {
     return (
       <>
         <Grid container justifyContent="center">
           <div className="p-3 center">
+            <div className="py-6">
+              <Courses setCourse={setCourse} setSemester={setSemester} />
+            </div>
+            <Subjects course={course} setSubject={setSubject} />
+            <div className="p-6"></div>
             <Marks
               marks={marks}
               setMarks={setMarks}
@@ -47,19 +49,24 @@ export default function Generate() {
               setCounts={setCounts}
               choices={choices}
               setChoices={setChoices}
+              total={total}
+              setTotal={setTotal}
+              units={units}
+              setUnits={setUnits}
+              time={time}
+              setTime={setTime}
               valid={valid}
               setValid={setValid}
             />
-            <div className="py-6">
-              <Courses setCourse={setCourse} />
-            </div>
-            <Subjects course={course} setSubject={setSubject} />
-            <div className="p-6"></div>
             <Lessons
               course={course}
               subject={subject}
+              units={units}
+              setUnits={setUnits}
               lessonsIDs={lessonsIDs}
               setLessonsIDs={setLessonsIDs}
+              valid={valid}
+              setValid={setValid}
             />
             <Button
               variant="outlined"
@@ -87,6 +94,9 @@ export default function Generate() {
         marks={marks}
         counts={counts}
         choices={choices}
+        semester={semester}
+        total={total}
+        time={time}
       />
     );
   }

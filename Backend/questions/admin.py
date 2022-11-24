@@ -45,7 +45,6 @@ class LessonModelAdmin(admin.ModelAdmin):
     pass
 
 
-
 @admin.register(Course)
 class CourseModelAdmin(admin.ModelAdmin):
     pass
@@ -73,4 +72,9 @@ class QuestionModelAdmin(admin.ModelAdmin):
     # }
     list_filter = ('start_mark', 'end_mark', 'lesson',)
     search_fields = ('question',)
+    raw_id_fields = ('lesson',)
     # pass
+
+    def save_model(self, request, obj, form, change):
+        obj.created_by = request.user
+        obj.save()

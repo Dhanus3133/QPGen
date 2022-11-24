@@ -5,7 +5,7 @@ from strawberry_django_plus.gql import relay
 from typing import Any, Iterable, List, Optional
 from asgiref.sync import sync_to_async
 from strawberry_django_plus.utils.resolvers import async_to_sync
-from generate import generate_questions as gen_ques
+from generate import Generate
 import strawberry
 from strawberry.scalars import ID, JSON, Base16
 from strawberry.types import Info
@@ -63,7 +63,7 @@ class Query:
         # marks = [2, 12, 16]
         # count = [5, 2, 1]
         # choices = [False, True, True]
-        return gen_ques(lids, marks, counts, choices)
+        return Generate(lids, marks, counts, choices).generate_questions()
         # return {"hello": "COme on"}
 
     @gql.django.field
@@ -115,5 +115,11 @@ class Query:
 
     @gql.django.field
     @login_required
-    async def get_lessons_by_id(self, course_id: int, subject_id: int) -> List[LessonType]:
-        return await sync_to_async(list)(Lesson.objects.filter(subject=subject_id, syllabuses__course__id=course_id).order_by('syllabuses__unit'))
+    async def get_lessons_by_id(self, course_id: int, subject_id: int) -> List[SyllabusType]:
+        return await sync_to_async(list)(Syllabus.objects.filter(course=course_id, lesson__subject=subject_id).order_by("unit"))
+        # return await sync_to_async(list)(Lesson.objects.filter(subject=subject_id, syllabuses__course__id=course_id).order_by('syllabuses__unit'))
+
+    # @gql.django.field
+    # @login_required
+    # async def get_lessons_by_id(self, course_id: int, subject_id: int) -> List[LessonType]:
+    #     return await sync_to_async(list)(Lesson.objects.filter(subject=subject_id, syllabuses__course__id=course_id).order_by('syllabuses__unit'))

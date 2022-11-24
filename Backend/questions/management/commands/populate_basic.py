@@ -3,6 +3,7 @@ from django.utils import timezone
 from questions.models import BloomsTaxonomyLevel, Course, Degree, Department, Lesson, MarkRange, PreviousYearsQP, Programme, Regulation, Subject, Syllabus
 from users.models import User
 
+
 class Command(BaseCommand):
     help = "Initilize Basic data"
 
@@ -86,6 +87,10 @@ class Command(BaseCommand):
             Lesson.objects.create(name='Lists', subject=subject)
             Lesson.objects.create(name='Stacks and Queues', subject=subject)
             Lesson.objects.create(name='Trees', subject=subject)
+            Lesson.objects.create(name='Graphs', subject=subject)
+            Lesson.objects.create(
+                name='Sorting, Searching and Hash Techniques', subject=subject
+            )
         except:
             pass
 
@@ -101,7 +106,7 @@ class Command(BaseCommand):
         except:
             pass
 
-        for year in range(2000, timezone.now().year):
+        for year in range(2016, timezone.now().year):
             try:
                 PreviousYearsQP.objects.bulk_create([
                     PreviousYearsQP(month='A/M', year=year),

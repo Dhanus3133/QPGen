@@ -1,7 +1,16 @@
 import { generateQuestionsQuery } from "@/src/graphql/queries/generateQuestions";
+import { romanize } from "@/src/utils";
 import { useQuery } from "@apollo/client";
 
-const QuestionPaper = ({ lids, marks, counts, choices }) => {
+const QuestionPaper = ({
+  lids,
+  marks,
+  counts,
+  choices,
+  semester,
+  total,
+  time,
+}) => {
   const { data, loading, error } = useQuery(generateQuestionsQuery, {
     variables: { lids, marks, counts, choices },
     // variables: { lids: lids, marks: marks, counts: counts, choices: choices },
@@ -9,10 +18,13 @@ const QuestionPaper = ({ lids, marks, counts, choices }) => {
 
   if (loading) return "Loading...";
   if (error) return <p>Error: {error.message}</p>;
-  console.log(data);
+  const generatedData = JSON.parse(data["generateQuestions"]);
+  const options = generatedData["options"];
+  const b = generatedData["questions"];
 
-  const b = JSON.parse(data["generateQuestions"]);
+  // console.log("Part-{i}-(x2=10 marks)");
 
+  // return <h2>Hello world</h2>;
   let courseObjective = {
     1: {
       cono: 1,
@@ -255,8 +267,10 @@ const QuestionPaper = ({ lids, marks, counts, choices }) => {
         }
       }
     }
+    let num = i.charCodeAt() - 65;
+    let mark = options["marks"][num];
+    let count = options["counts"][num];
     if (b[i][0][0][0]["roman"] === null) {
-      console.log(subdivsel, optsel);
       final = (
         <table>
           <tbody>
@@ -265,9 +279,9 @@ const QuestionPaper = ({ lids, marks, counts, choices }) => {
                 className="text-center font-bold"
                 colSpan={subdivsel + optsel + 2}
               >
-                Part-{i}-(5x2=10 marks)
+                Part-{i} ({mark}x{count}={mark * count} marks)
                 <br />
-                (Answer all the questions)
+                {count > 1 ? "(Answer all the questions)" : ""}
               </td>
               <td className="text-center font-bold px-2">CO</td>
               <td className="text-center font-bold px-2">
@@ -295,9 +309,9 @@ const QuestionPaper = ({ lids, marks, counts, choices }) => {
                 className="text-center font-bold"
                 colSpan={subdivsel + optsel + 2}
               >
-                Part-{i}-(5x2=10 marks)
+                Part-{i} ({mark}x{count}={mark * count} marks)
                 <br />
-                (Answer all the questions)
+                {count > 1 ? "(Answer all the questions)" : ""}
               </td>
               <td className="text-center font-bold px-2">CO</td>
               <td className="text-center font-bold px-2">
@@ -339,7 +353,14 @@ const QuestionPaper = ({ lids, marks, counts, choices }) => {
             <td colSpan="2"></td>
           </tr>
           <tr>
-            <td className="text-center">Logo</td>
+            <td className="text-center">
+              <img
+                src="https://www.citchennai.edu.in/wp-content/themes/cit/images/logo.png"
+                alt="Logo"
+                width="150"
+                height="105"
+              />
+            </td>
             <td colSpan="3" className="text-center">
               CHENNAI INSTITUTE OF TECHNOLOGY
               <br />
@@ -352,19 +373,23 @@ const QuestionPaper = ({ lids, marks, counts, choices }) => {
             <td className="pl-2">Date/Time</td>
             <td className="pl-2">Date/Time</td>
             <td className="pl-2">Max Marks</td>
-            <td className="pl-2">50 Marks</td>
+            <td className="pl-2">{total} Marks</td>
           </tr>
           <tr>
             <td className="pl-2">Subject With Code</td>
-            <td className="pl-2">CS 8451 Design and Analysis of Algorithm</td>
+            <td className="pl-2">
+              {options["subjectCode"]} {options["subjectName"]}
+            </td>
             <td className="pl-2">Time</td>
-            <td className="pl-2">1.30 Hours</td>
+            <td className="pl-2">{time} Hours</td>
           </tr>
           <tr>
             <td className="pl-2">Branch</td>
             <td className="pl-2">CSE Set A</td>
             <td className="pl-2">Year/Semester</td>
-            <td className="pl-2">II/IV</td>
+            <td className="pl-2">
+              {romanize((semester + 1) / 2)}/{romanize(semester)}
+            </td>
           </tr>
         </tbody>
       </table>
