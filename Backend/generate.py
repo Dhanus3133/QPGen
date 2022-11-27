@@ -204,7 +204,7 @@ class Generate:
         }
         questionsData = {"questions": data, "options": options}
         j = json.dumps(questionsData)
-        # print(j)
+        print(j)
         # print(len(questions))
         return j
 

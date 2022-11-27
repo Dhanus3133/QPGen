@@ -177,7 +177,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.USER'
 
-CSRF_TRUSTED_ORIGINS = ['https://6340-49-204-116-61.in.ngrok.io']
+# CSRF_TRUSTED_ORIGINS = ['https://d396-2402-3a80-427a-36a-e5b6-4784-8f2f-49b9.in.ngrok.io']
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = (

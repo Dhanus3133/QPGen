@@ -1,9 +1,19 @@
 from django.contrib import admin
 from django.db import models
+from django.utils.safestring import mark_safe
 from .models import *
 
 from vditor.widgets import VditorWidget
 
+
+@admin.register(Image)
+class ImageModelAdmin(admin.ModelAdmin):
+    list_display = ("__str__", "uploaded_at", "get_thumbnail",)
+
+    def get_thumbnail(self, obj):
+        return mark_safe(f'<img width="50px" src="{obj.photo.url}"')
+
+    get_thumbnail.short_description = "Thumbnail"
 
 @admin.register(BloomsTaxonomyLevel)
 class BloomsTaxonomyLevelModelAdmin(admin.ModelAdmin):

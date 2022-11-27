@@ -7,6 +7,7 @@ from strawberry.extensions.tracing import ApolloTracingExtension
 from users.graphql.query import Query as UserQuery
 from users.graphql.mutation import Mutation as UserMutation
 from questions.graphql.query import Query as QuestionsQuery
+from questions.graphql.mutation import Mutation as QuestionsMutation
 
 
 Queries = merge_types(
@@ -21,6 +22,7 @@ Mutations = merge_types(
     "Mutations",
     (
         UserMutation,
+        QuestionsMutation,
     )
 )
 

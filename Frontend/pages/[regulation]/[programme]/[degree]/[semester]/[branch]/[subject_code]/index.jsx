@@ -1,6 +1,6 @@
 import { getLessonsQuery } from "@/src/graphql/queries/getLessons";
 import { useQuery } from "@apollo/client";
-import LessonCard from "components/LessonCard";
+import SuperCard from "components/SuperCard";
 import { useRouter } from "next/router";
 
 export default function Subject() {
@@ -24,9 +24,18 @@ export default function Subject() {
   if (!router.isReady || loading) return "Loading...";
   if (error) return <p>Error: {error.message}</p>;
 
+  let cleanData = [];
+  data?.getLessons.map((lesson) => {
+    cleanData.push({
+      id: lesson["id"],
+      href: lesson["unit"],
+      text: `${lesson["unit"]} | ${lesson["lesson"]["name"]}`,
+    });
+  });
+
   return (
     <>
-      <LessonCard data={data?.getLessons} currentPath={router.asPath} />
+      <SuperCard data={cleanData} currentPath={router.asPath} type="Lesson" />
     </>
   );
 }

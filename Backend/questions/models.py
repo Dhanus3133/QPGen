@@ -2,10 +2,17 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator, ValidationError
 from django.utils import timezone
 from django.utils.text import slugify
+from django_choices_field import TextChoicesField
 from vditor.fields import VditorTextField
 from core.models import TimeStampedModel
 from users.models import User
 
+class Image(models.Model):
+    photo = models.ImageField(upload_to='questions', null=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.photo.name
 
 class BloomsTaxonomyLevel(models.Model):
 
@@ -22,15 +29,12 @@ class PreviousYearsQP(models.Model):
 
     """ Previous Years QP Model """
 
-    MONTH_AM = 'A/M'
-    MONTH_ND = 'N/D'
+    class MonthEnum(models.TextChoices):
+        MONTH_AM = 'A/M', 'A/M'
+        MONTH_ND = 'N/D', 'N/D'
 
-    MONTH_CHOICES = (
-        (MONTH_AM, MONTH_AM),
-        (MONTH_ND, MONTH_ND)
-    )
-
-    month = models.CharField(max_length=3, choices=MONTH_CHOICES)
+    # month = models.CharField(max_length=3, choices=MONTH_CHOICES)
+    month = TextChoicesField(choices_enum=MonthEnum)
     year = models.IntegerField(validators=[
         MinValueValidator(1990), MaxValueValidator(timezone.now().year)
     ])
@@ -236,17 +240,11 @@ class Question(TimeStampedModel):
 
     """ Question Paper Model """
 
-    DIFFICULTY_EASY = 'E'
-    DIFFICULTY_MEDIUM = 'M'
-    DIFFICULTY_HARD = 'H'
+    class DifficultyEnum(models.TextChoices):
+        DIFFICULTY_EASY = 'E', 'Easy'
+        DIFFICULTY_MEDIUM = 'M', 'Medium'
+        DIFFICULTY_HARD = 'H','Hard'
 
-    DIFFICULTY_CHOICES = (
-        (DIFFICULTY_EASY, 'Easy'),
-        (DIFFICULTY_MEDIUM, 'Medium'),
-        (DIFFICULTY_HARD, 'Hard'),
-    )
-
-    # slug = models.SlugField(max_length=250, blank=True)
     lesson = models.ForeignKey(
         Lesson, on_delete=models.CASCADE, related_name='quesions'
     )
@@ -260,9 +258,7 @@ class Question(TimeStampedModel):
     btl = models.ForeignKey(
         BloomsTaxonomyLevel, on_delete=models.CASCADE, related_name='questions'
     )
-    difficulty = models.CharField(
-        max_length=2, choices=DIFFICULTY_CHOICES
-    )
+    difficulty = TextChoicesField(choices_enum=DifficultyEnum)
     created_by = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='questions', blank=True
     )

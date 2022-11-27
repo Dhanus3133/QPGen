@@ -1,6 +1,6 @@
 import { departmentsAccessToQuery } from "@/src/graphql/queries/deptAccess";
 import { useQuery } from "@apollo/client";
-import ProgrammeCard from 'components/ProgrammeCard'
+import SuperCard from "components/SuperCard";
 import { useRouter } from "next/router";
 
 export default function Regulation() {
@@ -15,14 +15,24 @@ export default function Regulation() {
   if (error) return <p>Error: {error.message}</p>;
   const regulation_data = data?.departmentsAccessTo;
 
-  const filteredData = regulation_data.filter(function (item, n) {
+  const filteredData = regulation_data.filter(function (item) {
     return item["course"]["regulation"]["year"] == regulation;
   });
-  console.log(filteredData);
+  // console.log(filteredData);
+
+  let cleanData = [];
+  filteredData.map((item) => {
+    let course = item["course"];
+    cleanData.push({
+      id: course["id"],
+      href: course["department"]["programme"]["name"],
+      text: `${course["department"]["programme"]["name"]}`,
+    });
+  });
 
   return (
     <>
-      <ProgrammeCard data={filteredData} currentPath={router.asPath}/>
+      <SuperCard data={cleanData} currentPath={router.asPath} type="Programme" />
     </>
   );
 }

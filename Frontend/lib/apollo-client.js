@@ -25,7 +25,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 export function getApolloClient(forceNew) {
   if (!CLIENT || forceNew) {
     const link = new createHttpLink({
-      uri: "http://qpgen.lol/graphql/",
+      uri: "/graphql/",
     });
 
     CLIENT = new ApolloClient({

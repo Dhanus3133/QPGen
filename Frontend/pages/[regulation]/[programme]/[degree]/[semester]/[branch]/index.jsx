@@ -1,6 +1,6 @@
 import { getSubjectsQuery } from "@/src/graphql/queries/getSubjects";
 import { useLazyQuery, useQuery } from "@apollo/client";
-import SubjectCard from "components/SubjectCard";
+import SuperCard from "components/SuperCard";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
@@ -23,19 +23,19 @@ export default function Branch() {
   if (!router.isReady || loading) return "Loading...";
   if (error) return <p>Error: {error.message}</p>;
 
-  console.log(data);
-
-  if (data?.getSubjects.length == 0)
-    return <h1 className="text-center">You have no permission to access!</h1>;
+  let cleanData = [];
+  data?.getSubjects.map((item) => {
+    let subject = item["subject"];
+    cleanData.push({
+      id: subject["id"],
+      href: subject["code"],
+      text: `${subject["subjectName"]} | ${subject["code"]}`,
+    });
+  });
 
   return (
     <>
-      <h1 className="text-center">Welcome to {branch}</h1>
-      <SubjectCard
-        data={data?.getSubjects}
-        currentPath={router.asPath}
-        branch={branch}
-      />
+      <SuperCard data={cleanData} currentPath={router.asPath} type="Subject" />
     </>
   );
 }

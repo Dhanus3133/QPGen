@@ -1,6 +1,6 @@
 import { departmentsAccessToQuery } from "@/src/graphql/queries/deptAccess";
 import { useQuery } from "@apollo/client";
-import SemesterCard from "components/SemesterCard";
+import SuperCard from "components/SuperCard";
 import { useRouter } from "next/router";
 
 export default function Degree() {
@@ -23,11 +23,19 @@ export default function Degree() {
     );
   });
 
-  console.log(filteredData);
+  let cleanData = [];
+  filteredData.map((item) => {
+    let course = item["course"];
+    cleanData.push({
+      id: course["id"],
+      href: course["semester"],
+      text: `${course["semester"]}`,
+    });
+  });
+
   return (
     <>
-      <SemesterCard data={filteredData} currentPath={router.asPath} />
+      <SuperCard data={cleanData} currentPath={router.asPath} type="Semester" />
     </>
   );
 }
-      // <BranchCard data={filteredData} currentPath={router.asPath} />

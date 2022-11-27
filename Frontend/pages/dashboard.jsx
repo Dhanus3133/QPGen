@@ -2,7 +2,8 @@ import { client } from "@/lib/apollo-client";
 import { departmentsAccessToQuery } from "@/src/graphql/queries/deptAccess";
 import { allUsersQuery } from "@/src/graphql/queries/users";
 import { useQuery } from "@apollo/client";
-import DashboardCard from "components/DashboardCard"; 
+import DashboardCard from "components/DashboardCard";
+import SuperCard from "components/SuperCard";
 
 export default function Dashboard() {
   const { data, loading, error } = useQuery(departmentsAccessToQuery, {
@@ -10,9 +11,20 @@ export default function Dashboard() {
   });
   if (loading) return "Loading...";
   if (error) return <p>Error: {error.message}</p>;
+
+  let cleanData = [];
+  data?.departmentsAccessTo.map((item) => {
+    const course = item["course"];
+    cleanData.push({
+      id: course["id"],
+      href: `${course["regulation"]["year"]}/${course["department"]["programme"]["name"]}/${course["department"]["degree"]["name"]}/${course["semester"]}/${course["department"]["branchCode"]}`,
+      text: `${course["regulation"]["year"]} | ${course["department"]["programme"]["name"]} | ${course["department"]["degree"]["name"]} | ${course["semester"]} | ${course["department"]["branchCode"]}`,
+    });
+  });
+
   return (
     <>
-      <DashboardCard data={data?.departmentsAccessTo} />
+      <SuperCard data={cleanData} currentPath="" type="Course" />
     </>
   );
 }

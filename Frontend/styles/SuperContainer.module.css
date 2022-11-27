@@ -1,0 +1,17 @@
+.containerSelf {
+  background-color: #202c33;
+  font-size: 24px;
+  font-family: "Inter";
+  font-weight: 500;
+  font-style: normal;
+  max-width: 500px;
+  word-wrap: break-word;
+}
+
+.buttonSelf{
+    word-wrap: break-word;
+}
+
+.selfWidth{
+    width: 400px;
+}
