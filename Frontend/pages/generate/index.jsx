@@ -88,6 +88,10 @@ export default function Generate() {
       </>
     );
   } else {
+    const navbar = document.getElementById("navbar");
+    // document.body.style.backgroundColor = "black";
+    navbar.style.display = "none";
+    console.log(navbar);
     return (
       <QuestionPaper
         lids={lessonsIDs}
