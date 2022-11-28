@@ -258,7 +258,15 @@ const QuestionPaperGen = (props) => {
               <td colSpan="2"></td>
             </tr>
             <tr>
-              <td className="text-center">Logo</td>
+              <td className="text-center">
+                <img
+                  className="py-0 pl-7 m-0"
+                  src="https://www.citchennai.edu.in/wp-content/themes/cit/images/logo.png"
+                  alt="Logo"
+                  width="200"
+                  height="105"
+                />
+              </td>
               <td colSpan="3" className="text-center">
                 CHENNAI INSTITUTE OF TECHNOLOGY
                 <br />
