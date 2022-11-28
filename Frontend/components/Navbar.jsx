@@ -46,60 +46,62 @@ export default function MenuAppBar() {
   //   />
   // </FormGroup>
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
-          <AiOutlineArrowLeft
-            onClick={() => router.back()}
-            className="logo mr-3"
-          />
-          <Typography
-            className={styles.logo}
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1 }}
-          >
-            QPGen
-          </Typography>
-          {auth && (
-            <div>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <Link href="/dashboard">
-                  <MenuItem onClick={handleClose}>Dashboard</MenuItem>
-                </Link>
-                <Link href="/login">
-                  <MenuItem onClick={handleClose}>Login</MenuItem>
-                </Link>
-              </Menu>
-            </div>
-          )}
-        </Toolbar>
-      </AppBar>
-    </Box>
+    <div id="navbar">
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static">
+          <Toolbar>
+            <AiOutlineArrowLeft
+              onClick={() => router.back()}
+              className="logo mr-3"
+            />
+            <Typography
+              className={styles.logo}
+              variant="h6"
+              component="div"
+              sx={{ flexGrow: 1 }}
+            >
+              QPGen
+            </Typography>
+            {auth && (
+              <div>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  <Link href="/dashboard">
+                    <MenuItem onClick={handleClose}>Dashboard</MenuItem>
+                  </Link>
+                  <Link href="/login">
+                    <MenuItem onClick={handleClose}>Login</MenuItem>
+                  </Link>
+                </Menu>
+              </div>
+            )}
+          </Toolbar>
+        </AppBar>
+      </Box>
+    </div>
   );
 }
 // import Link from "next/link";
