@@ -16,6 +16,7 @@ function Marks({
   setTime,
   valid,
   setValid,
+  setExamTitle,
 }) {
   const [custom, setCustom] = useState(false);
 
@@ -39,7 +40,7 @@ function Marks({
 
   const types = [
     {
-      label: "Assessment 1",
+      label: "Internal Assessment 1",
       total: 50,
       marks: [2, 12, 16],
       counts: [5, 2, 1],
@@ -49,7 +50,7 @@ function Marks({
       custom: false,
     },
     {
-      label: "Assessment 2",
+      label: "Internal Assessment 2",
       total: 50,
       marks: [2, 12, 16],
       counts: [5, 2, 1],
@@ -59,7 +60,7 @@ function Marks({
       custom: false,
     },
     {
-      label: "Model",
+      label: "Model Exam",
       total: 100,
       marks: [2, 16],
       counts: [10, 5],
@@ -87,6 +88,7 @@ function Marks({
         options={types}
         onChange={(event, type) => {
           if (type) {
+            setExamTitle(type["label"]);
             setMarks(type["marks"]);
             setCounts(type["counts"]);
             setChoices(type["choices"]);
@@ -95,6 +97,7 @@ function Marks({
             setTotal(type["total"]);
             setCustom(type["custom"]);
           } else {
+            setExamTitle(null);
             setMarks([]);
             setCounts([]);
             setChoices([]);

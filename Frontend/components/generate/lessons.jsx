@@ -68,9 +68,9 @@ export default function Lessons({
   return (
     <div className="m-2 mt-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Select the Lessons</h1>
+        <h1 className="text-2xl font-bold">Select the Units</h1>
         <div className="rounded-md border-2 border-emerald-500 bg-emerald-100 p-1 text-sm">
-          {lessonsIDs.length} Lessons are selected
+          {lessonsIDs.length} Units are selected
         </div>
       </div>
       <ul className="list-none">
@@ -85,7 +85,7 @@ export default function Lessons({
                 onChange={(e) => handleChange(e, lesson["unit"])}
               />
               <h2 className="p-2">
-                {lesson["unit"]} - {lesson["lesson"]["name"]}
+                Unit - {lesson["unit"]} - {lesson["lesson"]["name"]}
               </h2>
             </li>
           );

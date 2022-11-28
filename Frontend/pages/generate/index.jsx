@@ -21,6 +21,7 @@ export default function Generate() {
   const [counts, setCounts] = useState([]);
   const [choices, setChoices] = useState([]);
   const [time, setTime] = useState(null);
+  const [examTitle, setExamTitle] = useState(null);
   const [valid, setValid] = useState(false);
   const [subject, setSubject] = useState(null);
   const [units, setUnits] = useState([]);
@@ -31,7 +32,7 @@ export default function Generate() {
   //   setCourse(1);
   //   setSubject(1);
   // }, [course, subject]);
-  console.log("semester", semester);
+  // console.log("semester", semester);
   if (!generate) {
     return (
       <>
@@ -57,6 +58,7 @@ export default function Generate() {
               setTime={setTime}
               valid={valid}
               setValid={setValid}
+              setExamTitle={setExamTitle}
             />
             <Lessons
               course={course}
@@ -101,6 +103,7 @@ export default function Generate() {
         semester={semester}
         total={total}
         time={time}
+        exam={examTitle}
       />
     );
   }

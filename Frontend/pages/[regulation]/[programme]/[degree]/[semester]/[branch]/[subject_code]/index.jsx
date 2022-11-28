@@ -35,7 +35,7 @@ export default function Subject() {
 
   return (
     <>
-      <SuperCard data={cleanData} currentPath={router.asPath} type="Lesson" />
+      <SuperCard data={cleanData} currentPath={router.asPath} type="Unit" />
     </>
   );
 }

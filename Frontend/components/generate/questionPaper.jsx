@@ -11,6 +11,7 @@ const QuestionPaper = ({
   semester,
   total,
   time,
+  exam,
 }) => {
   const { data, loading, error } = useQuery(generateQuestionsQuery, {
     variables: { lids, marks, counts, choices },
@@ -75,6 +76,7 @@ const QuestionPaper = ({
         semester={semester}
         total={total}
         time={time}
+        exam={exam}
       />
     </>
   );

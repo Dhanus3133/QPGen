@@ -19,6 +19,7 @@ const QuestionPaperGen = (props) => {
   let semester = props.semester;
   let total = props.total;
   let time = props.time;
+  let exam = props.exam;
 
   //------------------------------------
 
@@ -272,7 +273,7 @@ const QuestionPaperGen = (props) => {
                 <br />
                 Sarathy Nagar, Pudupedu, Chennai 600 069.
                 <br />
-                Internal Assessment -1 April 2022
+                {exam}
               </td>
             </tr>
             <tr>
