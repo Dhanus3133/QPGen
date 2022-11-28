@@ -1,0 +1,23 @@
+.line{
+    height: 1px;
+}
+.container{
+    width: 80vw;
+    max-width: 80vw;
+    font-family: 'Inter';
+    font-size: 22px
+}
+.heading{
+    font-size: 42px;
+    color:#00A884;
+    font-family:'Inter';
+    font-weight: 600;
+}
+.paragraph{
+    color:#8E8E8E;
+    font-size:22px;
+    font-family:'Inter';
+}
+.bgcolor{
+    background-color: #1f1f1f;
+}

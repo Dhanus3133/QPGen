@@ -183,6 +183,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1',
     'http://qpgen.lol',
+    'localhost:3003'
 )
 
 
@@ -190,7 +191,8 @@ INTERNAL_IPS = [
     "127.0.0.1",
     'localhost',
     '172.18.*',
-    '172.18.0.5'
+    '172.18.0.5',
+    'localhost:3003'
 ]
 
 if DEBUG:

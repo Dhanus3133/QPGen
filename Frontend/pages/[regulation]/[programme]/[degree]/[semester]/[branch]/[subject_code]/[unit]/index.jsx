@@ -12,6 +12,7 @@ import Vditor from "vditor";
 import InitializeVditor from "components/InitializeVditor";
 // import { md2html } from "vditor/src/ts/markdown/previewRender";
 import RenderVditor from "components/renderVditor";
+import style from "styles/Question.module.css"
 
 export default function Lesson() {
   const router = useRouter();
@@ -71,36 +72,47 @@ export default function Lesson() {
 
   return (
     <>
-      <h1>Questions</h1>
-      {questions?.map((question, itr) => {
-        const q = question["node"];
-        vd ? vd.setValue(q["question"]) : "";
-        return (
-          <div key={question["cursor"]}>
-            <div
-              id={q["id"]}
-              dangerouslySetInnerHTML={{
-                __html: vd ? vd.getHTML() : "Loading...",
-              }}
-            ></div>
-            <Link
-              href={{
-                pathname: `${router.pathname}/[questionNumber]`,
-                query: {
-                  ...router.query,
-                  questionNumber: parseInt(atob(q["id"]).split(":")[1]),
-                },
-              }}
-            >
-              <h2>
-                <RenderVditor id={q["id"]} />| {q["mark"]["start"]} -{" "}
-                {q["mark"]["end"]}
-              </h2>
-            </Link>
-            <br />
-          </div>
-        );
-      })}
+      <div className={`${style.container} mx-auto`}>
+        <h1 className={`${style.heading} mt-5`}>Questions</h1>
+        <p className={`${style.paragraph} ml-1 mb-10`}>Questions are listed below for the selected unit</p>
+      </div>
+      <div id="questions">
+        {questions?.map((question, itr) => {
+          const q = question["node"];
+          vd ? vd.setValue(q["question"]) : "";
+          return (
+            <div>
+              <div key={question["cursor"]} className="flex flex-row py-2 w-3/4 mx-auto">
+                <div
+                  id={q["id"]}
+                  className="basis-10/12 pl-4"
+                  dangerouslySetInnerHTML={{
+                    __html: vd ? vd.getHTML() : "Loading...",
+                  }}
+                ></div>
+                <Link
+                  href={{
+                    pathname: `${router.pathname}/[questionNumber]`,
+                    query: {
+                      ...router.query,
+                      questionNumber: parseInt(atob(q["id"]).split(":")[1]),
+                    },
+                  }}
+                >
+                  <div className="basis-2/12 text-right pr-3">
+                    <RenderVditor id={q["id"]} />
+                    {q["mark"]["start"]} -{" "}
+                    {q["mark"]["end"]}
+                  </div>
+                </Link>
+                <br />
+              </div>
+              <div className={`${style.line} w-3/4 bg-slate-500 mx-auto`}></div>
+            </div>
+          );
+        })}
+      </div>
+
       <Stack alignItems="center">
         <Pagination
           count={Math.floor(totalCount / limit)}
