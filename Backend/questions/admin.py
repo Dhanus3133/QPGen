@@ -55,6 +55,11 @@ class LessonModelAdmin(admin.ModelAdmin):
     pass
 
 
+@admin.register(Topic)
+class TopicModelAdmin(admin.ModelAdmin):
+    pass
+
+
 @admin.register(Course)
 class CourseModelAdmin(admin.ModelAdmin):
     pass
