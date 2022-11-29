@@ -7,12 +7,14 @@ from vditor.fields import VditorTextField
 from core.models import TimeStampedModel
 from users.models import User
 
+
 class Image(models.Model):
     photo = models.ImageField(upload_to='questions', null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.photo.name
+
 
 class BloomsTaxonomyLevel(models.Model):
 
@@ -148,6 +150,22 @@ class Lesson(models.Model):
         return f'{self.name} | {self.subject}'
 
 
+class Topic(models.Model):
+
+    """ Topic Model """
+
+    name = models.CharField(max_length=200)
+    lesson = models.ForeignKey(
+        Lesson, on_delete=models.CASCADE, related_name='topics'
+    )
+
+    class Meta:
+        unique_together = ['name', 'lesson']
+
+    def __str__(self) -> str:
+        return f'{self.name} | {self.lesson}'
+
+
 class Course(models.Model):
 
     """ Course Model """
@@ -243,7 +261,7 @@ class Question(TimeStampedModel):
     class DifficultyEnum(models.TextChoices):
         DIFFICULTY_EASY = 'E', 'Easy'
         DIFFICULTY_MEDIUM = 'M', 'Medium'
-        DIFFICULTY_HARD = 'H','Hard'
+        DIFFICULTY_HARD = 'H', 'Hard'
 
     lesson = models.ForeignKey(
         Lesson, on_delete=models.CASCADE, related_name='quesions'
@@ -261,6 +279,9 @@ class Question(TimeStampedModel):
     difficulty = TextChoicesField(choices_enum=DifficultyEnum)
     created_by = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='questions', blank=True
+    )
+    topics = models.ManyToManyField(
+        Topic, related_name='questions', blank=True
     )
     previous_years = models.ManyToManyField(
         PreviousYearsQP, related_name='questions', blank=True
