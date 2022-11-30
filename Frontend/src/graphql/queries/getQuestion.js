@@ -8,16 +8,23 @@ export const getQuestionQuery = gql`
       answer
       difficulty
       mark {
+        id
         start
         end
       }
       btl {
+        id
+        name
+      }
+      topics {
+        id
         name
       }
       createdBy {
         email
       }
       previousYears {
+        id
         month
         year
       }

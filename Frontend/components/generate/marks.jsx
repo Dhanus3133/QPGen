@@ -138,7 +138,7 @@ function Marks({
                 <div key={idx} className="p-3 pl-0">
                   <TextField
                     id={`${idx}-mark`}
-                    key={`mark-${marks[idx]}`}
+                    key={`mark-${idx}`}
                     label="Mark"
                     type="number"
                     variant="outlined"
@@ -154,7 +154,7 @@ function Marks({
                   />
                   <TextField
                     id={`${idx}-count`}
-                    key={`count-${counts[idx]}`}
+                    key={`count-${idx}`}
                     label="Count"
                     type="number"
                     variant="outlined"
@@ -179,7 +179,6 @@ function Marks({
                     variant="outlined"
                     color="error"
                     onClick={() => {
-                      console.log(idx);
                       marks.splice(idx, 1);
                       counts.splice(idx, 1);
                       choices.splice(idx, 1);

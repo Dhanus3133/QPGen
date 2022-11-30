@@ -1,7 +1,7 @@
 from typing import List
 from strawberry_django.fields.types import JSON
 from strawberry_django_plus import gql
-from questions.models import BloomsTaxonomyLevel, Course, Degree, Department, FacultiesHandling, Lesson, MarkRange, PreviousYearsQP, Programme, Question, Regulation, Subject, Syllabus
+from questions.models import BloomsTaxonomyLevel, Course, Degree, Department, FacultiesHandling, Lesson, MarkRange, PreviousYearsQP, Programme, Question, Regulation, Subject, Syllabus, Topic
 
 from users.graphql.types import UserType
 
@@ -72,6 +72,12 @@ class LessonType(gql.Node):
     subject: SubjectType
 
 
+@gql.django.type(Topic)
+class TopicType(gql.Node):
+    id: gql.auto
+    name: gql.auto
+
+
 @gql.django.type(Course)
 class CourseType(gql.Node):
     id: gql.auto
@@ -116,6 +122,7 @@ class QuestionType(gql.Node):
     btl: BloomsTaxonomyLevelType
     difficulty: gql.auto
     created_by: UserType
+    topics: List[TopicType]
     previous_years: List[PreviousYearsQPType]
     created_at: gql.auto
     updated_at: gql.auto

@@ -1,33 +1,39 @@
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
+import { client } from "@/lib/apollo-client";
+import { departmentsAccessToQuery } from "@/src/graphql/queries/deptAccess";
+import { allUsersQuery } from "@/src/graphql/queries/users";
 import { useQuery } from "@apollo/client";
-import { allUsersQuery } from "../src/graphql/queries/users";
+import SuperCard from "components/SuperCard";
 
-import List from "../components/List";
-
-export default function IndexPage() {
-  const { data, loading, error } = useQuery(allUsersQuery, { ssr: true });
-  // On page load, the `networkStatus` should be NetworkStatus.ready ( `7` ) if the data is in the cache, and the page should not need to re-render.
-  const [cached, setCached] = useState(true);
-  useEffect(() => {
-    if (loading) setCached(false);
-  }, [loading]);
-
+export default function Dashboard() {
+  const { data, loading, error } = useQuery(departmentsAccessToQuery, {
+    ssr: false,
+  });
   if (loading) return "Loading...";
+  if (error) return <p>Error: {error.message}</p>;
 
-  console.log(data?.users);
-  console.log(data);
-  // console.log(data?.users.map);
+  let cleanData = [];
+  data?.departmentsAccessTo.map((item) => {
+    const course = item["course"];
+    cleanData.push({
+      id: course["id"],
+      href: `${course["regulation"]["year"]}/${course["department"]["programme"]["name"]}/${course["department"]["degree"]["name"]}/${course["semester"]}/${course["department"]["branchCode"]}`,
+      text: `${course["regulation"]["year"]} | ${course["department"]["programme"]["name"]} | ${course["department"]["degree"]["name"]} | ${course["semester"]} | ${course["department"]["branchCode"]}`,
+    });
+  });
+
   return (
-    <div>
-      <Link href="/dashboard">
-        <h1 className="text-3xl font-bold cursor-pointer">Dashboard</h1>
-      </Link>
-      <p>
-        This page's data was fetched on the{" "}
-        <strong>{cached ? "Next.js server" : "client"}</strong>.{" "}
-      </p>
-      <List data={data?.users} />
-    </div>
+    <>
+      <SuperCard data={cleanData} currentPath="" type="Course" />
+    </>
   );
 }
+
+// export async function getStaticProps() {
+//   const { data } = await client.query({
+//     query: departmentsAccessToQuery,
+//   });
+//
+//   return {
+//     props: { data: data },
+//   };
+// }

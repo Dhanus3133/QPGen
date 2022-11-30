@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import Vditor from "vditor";
-import { getCookie } from 'cookies-next';
+import { getCookie } from "cookies-next";
 
 export default function InitializeVditor({ id, value, vd, setVd }) {
   useEffect(() => {
@@ -10,8 +10,9 @@ export default function InitializeVditor({ id, value, vd, setVd }) {
           setVd(vditor);
         },
         lang: "en_US",
+        width: "90%",
         upload: {
-            url: "/upload/",
+          url: "/upload/",
         },
       });
     }

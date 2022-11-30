@@ -1,9 +1,14 @@
 import { getQuestionQuery } from "@/src/graphql/queries/getQuestion";
 import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomVditor from "components/vditor";
 import style from "styles/Question.module.css";
+import MarkRanges from "components/question/MarkRanges";
+import BloomsTaxonomies from "components/question/BloomsTaxonomies";
+import Difficulty from "components/question/Difficulty";
+import Topics from "components/question/Topics";
+import PreviousYears from "components/question/PreviousYears";
 
 export default function EditQuestion() {
   const router = useRouter();
@@ -11,18 +16,29 @@ export default function EditQuestion() {
 
   const [vQuestion, vSetQuestion] = useState(null);
   const [vAnswer, vSetAnswer] = useState(null);
+  const [markRange, setMarkRange] = useState(null);
+  const [btl, setBtl] = useState(null);
+  const [difficulty, setDifficulty] = useState(null);
+  const [topics, setTopics] = useState([]);
+  const [previousYears, setPreviousYears] = useState([]);
   const globalID = btoa(`QuestionType:${questionNumber}`);
 
   const { data, loading, error } = useQuery(getQuestionQuery, {
-    ssr: false,
     skip: !router.isReady,
     variables: {
       id: globalID,
     },
   });
 
-  if (!router.isReady || loading) return "Loading...";
+  useEffect(() => {
+    setMarkRange(data?.question["mark"]["id"]);
+    setBtl(data?.question["btl"]["id"]);
+    setDifficulty(data?.question.difficulty);
+    setTopics(data?.question.topics);
+    setPreviousYears(data?.question.previousYears);
+  }, [data]);
 
+  if (!router.isReady || loading) return "Loading...";
   if (error) return <p>Error: {error.message}</p>;
 
   const question = data?.question;
@@ -31,38 +47,40 @@ export default function EditQuestion() {
     <>
       <h1>Quesion ID - {questionNumber}</h1>
       <br />
-      <div>
-        <CustomVditor
-          id="question"
-          value={question["question"]}
-          vd={vQuestion}
-          setVd={vSetQuestion}
-        />
+      Question:
+      <CustomVditor
+        id="question"
+        value={question["question"]}
+        vd={vQuestion}
+        setVd={vSetQuestion}
+      />
+      Answer:
+      <CustomVditor
+        id="answer"
+        value={question["answer"]}
+        vd={vAnswer}
+        setVd={vSetAnswer}
+      />
+      <div className="">
+        Mark Range:{" "}
+        <MarkRanges markRange={markRange} setMarkRange={setMarkRange} />
       </div>
-      <br />
-      <div>
-        <CustomVditor
-          id="answer"
-          value={question["answer"]}
-          vd={vAnswer}
-          setVd={vSetAnswer}
-        />
+      <div className="">
+        Blooms Taxonomy Level: <BloomsTaxonomies btl={btl} setBtl={setBtl} />
       </div>
-      <br />
-      <div className={`mx-auto w-1/3 ${style.bgcolor} py-5 px-5 rounded-xl`}>
-        <p className="py-2">Difficultly Level - {question["difficulty"]}</p>
-        <div className={`${style.line} w-full bg-slate-500 mx-auto`}></div>
-        <p className="py-2">
-          Mark Range - {question["mark"]["start"]} to {question["mark"]["end"]}
-        </p>
-        <div className={`${style.line} w-full bg-slate-500 mx-auto`}></div>
-        <p className="py-2">{question["btl"]["name"]}</p>
-        <div className={`${style.line} w-full bg-slate-500 mx-auto`}></div>
-        <p className="py-2">Created By - {question["createdBy"]["email"]}</p>
-        <div className={`${style.line} w-full bg-slate-500 mx-auto`}></div>
-        <p className="py-2">Created At - {question["createdAt"]}</p>
-        <div className={`${style.line} w-full bg-slate-500 mx-auto`}></div>
-        <p className="py-2">Updated At - {question["updatedAt"]}</p>
+      <div className="">
+        Difficulty:{" "}
+        <Difficulty difficulty={difficulty} setDifficulty={setDifficulty} />
+      </div>
+      <div className="">
+        Topics: <Topics router={router} topics={topics} setTopics={setTopics} />
+      </div>
+      <div className="">
+        Previous Years:{" "}
+        <PreviousYears
+          previousYears={previousYears}
+          setPreviousYears={setPreviousYears}
+        />
       </div>
     </>
   );

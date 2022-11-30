@@ -288,24 +288,11 @@ class Question(TimeStampedModel):
     )
     # COE -> only one -> Expert for the subject model
 
-    class Meta:
-        pass
-        # TODO: unique to together for slug and subject code
-
     def save(self, *args, **kwargs):
         self.start_mark = self.mark.start
         self.end_mark = self.mark.end
         self.question = self.question.strip()
         super().save(*args, **kwargs)
-        # super().save(*args, **kwargs, saved_slug=False)
-        # if not kwargs['saved_slug']:
-        #     print("Not found")
-        #     self.slug = slugify(self.id, self.question)
-        # else:
-        #     print('Now found')
-        # super().save(*args, **kwargs, saved_slug=True)
-        #
-        # self.save(update_fields=['slug'])
 
     def __str__(self):
         return f'{self.question}'

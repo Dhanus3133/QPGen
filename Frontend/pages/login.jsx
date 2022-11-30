@@ -18,7 +18,7 @@ export default function SignIn() {
     e.preventDefault();
     Login({ variables: { email: email, password: password } });
     client.refetchQueries({ include: "active" });
-    Router.push("/dashboard");
+    Router.push("/");
   }
 
   function logOut() {
