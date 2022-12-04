@@ -158,6 +158,8 @@ class Topic(models.Model):
     lesson = models.ForeignKey(
         Lesson, on_delete=models.CASCADE, related_name='topics'
     )
+    active = models.BooleanField(default=True)
+    priority = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ['name', 'lesson']
