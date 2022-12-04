@@ -3,14 +3,16 @@ from questions.models import Lesson, Topic
 from strawberry.types import Info
 from strawberry_django_plus import gql
 from strawberry_django_jwt.decorators import login_required
-from questions.graphql.inputs import QuestionInput
+from questions.graphql.inputs import QuestionInput, QuestionInputPartial
 from questions.graphql.types import QuestionType, TopicType
 
 
 @gql.type
 class Mutation:
     create_question: QuestionType = gql.django.create_mutation(QuestionInput)
-    # create_question: QuestionType = gql.django.create_mutation(QuestionInput)
+    update_question: QuestionType = gql.django.update_mutation(
+        QuestionInputPartial
+    )
     # create_question: QuestionType = gql.django.create_mutation(QuestionInput)
 
     @login_required

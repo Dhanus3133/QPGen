@@ -108,7 +108,7 @@ class Query:
             lesson__syllabuses__course__department__branch_code__iexact=department,
             lesson__syllabuses__lesson__subject__code=subject_code,
             lesson__syllabuses__unit=unit
-        ).order_by('-created_at')
+        ).order_by('-updated_at', '-created_at')
 
     @gql.django.field
     @login_required
@@ -127,10 +127,10 @@ class Query:
     async def get_lessons_by_id(self, course_id: int, subject_id: int) -> List[SyllabusType]:
         return await sync_to_async(list)(Syllabus.objects.filter(course=course_id, lesson__subject=subject_id).order_by("unit"))
 
-    @gql.django.field
-    @login_required
-    async def get_question(self, id: int) -> QuestionType:
-        return await sync_to_async(Question.objects.get)(pk=id)
+    # @gql.django.field
+    # @login_required
+    # async def get_question(self, id: int) -> QuestionType:
+    #     return await sync_to_async(Question.objects.get)(pk=id)
 
     @gql.django.field
     @login_required

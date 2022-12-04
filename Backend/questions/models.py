@@ -278,7 +278,7 @@ class Question(TimeStampedModel):
     )
     difficulty = TextChoicesField(choices_enum=DifficultyEnum)
     created_by = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='questions', blank=True
+        User, on_delete=models.CASCADE, related_name='questions'
     )
     topics = models.ManyToManyField(
         Topic, related_name='questions', blank=True

@@ -8,6 +8,7 @@ import Stack from "@mui/material/Stack";
 import Vditor from "vditor";
 import RenderVditor from "components/renderVditor";
 import style from "styles/Question.module.css";
+import { Button } from "@mui/material";
 
 export default function Lesson() {
   const router = useRouter();
@@ -63,17 +64,27 @@ export default function Lesson() {
         <p className={`${style.paragraph} ml-1 mb-10`}>
           Questions are listed below for the selected unit
         </p>
+        <p className={`${style.paragraph} ml-1 mb-10`}>
+          <Link
+            href={{
+              pathname: `${router.pathname}/[questionNumber]`,
+              query: {
+                ...router.query,
+                questionNumber: "add",
+              },
+            }}
+          >
+            <Button variant="text">Add new question</Button>
+          </Link>
+        </p>
       </div>
       <div id="questions">
         {questions?.map((question, itr) => {
           const q = question["node"];
           vd ? vd.setValue(q["question"]) : "";
           return (
-            <div>
-              <div
-                key={question["cursor"]}
-                className="flex flex-row py-2 w-3/4 mx-auto"
-              >
+            <div key={question["cursor"]}>
+              <div className="flex flex-row py-2 w-3/4 mx-auto">
                 <div
                   id={q["id"]}
                   className="basis-10/12 pl-4"
@@ -81,6 +92,10 @@ export default function Lesson() {
                     __html: vd ? vd.getHTML() : "Loading...",
                   }}
                 ></div>
+                <div className="basis-2/12 text-right pr-3">
+                  <RenderVditor id={q["id"]} />
+                  {q["mark"]["start"]} - {q["mark"]["end"]}
+                </div>
                 <Link
                   href={{
                     pathname: `${router.pathname}/[questionNumber]`,
@@ -91,8 +106,7 @@ export default function Lesson() {
                   }}
                 >
                   <div className="basis-2/12 text-right pr-3">
-                    <RenderVditor id={q["id"]} />
-                    {q["mark"]["start"]} - {q["mark"]["end"]}
+                    <Button variant="text">View</Button>
                   </div>
                 </Link>
                 <br />

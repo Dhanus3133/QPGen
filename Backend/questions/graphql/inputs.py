@@ -21,28 +21,24 @@ class LessonInput:
 
 @gql.django.input(Question)
 class QuestionInput:
-    lesson: gql.NodeInput
+    lesson: gql.auto
     question: gql.auto
     answer: gql.auto
     mark: gql.NodeInput
-    start_mark: gql.auto
-    end_mark: gql.auto
     btl: gql.NodeInput
     difficulty: gql.auto
-    created_by: gql.NodeInput
-    previous_years: Optional[List[gql.NodeInput]]
-    created_at: gql.auto
+    created_by: Optional[gql.NodeInput]
+    topics: gql.auto
+    previous_years: gql.auto
 
 
-# @gql.django.input(Question)
-# class QuestionInput:
-#     question: gql.auto
-#     answer: gql.auto
-#     mark: gql.NodeInput
-#     start_mark: gql.auto
-#     end_mark: gql.auto
-#     btl: gql.NodeInput
-#     difficulty: gql.auto
-#     updated_by: UserType
-#     previous_years: Optional[List[gql.NodeInput]]
-#     updated_at: gql.auto
+@gql.django.partial(Question)
+class QuestionInputPartial(gql.NodeInput, QuestionInput):
+    pass
+    # question: gql.auto
+    # answer: gql.auto
+    # mark: gql.NodeInput
+    # btl: gql.NodeInput
+    # difficulty: gql.auto
+    # topics: Optional[List[gql.NodeInput]]
+    # previous_years: Optional[List[gql.NodeInput]]

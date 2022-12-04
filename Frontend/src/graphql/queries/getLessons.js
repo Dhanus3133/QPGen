@@ -20,6 +20,7 @@ export const getLessonsQuery = gql`
       id
       unit
       lesson {
+        id
         name
       }
     }
