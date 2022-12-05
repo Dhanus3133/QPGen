@@ -23,7 +23,7 @@ services:
     ports:
       - 8001:8002
     env_file:
-      - ./.env.dev
+      - ./.env
     volumes:
       - ./Backend/:/app
       - ./Backend/static:/app/static
@@ -38,10 +38,11 @@ services:
     ports:
       - 3001:3000
     env_file:
-      - ./.env.dev
+      - ./.env
     tty: true
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
     volumes:
       - ./Frontend/:/app
       - /app/node_modules
@@ -53,7 +54,7 @@ services:
     container_name: qpgen-db
     ports:
       - 5433:5432
-    env_file: ./.env.dev
+    env_file: ./.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
