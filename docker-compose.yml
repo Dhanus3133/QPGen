@@ -15,7 +15,6 @@ services:
       - nextjs
       - db
 
-
   django:
     build: ./Backend
     container_name: qpgen-django
@@ -42,6 +41,7 @@ services:
     tty: true
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
     volumes:
       - ./Frontend/:/app
       - /app/node_modules
@@ -61,7 +61,6 @@ services:
       POSTGRES_DB: qpgen
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
-
 
 volumes:
   postgres_data:

@@ -15,6 +15,7 @@ import { getLessonsQuery } from "@/src/graphql/queries/getLessons";
 import { meQuery } from "@/src/graphql/queries/me";
 import { updateQuestionMutation } from "@/src/graphql/mutations/updateQuestion";
 import { getQuestionsQuery } from "@/src/graphql/queries/getQuestions";
+import "styles/Question.module.css";
 
 export default function EditQuestion() {
   const router = useRouter();
@@ -154,44 +155,61 @@ export default function EditQuestion() {
 
   return (
     <>
-      <h1>Quesion ID - {questionNumber}</h1>
+      <h1 className="text-4xl mt-4 ml-20 mr-20 font-semibold">Question ID - {questionNumber}</h1>
       <br />
-      Question:
-      <CustomVditor
-        id="question"
-        value={question ? question["question"] : ""}
-        vd={vQuestion}
-        setVd={vSetQuestion}
-      />
-      Answer:
-      <CustomVditor
-        id="answer"
-        value={question ? question["answer"] : ""}
-        vd={vAnswer}
-        setVd={vSetAnswer}
-      />
-      <div className="">
-        Mark Range:{" "}
-        <MarkRanges markRange={markRange} setMarkRange={setMarkRange} />
-      </div>
-      <div className="">
-        Blooms Taxonomy Level: <BloomsTaxonomies btl={btl} setBtl={setBtl} />
-      </div>
-      <div className="">
-        Difficulty:{" "}
-        <Difficulty difficulty={difficulty} setDifficulty={setDifficulty} />
-      </div>
-      <div className="">
-        Topics: <Topics router={router} topics={topics} setTopics={setTopics} />
-      </div>
-      <div className="">
-        Previous Years:{" "}
-        <PreviousYears
-          previousYears={previousYears}
-          setPreviousYears={setPreviousYears}
+      <p className="text-2xl ml-20 mr-20">Question:</p>
+      <div className="mt-2 ml-20 mr-20">
+        <CustomVditor
+          id="question"
+          value={question ? question["question"] : ""}
+          vd={vQuestion}
+          setVd={vSetQuestion}
         />
       </div>
+      <p className="text-2xl ml-20 mr-20 mt-2">Answer:</p>
+      <div className="mt-2 ml-20 mr-20"> 
+        <CustomVditor
+          id="answer"
+          value={question ? question["answer"] : ""}
+          vd={vAnswer}
+          setVd={vSetAnswer}
+        />
+      </div>
+      <div className="mt-2 flex justify-start items-center">
+        <p className="text-2xl ml-20 mr-2 mt-2">Mark Range:{" "}</p>
+        <div className="ml-2 mr-20 mt-0.5">
+          <MarkRanges markRange={markRange} setMarkRange={setMarkRange} />
+        </div>
+      </div>
+      <div className="mt-2 flex justify-start items-center">
+        <p className="text-2xl ml-20 mr-2 mt-2">Blooms Taxonomy Level:</p> 
+        <div className="ml-2 mr-20 mt-0.5">
+          <BloomsTaxonomies btl={btl} setBtl={setBtl} />
+        </div>
+      </div>
+      <div className="mt-2 flex justify-start items-center">
+        <p className="text-2xl ml-20 mr-2 mt-2">Difficulty:{" "}</p>
+        <div className="ml-2 mr-20 mt-0.5">
+          <Difficulty difficulty={difficulty} setDifficulty={setDifficulty} />
+        </div>
+      </div>
+      <div className="">
+        <p className="text-2xl ml-20 mr-20 mt-2">Topics:</p>
+        <div className="ml-20 mr-20 mt-0.5">
+          <Topics router={router} topics={topics} setTopics={setTopics} />
+        </div>
+      </div>
+      <div className="">
+        <p className="text-2xl ml-20 mr-20 mt-2">Previous Years:{" "}</p>
+        <div className="ml-20 mr-20 mt-0.5">
+          <PreviousYears
+            previousYears={previousYears}
+            setPreviousYears={setPreviousYears}
+          />
+        </div>
+      </div>
       {question ? (
+        <div className="ml-20 mr-20 mt-3 mb-3">
         <Button
           variant="contained"
           onClick={() => {
@@ -217,9 +235,12 @@ export default function EditQuestion() {
             });
           }}
         >
+
           Update Question
         </Button>
+      </div>
       ) : (
+        <div className="ml-20 mr-20 mt-3 mb-3">
         <Button
           variant="contained"
           color="secondary"
@@ -249,6 +270,7 @@ export default function EditQuestion() {
         >
           Add Question
         </Button>
+      </div>
       )}
     </>
   );

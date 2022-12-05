@@ -10,7 +10,7 @@ export default function InitializeVditor({ id, value, vd, setVd }) {
           setVd(vditor);
         },
         lang: "en_US",
-        width: "90%",
+        width: "100%",
         upload: {
           url: "/upload/",
         },

@@ -5,11 +5,11 @@ import Preview from "vditor";
 import RenderVditor from "./renderVditor";
 import InitializeVditor from "./InitializeVditor";
 
-export default function CustomVditor({ id, value, vd, setVd }) {
+export default function CustomVditor({ id, value, vd, setVd, className }) {
   return (
     <>
       <InitializeVditor id={id} value={value} vd={vd} setVd={setVd} />
-      <div id={id} className="vditor" />
+      <div id={id} className={`vditor + ${className}`} />
     </>
   );
   // if (vd) {
