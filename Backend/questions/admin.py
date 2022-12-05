@@ -15,6 +15,7 @@ class ImageModelAdmin(admin.ModelAdmin):
 
     get_thumbnail.short_description = "Thumbnail"
 
+
 @admin.register(BloomsTaxonomyLevel)
 class BloomsTaxonomyLevelModelAdmin(admin.ModelAdmin):
     pass
@@ -57,7 +58,9 @@ class LessonModelAdmin(admin.ModelAdmin):
 
 @admin.register(Topic)
 class TopicModelAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('name', 'lesson', 'active', 'priority',)
+    list_filter = ('lesson', 'active', 'priority',)
+    search_fields = ('name',)
 
 
 @admin.register(Course)
