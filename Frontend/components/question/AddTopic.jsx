@@ -1,11 +1,29 @@
 import { createTopicMutation } from "@/src/graphql/mutations/createTopic";
+import { getTopicsQuery } from "@/src/graphql/queries/getTopics";
 import { useMutation } from "@apollo/client";
 import { Button, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 
 export default function AddTopic({ router, allTopics, setAllTopics }) {
-  const [createTopic, { data, loading, error }] =
-    useMutation(createTopicMutation);
+  const [createTopic, { data, loading, error }] = useMutation(
+    createTopicMutation,
+    {
+      refetchQueries: [
+        {
+          query: getTopicsQuery,
+          variables: {
+            regulation: parseInt(router.query.regulation),
+            programme: router.query.programme,
+            degree: router.query.degree,
+            semester: parseInt(router.query.semester),
+            department: router.query.branch,
+            subjectCode: router.query.subject_code,
+            unit: parseInt(router.query.unit),
+          },
+        },
+      ],
+    }
+  );
 
   const [topic, setTopic] = useState("");
   const [addTopic, setAddTopic] = useState(false);
