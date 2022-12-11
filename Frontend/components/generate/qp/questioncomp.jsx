@@ -45,6 +45,7 @@ const QuestionPaperGen = (props) => {
       <tr>
         <td className="text-center">{courseOutcomes[i].cono}</td>
         <td className="pl-2">{courseOutcomes[i].text}</td>
+        <td className="pl-2">{courseOutcomes[i].rbt}</td>
       </tr>
     );
     cout.push(a);
@@ -260,11 +261,9 @@ const QuestionPaperGen = (props) => {
             <tr>
               <td className="text-center">
                 <img
-                  className="py-0 pl-7 m-0"
+                  className="py-0 pl-7 my-2"
                   src="https://www.citchennai.edu.in/wp-content/themes/cit/images/logo.png"
                   alt="Logo"
-                  width="200"
-                  height="105"
                 />
               </td>
               <td colSpan="3" className="text-center">
@@ -301,6 +300,7 @@ const QuestionPaperGen = (props) => {
         </table>
         <br />
         {/*TABLE FOR COURSE OBJECTIVES*/}
+        <h1 className="mb-2"><span className="font-bold">Course Objectives:</span> The student should be able to:</h1>
         <table className="w-full">
           <thead>
             <tr>
@@ -312,17 +312,26 @@ const QuestionPaperGen = (props) => {
         </table>
         <br />
         {/*TABLE FOR COURSE OUTCOMES*/}
+        <h1 className="mb-2"><span className="font-bold">Course Outcomes:</span> The student should be able to:</h1>
         <table className="w-full">
           <thead>
             <tr>
               <th>SlNO.</th>
               <th>Course Outcomes</th>
+              <th>RBT level</th>
             </tr>
           </thead>
           <tbody>{cout}</tbody>
         </table>
         <br />
         <div id="generated-questions">{questions}</div>
+        <h1 className="text-center font-bold">All the best</h1>
+        <div className="flex justify-around mt-3">
+          <p>Prepared by</p>
+          <p>Verified by</p>
+          <p>IQAC</p>
+          <p>Approved by</p>
+        </div>
       </div>
       <RenderVditor id="generated-questions" />
     </>

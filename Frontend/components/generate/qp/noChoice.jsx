@@ -2,6 +2,12 @@ function NoChoice({ part, count, mark, subdivsel, optsel, store }) {
   return (
     <table className="w-full">
       <tbody>
+        {part == 'A' && <tr>
+          <td className="text-center" colSpan={10}>
+            REVISED BLOOMS TAXONOMY(RBT)<br />
+            K1-Remembering, K2-Understanding, K3-Applying, K4-Analyzing, K5-Evaluating, K6-Creating
+          </td>
+        </tr>}
         <tr>
           <td
             className="text-center font-bold"
