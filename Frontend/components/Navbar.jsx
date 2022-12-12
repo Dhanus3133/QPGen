@@ -15,11 +15,15 @@ import { AiOutlineArrowLeft } from "react-icons/ai";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import styles from "styles/Navbar.module.css";
+import Logo from "./Logo";
+import LogoDark from "./LogoDark";
+import { useEffect } from "react";
 
 export default function MenuAppBar() {
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const router = useRouter();
+  const [isDark, setIsDark] = React.useState(false);
 
   const handleChange = (event) => {
     setAuth(event.target.checked);
@@ -32,6 +36,10 @@ export default function MenuAppBar() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    setIsDark(globalThis?.window?.matchMedia('(prefers-color-scheme: dark)').matches)
+  }, [])
 
   // <FormGroup>
   //   <FormControlLabel
@@ -47,21 +55,23 @@ export default function MenuAppBar() {
   // </FormGroup>
   return (
     <div id="navbar">
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
         <AppBar position="static">
-          <Toolbar>
+          <Toolbar sx={{backgroundColor: "#333333"}}>
             <AiOutlineArrowLeft
               onClick={() => router.back()}
-              className="logo mr-3"
+              className="logo mr-6"
+              size="1.8em"
             />
-            <Typography
+            {isDark ? <LogoDark /> : <LogoDark />}
+            {/* <Typography
               className={styles.logo}
               variant="h6"
               component="div"
-              sx={{ flexGrow: 1 }}
+              sx={{ flexGrow: 1, color: "#3f51b5"}}
             >
               QPGen
-            </Typography>
+            </Typography> */}
             {auth && (
               <div>
                 <IconButton

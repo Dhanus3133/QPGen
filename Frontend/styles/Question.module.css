@@ -4,20 +4,17 @@
 .container{
     width: 80vw;
     max-width: 80vw;
-    font-family: 'Inter';
+    font-family: 'Inter', sans-serif;
     font-size: 22px
 }
 .heading{
-    font-size: 42px;
-    color:#00A884;
-    font-family:'Inter';
-    font-weight: 600;
+    color:#ffffff;
+    font-family:'Inter', sans-serif;
 }
 .paragraph{
-    color:#8E8E8E;
-    font-size:22px;
-    font-family:'Inter';
+    color:#ffffff;
+    font-family:'Poppins', sans-serif;
+
 }
-.bgcolor{
-    /* background-color: #1f1f1f; */
-}
+
+
