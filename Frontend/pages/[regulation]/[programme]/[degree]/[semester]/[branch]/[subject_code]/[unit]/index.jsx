@@ -59,9 +59,9 @@ export default function Lesson() {
 
   return (
     <>
-      <div className={`${style.container} mx-auto`}>
-        <h1 className={`${style.heading} mt-5`}>Questions</h1>
-        <p className={`${style.paragraph} ml-1 mb-10`}>
+      <div className={`${style.container} mx-auto mt-6`}>
+        <h1 className={`${style.heading} mt-5 text-7xl`}>Questions</h1>
+        <p className={`${style.paragraph} ml-1 mb-10 mt-2 text-xl`}>
           Questions are listed below for the selected unit
         </p>
         <p className={`${style.paragraph} ml-1 mb-10`}>
@@ -78,7 +78,7 @@ export default function Lesson() {
           </Link>
         </p>
       </div>
-      <div id="questions">
+      <div id="questions" className="mb-5">
         {questions?.map((question, itr) => {
           const q = question["node"];
           vd ? vd.setValue(q["question"]) : "";
@@ -87,12 +87,12 @@ export default function Lesson() {
               <div className="flex flex-row py-2 w-3/4 mx-auto">
                 <div
                   id={q["id"]}
-                  className="basis-10/12 pl-4"
+                  className={`basis-10/12 pl-4 ${style.paragraph}`}
                   dangerouslySetInnerHTML={{
                     __html: vd ? vd.getHTML() : "Loading...",
                   }}
                 ></div>
-                <div className="basis-2/12 text-right pr-3">
+                <div className={`basis-2/12 text-right pr-3`}>
                   <RenderVditor id={q["id"]} />
                   {q["mark"]["start"]} - {q["mark"]["end"]}
                 </div>
@@ -131,6 +131,9 @@ export default function Lesson() {
           }}
         />
       </Stack>
+      <div className="h-20">
+
+      </div>
     </>
   );
 }

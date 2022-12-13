@@ -1,12 +1,12 @@
 .headingSelf {
-  font-size: 42px;
-  color: #00a884;
-  font-family: "Inter";
+  font-size: 4rem;
+  color: #ffffff;
+  font-family: "Inter", sans-serif;
   font-weight: 600;
 }
 
 .paragraphSelf {
   color: #8e8e8e;
   font-size: 22px;
-  font-family: "Inter";
+  font-family: "Poppins", sans-serif;
 }

@@ -12,7 +12,7 @@ const SuperContainer = ({ data, currentPath }) => {
           <div key={item["id"]} className="flex items-center w-full font-bold">
             <Link href={`${currentPath}/${item["href"]}`}>
               <button
-                className={`pl-3 text-center ${styles.buttonSelf} basis-5/6 ${styles.selfWidth} my-3`}
+                className={`pl-3 text-center ${styles.buttonSelf} basis-5/6 ${styles.selfWidth} my-3 font-semibold tracking-wider`}
               >
                 {item["text"]}
               </button>

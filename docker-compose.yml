@@ -15,7 +15,6 @@ services:
       - nextjs
       - db
 
-
   django:
     build: ./Backend
     container_name: qpgen-django
@@ -62,7 +61,6 @@ services:
       POSTGRES_DB: qpgen
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
-
 
 volumes:
   postgres_data:

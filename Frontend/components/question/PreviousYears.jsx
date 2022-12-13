@@ -28,7 +28,7 @@ export default function PreviousYears({ previousYears, setPreviousYears }) {
 
   return (
     allPreviousYears && (
-      <Stack spacing={3} sx={{ width: 500 }}>
+      <Stack spacing={3} sx={{ width: "28rem" }}>
         <Autocomplete
           multiple
           id="previousyears"

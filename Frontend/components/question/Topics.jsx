@@ -37,7 +37,7 @@ export default function Topics({ router, topics, setTopics }) {
   return (
     allTopics && (
       <>
-        <Stack spacing={3} sx={{ width: 500 }}>
+        <Stack spacing={3} sx={{ width: "28rem" }}>
           <Autocomplete
             multiple
             id="topics"
