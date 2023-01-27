@@ -4,8 +4,8 @@ const LogoDark = () => {
   return (
     <div className="my-4">
       <svg
-        width="185"
-        height="100"
+        width="120"
+        height="45"
         viewBox="0 0 500 270"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

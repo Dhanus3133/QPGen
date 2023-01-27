@@ -1,4 +1,5 @@
 .containerSelf {
+  color: #fff;
   background-color: #3f51b5;
   font-size: 1.2rem;
   font-family: "Inter", sans-serif;
@@ -7,10 +8,10 @@
   word-wrap: break-word;
 }
 
-.buttonSelf{
-    word-wrap: break-word;
+.buttonSelf {
+  word-wrap: break-word;
 }
 
-.selfWidth{
-    width: 500px;
+.selfWidth {
+  width: 500px;
 }

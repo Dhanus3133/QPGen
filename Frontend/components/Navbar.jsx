@@ -38,40 +38,28 @@ export default function MenuAppBar() {
   };
 
   useEffect(() => {
-    setIsDark(globalThis?.window?.matchMedia('(prefers-color-scheme: dark)').matches)
-  }, [])
+    setIsDark(
+      globalThis?.window?.matchMedia("(prefers-color-scheme: dark)").matches
+    );
+  }, []);
 
-  // <FormGroup>
-  //   <FormControlLabel
-  //     control={
-  //       <Switch
-  //         checked={auth}
-  //         onChange={handleChange}
-  //         aria-label="login switch"
-  //       />
-  //     }
-  //     label={auth ? "Logout" : "Login"}
-  //   />
-  // </FormGroup>
   return (
     <div id="navbar">
-      <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
+      <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
-          <Toolbar sx={{backgroundColor: "#333333"}}>
+          <Toolbar sx={{ backgroundColor: "#333333" }}>
             <AiOutlineArrowLeft
               onClick={() => router.back()}
-              className="logo mr-6"
-              size="1.8em"
+              className="logo mr-3"
             />
-            {isDark ? <LogoDark /> : <LogoDark />}
-            {/* <Typography
+            <Typography
               className={styles.logo}
               variant="h6"
               component="div"
-              sx={{ flexGrow: 1, color: "#3f51b5"}}
+              sx={{ flexGrow: 1 }}
             >
-              QPGen
-            </Typography> */}
+              <LogoDark />
+            </Typography>
             {auth && (
               <div>
                 <IconButton
@@ -114,26 +102,3 @@ export default function MenuAppBar() {
     </div>
   );
 }
-// import Link from "next/link";
-//
-// export default function Navbar() {
-//   let navbar = [
-//     ["Dashboard", "/dashboard"],
-//     ["Login", "/login"],
-//   ].map(([title, url]) => (
-//     <Link
-//       href={url}
-//       className="rounded-lg px-3 py-2 text-slate-100 font-medium hover:bg-slate-100 hover:text-slate-900"
-//       key={title}
-//     >
-//       {title}
-//     </Link>
-//   ));
-//   return (
-//     <div>
-//       <nav className="flex sm:justify-center h-20 space-x-4 items-center bg-slate-700">
-//         {navbar}
-//       </nav>
-//     </div>
-//   );
-// }

@@ -1,20 +1,15 @@
-.line{
-    height: 1px;
+.line {
+  height: 1px;
 }
-.container{
-    width: 80vw;
-    max-width: 80vw;
-    font-family: 'Inter', sans-serif;
-    font-size: 22px
+.container {
+  width: 80vw;
+  max-width: 80vw;
+  font-family: "Inter", sans-serif;
+  font-size: 22px;
 }
-.heading{
-    color:#ffffff;
-    font-family:'Inter', sans-serif;
+.heading {
+  font-family: "Inter", sans-serif;
 }
-.paragraph{
-    color:#ffffff;
-    font-family:'Poppins', sans-serif;
-
+.paragraph {
+  font-family: "Poppins", sans-serif;
 }
-
-
