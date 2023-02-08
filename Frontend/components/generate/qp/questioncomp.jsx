@@ -324,6 +324,12 @@ const QuestionPaperGen = (props) => {
         </table>
         <br />
         <div id="generated-questions">{questions}</div>
+        <div className="flex justify-around pt-5">
+          <div>Prepared by</div>
+          <div>Verfied by</div>
+          <div>IQAC</div>
+          <div>Approved by</div>
+        </div>
       </div>
       <RenderVditor id="generated-questions" />
     </>
