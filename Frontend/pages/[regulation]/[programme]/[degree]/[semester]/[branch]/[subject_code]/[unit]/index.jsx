@@ -131,9 +131,7 @@ export default function Lesson() {
           }}
         />
       </Stack>
-      <div className="h-20">
-
-      </div>
+      <div className="h-20"></div>
     </>
   );
 }

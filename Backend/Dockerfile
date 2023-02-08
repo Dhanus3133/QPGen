@@ -15,7 +15,7 @@ RUN apk add --update postgresql-client
 # install temp dependencies for build of pyscopg2 etc
 # RUN apk add --update --no-cache --virtual .tmp-build-deps \
   # postgresql-dev
-RUN pip install -r requirements.txt #\
+RUN pip install --default-timeout=100 -r requirements.txt #\
   # && apk del --no-cache .tmp-build-deps
 
 # copy entrypoint.sh

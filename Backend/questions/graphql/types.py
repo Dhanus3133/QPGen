@@ -1,7 +1,22 @@
 from typing import List
 from strawberry_django.fields.types import JSON
 from strawberry_django_plus import gql
-from questions.models import BloomsTaxonomyLevel, Course, Degree, Department, FacultiesHandling, Lesson, MarkRange, PreviousYearsQP, Programme, Question, Regulation, Subject, Syllabus, Topic
+from questions.models import (
+    BloomsTaxonomyLevel,
+    Course,
+    Degree,
+    Department,
+    FacultiesHandling,
+    Lesson,
+    MarkRange,
+    PreviousYearsQP,
+    Programme,
+    Question,
+    Regulation,
+    Subject,
+    Syllabus,
+    Topic,
+)
 
 from users.graphql.types import UserType
 

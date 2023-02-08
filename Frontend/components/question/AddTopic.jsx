@@ -1,10 +1,11 @@
 import { createTopicMutation } from "@/src/graphql/mutations/createTopic";
 import { getTopicsQuery } from "@/src/graphql/queries/getTopics";
+import { getID } from "@/src/utils";
 import { useMutation } from "@apollo/client";
 import { Button, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 
-export default function AddTopic({ router, allTopics, setAllTopics }) {
+export default function AddTopic({ router, lesson, allTopics, setAllTopics }) {
   const [createTopic, { data, loading, error }] = useMutation(
     createTopicMutation,
     {
@@ -59,6 +60,7 @@ export default function AddTopic({ router, allTopics, setAllTopics }) {
                 createTopic({
                   variables: {
                     name: topic,
+                    lesson: parseInt(getID(lesson)),
                     regulation: parseInt(router.query.regulation),
                     programme: router.query.programme,
                     degree: router.query.degree,

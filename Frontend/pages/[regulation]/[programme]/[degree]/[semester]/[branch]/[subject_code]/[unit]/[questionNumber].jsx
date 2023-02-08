@@ -16,6 +16,7 @@ import { meQuery } from "@/src/graphql/queries/me";
 import { updateQuestionMutation } from "@/src/graphql/mutations/updateQuestion";
 import { getQuestionsQuery } from "@/src/graphql/queries/getQuestions";
 import "styles/Question.module.css";
+import { getID } from "@/src/utils";
 
 export default function EditQuestion() {
   const router = useRouter();
@@ -79,6 +80,35 @@ export default function EditQuestion() {
           unit: parseInt(unit),
         },
       },
+      // {
+      //   query: getQuestionQuery,
+      //   variables: {
+      //     id: globalID,
+      //   },
+      // },
+    ],
+  });
+
+  const [
+    updateQuestion,
+    { data: uQuestion, loading: uLoading, error: uError },
+  ] = useMutation(updateQuestionMutation, {
+    onCompleted: (data) => {
+      router.back();
+    },
+    refetchQueries: [
+      {
+        query: getQuestionsQuery,
+        variables: {
+          regulation: parseInt(regulation),
+          programme: programme,
+          degree: degree,
+          semester: parseInt(semester),
+          department: branch,
+          subjectCode: subject_code,
+          unit: parseInt(unit),
+        },
+      },
       {
         query: getQuestionQuery,
         variables: {
@@ -87,33 +117,6 @@ export default function EditQuestion() {
       },
     ],
   });
-
-  const [updateQuestion, { data: uQuestion, data: uLoading, data: uError }] =
-    useMutation(updateQuestionMutation, {
-      onCompleted: (data) => {
-        router.back();
-      },
-      refetchQueries: [
-        {
-          query: getQuestionsQuery,
-          variables: {
-            regulation: parseInt(regulation),
-            programme: programme,
-            degree: degree,
-            semester: parseInt(semester),
-            department: branch,
-            subjectCode: subject_code,
-            unit: parseInt(unit),
-          },
-        },
-        {
-          query: getQuestionQuery,
-          variables: {
-            id: globalID,
-          },
-        },
-      ],
-    });
 
   const [loadQuestion, { data, called, loading, error }] = useLazyQuery(
     getQuestionQuery,
@@ -207,7 +210,12 @@ export default function EditQuestion() {
           <div className="flex mt-2 justify-between items-start">
             <p className="text-xl mr-1 mt-2 font-medium">Topics:</p>
             <div className="mt-0.5">
-              <Topics router={router} topics={topics} setTopics={setTopics} />
+              <Topics
+                router={router}
+                lesson={lesson}
+                topics={topics}
+                setTopics={setTopics}
+              />
             </div>
           </div>
           <div className="flex mt-2 justify-between items-baseline">
@@ -238,6 +246,7 @@ export default function EditQuestion() {
                   updateQuestion({
                     variables: {
                       id: globalID,
+                      lesson: lesson,
                       question: vQuestion.getValue(),
                       answer: vAnswer.getValue(),
                       mark: markRange,

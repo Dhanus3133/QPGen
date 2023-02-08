@@ -2,6 +2,7 @@ import { gql } from "@apollo/client";
 
 export const createTopicMutation = gql`
   mutation CreateTopic(
+    $lesson: Int!
     $name: String!
     $regulation: Int!
     $programme: String!
@@ -13,6 +14,7 @@ export const createTopicMutation = gql`
   ) {
     createTopic(
       input: {
+        lesson: $lesson
         name: $name
         regulation: $regulation
         programme: $programme

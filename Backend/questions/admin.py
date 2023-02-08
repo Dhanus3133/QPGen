@@ -3,8 +3,6 @@ from django.db import models
 from django.utils.safestring import mark_safe
 from .models import *
 
-from vditor.widgets import VditorWidget
-
 
 @admin.register(Image)
 class ImageModelAdmin(admin.ModelAdmin):

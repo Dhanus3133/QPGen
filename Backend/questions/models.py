@@ -3,7 +3,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator, Validat
 from django.utils import timezone
 from django.utils.text import slugify
 from django_choices_field import TextChoicesField
-from vditor.fields import VditorTextField
 from core.models import TimeStampedModel
 from users.models import User
 
@@ -266,7 +265,7 @@ class Question(TimeStampedModel):
         DIFFICULTY_HARD = 'H', 'Hard'
 
     lesson = models.ForeignKey(
-        Lesson, on_delete=models.CASCADE, related_name='quesions'
+        Lesson, on_delete=models.CASCADE, related_name='questions'
     )
     question = models.TextField()
     answer = models.TextField(blank=True, null=True)

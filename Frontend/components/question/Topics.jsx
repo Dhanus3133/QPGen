@@ -1,4 +1,5 @@
 import { getTopicsQuery } from "@/src/graphql/queries/getTopics";
+import { getID } from "@/src/utils";
 import { useQuery } from "@apollo/client";
 import {
   Autocomplete,
@@ -10,7 +11,7 @@ import { Stack } from "@mui/system";
 import { useEffect, useState } from "react";
 import AddTopic from "./AddTopic";
 
-export default function Topics({ router, topics, setTopics }) {
+export default function Topics({ router, lesson, topics, setTopics }) {
   const { data, loading, error } = useQuery(getTopicsQuery, {
     skip: !router.isReady,
     variables: {
@@ -56,6 +57,7 @@ export default function Topics({ router, topics, setTopics }) {
         </Stack>
         <AddTopic
           router={router}
+          lesson={lesson}
           allTopics={allTopics}
           setAllTopics={setAllTopics}
         />
