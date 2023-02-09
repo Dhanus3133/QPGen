@@ -24,7 +24,7 @@ export default function IndexPage() {
         <h1 className="text-3xl font-bold cursor-pointer">Dashboard</h1>
       </Link>
       <p>
-        This page's data was fetched on the{" "}
+        This page&apos;s data was fetched on the{" "}
         <strong>{cached ? "Next.js server" : "client"}</strong>.{" "}
       </p>
       <List data={data?.users} />

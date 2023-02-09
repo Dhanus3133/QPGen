@@ -22,7 +22,7 @@ export default function SSR() {
   return (
     <div>
       <p>
-        This page's data was fetched on the{" "}
+        This page&apos;s data was fetched on the{" "}
         <strong>{cached ? "Next.js server" : "client"}</strong>.{" "}
       </p>
       <List data={data?.users} />
