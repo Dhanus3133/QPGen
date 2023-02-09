@@ -14,16 +14,38 @@ import Menu from "@mui/material/Menu";
 import { AiOutlineArrowLeft } from "react-icons/ai";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Router from "next/router";
 import styles from "styles/Navbar.module.css";
 import Logo from "./Logo";
 import LogoDark from "./LogoDark";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useQuery, useMutation } from "@apollo/client";
+import { client } from "@/lib/apollo-client";
+import { isAuthorizedQuery } from "@/src/graphql/queries/isAuthorized";
+import { logoutMutation } from "@/src/graphql/mutations/logout";
 
 export default function MenuAppBar() {
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const router = useRouter();
   const [isDark, setIsDark] = React.useState(false);
+  const [authorized, setAuthorized] = useState(false);
+  const { data: isAuthorized } = useQuery(isAuthorizedQuery);
+  const [LogoutMutation] = useMutation(logoutMutation);
+
+  useEffect(() => {
+    if (isAuthorized?.isAuthorized) {
+      setAuthorized(true);
+    } else {
+      setAuthorized(false);
+    }
+  }, [isAuthorized]);
+
+  const handleLogout = () => {
+    LogoutMutation();
+    client.refetchQueries({ include: "all" });
+    Router.push("/");
+  };
 
   const handleChange = (event) => {
     setAuth(event.target.checked);
@@ -87,12 +109,18 @@ export default function MenuAppBar() {
                   open={Boolean(anchorEl)}
                   onClose={handleClose}
                 >
-                  <Link href="/dashboard">
+                  <Link href="/">
                     <MenuItem onClick={handleClose}>Dashboard</MenuItem>
                   </Link>
-                  <Link href="/login">
-                    <MenuItem onClick={handleClose}>Login</MenuItem>
-                  </Link>
+                  {authorized ? (
+                    <Link href="/login">
+                      <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                    </Link>
+                  ) : (
+                    <Link href="/login">
+                      <MenuItem onClick={handleClose}>Login</MenuItem>
+                    </Link>
+                  )}
                 </Menu>
               </div>
             )}

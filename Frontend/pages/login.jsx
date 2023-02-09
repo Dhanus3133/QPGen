@@ -1,30 +1,41 @@
 import { client } from "@/lib/apollo-client";
 import { loginMutation } from "@/src/graphql/mutations/login";
 import { logoutMutation } from "@/src/graphql/mutations/logout";
-import { useMutation } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 // import { getCookie, hasCookie } from "cookies-next";
 import Router from "next/router";
 import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
+import { isAuthorizedQuery } from "@/src/graphql/queries/isAuthorized";
 
 export default function SignIn() {
+  const [authorized, setAuthorized] = useState(false);
   const [email, setemail] = useState("");
   const [password, setPassword] = useState("");
-  const [Login, { loginData, loginLoading, loginError }] =
+  const [Login, { data: loginData, loading: loginLoading, error: loginError }] =
     useMutation(loginMutation);
-  const [LogoutMutation, { logoutData, logoutLoading, logoutError }] =
-    useMutation(logoutMutation);
+  const { data: isAuthorized } = useQuery(isAuthorizedQuery);
+
+  useEffect(() => {
+    if (isAuthorized?.isAuthorized) setAuthorized(isAuthorized?.isAuthorized);
+  }, [isAuthorized]);
+
+  useEffect(() => {
+    if (loginData) {
+      setAuthorized(true);
+      client.refetchQueries({ include: "all" });
+    }
+  }, [loginData]);
 
   function onSubmit(e) {
     e.preventDefault();
     Login({ variables: { email: email, password: password } });
     client.refetchQueries({ include: "active" });
-    Router.push("/");
   }
 
-  function logOut() {
-    LogoutMutation();
-    Router.push("/login");
+  if (authorized) {
+    console.log(authorized);
+    Router.push("/");
   }
 
   return (
@@ -48,7 +59,10 @@ export default function SignIn() {
             onChange={(e) => setPassword(e.target.value.trim())}
             className="mb-6 w-full rounded-lg h-12 p-4 text-2xl focus:border-blue-800 focus:outline-none focus:border-[3px]"
           ></input>
-          <button type="submit" className="transition ease-in delay-150 w-4/5 bg-gray-900 rounded-md text-[#3f51b5] h-12 text-xl font-semibold text-center items-center mb-3 hover:bg-black hover:text-white hover:scale-105 duration-200">
+          <button
+            type="submit"
+            className="transition ease-in delay-150 w-4/5 bg-gray-900 rounded-md text-[#3f51b5] h-12 text-xl font-semibold text-center items-center mb-3 hover:bg-black hover:text-white hover:scale-105 duration-200"
+          >
             Sign In
           </button>
         </form>
