@@ -23,7 +23,7 @@ services:
     ports:
       - 8001:8002
     env_file:
-      - ./.env
+      - ./Backend/config/.env
     volumes:
       - ./Backend/:/app
       - ./Backend/static:/app/static

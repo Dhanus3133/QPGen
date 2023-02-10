@@ -16,3 +16,5 @@ RUN yarn install --frozen-lockfile
 
 # add app
 COPY . ./
+RUN chmod -R 777 node_modules
+RUN yarn build
