@@ -2,7 +2,7 @@
 FROM node:lts-alpine
 
 # set work directory
-WORKDIR /app/
+# WORKDIR /app/
 
 # add to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
@@ -16,5 +16,7 @@ RUN yarn install --frozen-lockfile
 
 # add app
 COPY . ./
-RUN chmod -R 777 node_modules
+# RUN chmod -R 777 node_modules
 RUN yarn build
+
+# WORKDIR /

@@ -34,7 +34,7 @@ services:
   nextjs:
     build: ./Frontend
     container_name: qpgen-nextjs
-    command: yarn dev
+    command: yarn start
     ports:
       - 3001:3000
     tty: true
