@@ -37,8 +37,6 @@ services:
     command: yarn dev
     ports:
       - 3001:3000
-    env_file:
-      - ./.env
     tty: true
     environment:
       - CHOKIDAR_USEPOLLING=true
@@ -54,7 +52,6 @@ services:
     container_name: qpgen-db
     ports:
       - 5433:5432
-    env_file: ./.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
