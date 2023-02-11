@@ -49,6 +49,7 @@ THIRD_PARTY_APPS = [
     "strawberry_django_jwt.refresh_token",
     "strawberry_django_plus",
     "corsheaders",
+    "storages",
     # 'gqlauth',
 ]
 
@@ -105,7 +106,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "config/templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -170,10 +171,62 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = "/backend_static/"
-STATIC_ROOT = BASE_DIR / "static"
-MEDIA_URL = "/backend_media/"
-MEDIA_ROOT = BASE_DIR / "media"
+if DEBUG:
+    STATIC_URL = "/backend_static/"
+    STATIC_ROOT = BASE_DIR / "static"
+    MEDIA_URL = "/backend_media/"
+    MEDIA_ROOT = BASE_DIR / "media"
+else:
+    print("Trying")
+    STATIC_URL = '/backend_static/'
+
+    STATICFILES_DIRS = [
+        BASE_DIR / "static", # os.path.join(BASE_DIR, 'static')
+    ]
+
+    STATIC_ROOT = BASE_DIR / "staticfiles-cdn" # in production, we want cdn
+    MEDIA_URL = "/backend_media/"
+
+    MEDIA_ROOT = BASE_DIR / "staticfiles-cdn" / "uploads"
+
+    from .cdn.conf import *
+
+    # AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+    # AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+    # AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+    # AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL")
+    # AWS_LOCATION = env("AWS_LOCATION")
+    # AWS_S3_OBJECT_PARAMETERS = {
+    #     "CacheControl": "max-age=86400",
+    # }
+    # MEDIA_ROOT = BASE_DIR / "media"
+
+    # STATIC_URL = "https://%s/%s/" % (AWS_S3_ENDPOINT_URL, AWS_LOCATION)
+    # STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    # STATIC_ROOT = BASE_DIR / "static"
+    # STATIC_ROOT = BASE_DIR / "static"
+    # AWS_LOCATION = "your-spaces-files-folder"
+
+    # from storages.backends.s3boto3 import S3Boto3Storage
+    #
+    # class StaticRootS3Boto3Storage(S3Boto3Storage):
+    #     location = "static"
+    #
+    # class MediaRootS3Boto3Storage(S3Boto3Storage):
+    #     location = "media"
+    #
+    # AWS_ACCESS_KEY_ID=os.environ.get("AWS_ACCESS_KEY_ID")
+    # AWS_SECRET_ACCESS_KEY=os.environ.get("AWS_SECRET_ACCESS_KEY")
+    # AWS_STORAGE_BUCKET_NAME=os.environ.get("AWS_STORAGE_BUCKET_NAME")
+    # AWS_S3_ENDPOINT_URL="https://nyc3.digitaloceanspaces.com"
+    # AWS_S3_OBJECT_PARAMETERS = {
+    #     "CacheControl": "max-age=86400",
+    # }
+    # AWS_LOCATION = f"https://{AWS_STORAGE_BUCKET_NAME}.nyc3.digitaloceanspaces.com"
+    #
+    # DEFAULT_FILE_STORAGE = "config.settings.MediaRootS3Boto3Storage"
+    # STATICFILES_STORAGE = "config.settings.StaticRootS3Boto3Storage"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -184,17 +237,13 @@ AUTH_USER_MODEL = "users.USER"
 
 # CSRF_TRUSTED_ORIGINS = ['https://d396-2402-3a80-427a-36a-e5b6-4784-8f2f-49b9.in.ngrok.io']
 
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_WHITELIST = (
-    "http://127.0.0.1",
-    "http://qpgen.lol",
-)
-
-
-INTERNAL_IPS = ["127.0.0.1", "localhost", "172.18.*", "172.18.0.5"]
-
+CORS_ORIGIN_ALLOW_ALL = False
+# CORS_ORIGIN_WHITELIST = (
+#     "http://127.0.0.1",
+#     "http://qpgen.lol",
+# )
 if DEBUG:
     import socket
-
+    INTERNAL_IPS = ["127.0.0.1", "localhost", "172.18.*", "172.18.0.5"]
     hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
     INTERNAL_IPS += [ip[:-1] + "1" for ip in ips]
