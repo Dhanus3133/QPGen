@@ -177,7 +177,6 @@ if DEBUG:
     MEDIA_URL = "/backend_media/"
     MEDIA_ROOT = BASE_DIR / "media"
 else:
-    print("Trying")
     STATIC_URL = '/backend_static/'
 
     STATICFILES_DIRS = [
