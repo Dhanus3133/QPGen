@@ -75,9 +75,9 @@ class SubjectType(gql.Node):
     code: gql.auto
     subject_name: gql.auto
     co: gql.auto
-    co_description: gql.auto
-    course_outcome: gql.auto
-    coe: List[UserType]
+    # co_description: gql.auto
+    # course_outcome: gql.auto
+    # coe: List[UserType]
 
 
 @gql.django.type(Lesson)
@@ -85,6 +85,8 @@ class LessonType(gql.Node):
     id: gql.auto
     name: gql.auto
     subject: SubjectType
+    objective: gql.auto
+    outcome: gql.auto
 
 
 @gql.django.type(Topic)

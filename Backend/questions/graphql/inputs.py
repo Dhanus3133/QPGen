@@ -9,14 +9,16 @@ class SubjectInput:
     code: gql.auto
     subject_name: gql.auto
     co: gql.auto
-    co_description: gql.auto
-    course_outcome: gql.auto
+    # co_description: gql.auto
+    # course_outcome: gql.auto
 
 
 @gql.django.input(Lesson)
 class LessonInput:
     name: gql.auto
     subject: gql.NodeInput
+    objective: gql.auto
+    outcome: gql.auto
 
 
 @gql.django.input(Question)

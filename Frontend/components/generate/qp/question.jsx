@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import RenderVditor from "components/renderVditor";
 
 const Question = ({ data, vd, setVd }) => {
-  console.log(data);
+  // console.log(data);
   useEffect(() => {
     if (!vd) {
       const dummy = document.createElement("div");

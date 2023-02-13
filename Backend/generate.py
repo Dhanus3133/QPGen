@@ -1,4 +1,4 @@
-from questions.models import Lesson, Question, Subject
+from questions.models import Lesson, Question, Subject, Syllabus
 from django.db.models import F, Q
 import json
 import yaml
@@ -13,10 +13,9 @@ import random
 
 def int_to_roman(number):
     num = [1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000]
-    sym = ["i", "iv", "v", "ix", "x", "xl",
-           "l", "xc", "c", "cd", "d", "cm", "m"]
+    sym = ["i", "iv", "v", "ix", "x", "xl", "l", "xc", "c", "cd", "d", "cm", "m"]
     i = 12
-    roman = ''
+    roman = ""
     while number:
         div = number // num[i]
         number %= num[i]
@@ -28,20 +27,25 @@ def int_to_roman(number):
 
 
 class Generate:
-    def __init__(self, lids, marks, count, choices):
+    def __init__(self, course, lids, marks, count, choices):
+        self.course = course
         self.lids = lids
         self.marks = marks
         self.count = count
         self.choices = choices
-        self.questions = questions = Question.objects.filter(lesson__in=lids).select_related(
-            'lesson', 'mark', 'btl', 'lesson__subject'
-        )
+        self.questions = questions = Question.objects.filter(
+            lesson__in=lids
+        ).select_related("lesson", "mark", "btl", "lesson__subject")
         self.choosen_questions = []
 
     def find_a_question_with_exact_mark(self, lesson, mark, add_to_list):
-        question = self.questions.filter(lesson=lesson).exclude(id__in=self.choosen_questions).filter(
-            Q(start_mark__lte=mark) & Q(end_mark__gte=mark)
-        ).order_by('?').first()
+        question = (
+            self.questions.filter(lesson=lesson)
+            .exclude(id__in=self.choosen_questions)
+            .filter(Q(start_mark__lte=mark) & Q(end_mark__gte=mark))
+            .order_by("?")
+            .first()
+        )
         if question == None:
             return None
         if add_to_list:
@@ -49,29 +53,40 @@ class Generate:
         return {"q": question, "m": mark}
 
     def find_a_question_with_exact_mark2(self, lesson, mark, add_to_list, avoid_ids):
-        question = self.questions.filter(lesson=lesson).exclude(id__in=self.choosen_questions).exclude(id__in=avoid_ids).filter(Q(start_mark__lte=mark) & Q(end_mark__gte=mark)
-        ).order_by('?').first()
+        question = (
+            self.questions.filter(lesson=lesson)
+            .exclude(id__in=self.choosen_questions)
+            .exclude(id__in=avoid_ids)
+            .filter(Q(start_mark__lte=mark) & Q(end_mark__gte=mark))
+            .order_by("?")
+            .first()
+        )
         if question == None:
             return None, None
         # if add_to_list:
         #     self.choosen_questions.append(question.id)
         return {"q": question, "m": mark}, question.id
 
-
-    def get_different_questions(self, lesson, mark, start_mark_range, question_number, option=None):
+    def get_different_questions(
+        self, lesson, mark, start_mark_range, question_number, option=None
+    ):
         selected = []
         start = start_mark_range
         end = mark - start_mark_range
 
-        while(start <= end):
+        while start <= end:
             avoid_ids = []
             another = []
 
-            res, id = self.find_a_question_with_exact_mark2(lesson, start, False, avoid_ids)
+            res, id = self.find_a_question_with_exact_mark2(
+                lesson, start, False, avoid_ids
+            )
             another.append(res)
             avoid_ids.append(id)
 
-            res, id = self.find_a_question_with_exact_mark2(lesson, end, False, avoid_ids)
+            res, id = self.find_a_question_with_exact_mark2(
+                lesson, end, False, avoid_ids
+            )
             another.append(res)
             # avoid_ids.append(id)
 
@@ -103,7 +118,7 @@ class Generate:
             # print(arr)
             # print("==End==")
             # for q in arr['q']:
-                self.choosen_questions.append(arr['q'].id)
+            self.choosen_questions.append(arr["q"].id)
 
         if len(selected) == 0:
             print(selected)
@@ -119,25 +134,28 @@ class Generate:
             # print(f'\t{question_number}{chr(option) if option!=None else ""}. ', end='')
             # print(f'({int_to_roman(1+i)})' if option else '', end='')
             # print(question[i]['q'].question)
-            dataQuestion['number'] = question_number
-            dataQuestion['option'] = chr(option) if option != None else None
-            dataQuestion['roman'] = int_to_roman(1+i) if mark > 2 else None
-            dataQuestion['question'] = question[i]['q'].question
-            dataQuestion['btl'] = question[i]['q'].btl.name
-            dataQuestion['co'] = question[i]['q'].lesson.subject.co + \
-                '.' + str(question[i]['q'].lesson.syllabuses.first().unit)
-            dataQuestion['MarkAllocated'] = question[i]['m']
+            dataQuestion["number"] = question_number
+            dataQuestion["option"] = chr(option) if option != None else None
+            dataQuestion["roman"] = int_to_roman(1 + i) if mark > 2 else None
+            dataQuestion["question"] = question[i]["q"].question
+            dataQuestion["btl"] = question[i]["q"].btl.name
+            dataQuestion["co"] = (
+                question[i]["q"].lesson.subject.co
+                + "."
+                + str(question[i]["q"].lesson.syllabuses.first().unit)
+            )
+            dataQuestion["MarkAllocated"] = question[i]["m"]
             prev = []
             # print("=====================")
-            for i in question[i]['q'].previous_years.all():
+            for i in question[i]["q"].previous_years.all():
                 prev.append(f"{i.month} {i.year} ")
                 # print(i.year)
-            dataQuestion['QPRef'] = prev
+            dataQuestion["QPRef"] = prev
 
             # print("=====================")
             # for i in question[i]['q'].previous_years.values('month', 'year'):
             #     print(i)
-                # print("Previous Year: ", i)
+            # print("Previous Year: ", i)
             questions.append(dataQuestion)
 
         return questions
@@ -152,22 +170,24 @@ class Generate:
             has_choice = self.choices[i]
             if has_choice:
                 total_count *= 2
-            part = chr(65+i)
+            part = chr(65 + i)
             data[part] = []
             questions = []
             # print(f'================= Part {part} =================')
             current_count = 0
             for current_lesson in self.lids:
-                for i in range(total_count//len(self.lids)):
-                    questions.append(self.get_different_questions(
-                        current_lesson,
-                        total_mark,
-                        2 if total_mark == 2 else 3,
-                        question_number,
-                        current_count % 2 if has_choice else None
-                    ))
+                for i in range(total_count // len(self.lids)):
+                    questions.append(
+                        self.get_different_questions(
+                            current_lesson,
+                            total_mark,
+                            2 if total_mark == 2 else 3,
+                            question_number,
+                            current_count % 2 if has_choice else None,
+                        )
+                    )
                     current_count += 1
-                    if (has_choice and current_count % 2 != 0):
+                    if has_choice and current_count % 2 != 0:
                         question_number -= 1
                         # print("====== OR ======")
                     else:
@@ -176,16 +196,18 @@ class Generate:
                     question_number += 1
 
             if current_count != total_count:
-                for i in range(total_count-current_count):
-                    questions.append(self.get_different_questions(
-                        random.choice(self.lids),
-                        total_mark,
-                        2 if total_mark == 2 else 3,
-                        question_number,
-                        current_count % 2 if has_choice else None
-                    ))
+                for i in range(total_count - current_count):
+                    questions.append(
+                        self.get_different_questions(
+                            random.choice(self.lids),
+                            total_mark,
+                            2 if total_mark == 2 else 3,
+                            question_number,
+                            current_count % 2 if has_choice else None,
+                        )
+                    )
                     current_count += 1
-                    if (has_choice and current_count % 2 != 0):
+                    if has_choice and current_count % 2 != 0:
                         question_number -= 1
                         # print("====== OR ======")
                     else:
@@ -193,7 +215,22 @@ class Generate:
                         questions = []
                     question_number += 1
 
-            # print()
+                # print()
+
+        objectives = list(
+            Syllabus.objects.filter(course=self.course)
+            .filter(lesson__in=self.lids)
+            .order_by("unit")
+            .values_list("lesson__objective", flat=True)
+        )
+
+        outcomes = list(
+            Syllabus.objects.filter(course=self.course)
+            .filter(lesson__in=self.lids)
+            .order_by("unit")
+            .values_list("lesson__outcome", flat=True)
+        )
+
         options = {
             "marks": self.marks,
             "counts": self.count,
@@ -201,11 +238,12 @@ class Generate:
             "date": "21-02-2004",
             "subjectName": subject.subject_name,
             "subjectCode": subject.code,
+            "subjectCO": subject.co,
+            "objectives": objectives,
+            "outcomes": outcomes,
         }
         questionsData = {"questions": data, "options": options}
         j = json.dumps(questionsData)
-        print(j)
-        # print(len(questions))
         return j
 
 

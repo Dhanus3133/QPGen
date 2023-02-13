@@ -75,10 +75,10 @@ export default function Generate() {
               color={valid ? "success" : "error"}
               onClick={() => {
                 if (valid) {
-                  console.log(lessonsIDs);
-                  console.log(marks);
-                  console.log(counts);
-                  console.log(choices);
+                  // console.log(lessonsIDs);
+                  // console.log(marks);
+                  // console.log(counts);
+                  // console.log(choices);
                   setGenerate(true);
                 }
               }}
@@ -93,9 +93,10 @@ export default function Generate() {
     const navbar = document.getElementById("navbar");
     // document.body.style.backgroundColor = "black";
     navbar.style.display = "none";
-    console.log(navbar);
+    // console.log(navbar);
     return (
       <QuestionPaper
+        course={course}
         lids={lessonsIDs}
         marks={marks}
         counts={counts}

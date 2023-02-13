@@ -8,7 +8,7 @@ from users.models import User
 
 
 class Image(models.Model):
-    photo = models.ImageField(upload_to='questions', null=True)
+    photo = models.ImageField(upload_to="questions", null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -17,39 +17,39 @@ class Image(models.Model):
 
 class BloomsTaxonomyLevel(models.Model):
 
-    """ Blooms Taxonomy Level Model """
+    """Blooms Taxonomy Level Model"""
 
     name = models.CharField(max_length=3, unique=True)
     description = models.CharField(max_length=70)
 
     def __str__(self):
-        return f'{self.name} | {self.description}'
+        return f"{self.name} | {self.description}"
 
 
 class PreviousYearsQP(models.Model):
 
-    """ Previous Years QP Model """
+    """Previous Years QP Model"""
 
     class MonthEnum(models.TextChoices):
-        MONTH_AM = 'A/M', 'A/M'
-        MONTH_ND = 'N/D', 'N/D'
+        MONTH_AM = "A/M", "A/M"
+        MONTH_ND = "N/D", "N/D"
 
     # month = models.CharField(max_length=3, choices=MONTH_CHOICES)
     month = TextChoicesField(choices_enum=MonthEnum)
-    year = models.IntegerField(validators=[
-        MinValueValidator(1990), MaxValueValidator(timezone.now().year)
-    ])
+    year = models.IntegerField(
+        validators=[MinValueValidator(1990), MaxValueValidator(timezone.now().year)]
+    )
 
     class Meta:
-        unique_together = ['month', 'year']
+        unique_together = ["month", "year"]
 
     def __str__(self):
-        return f'{self.month} | {self.year}'
+        return f"{self.month} | {self.year}"
 
 
 class AbstractNameModel(models.Model):
 
-    """ AbstractNameModel Model """
+    """AbstractNameModel Model"""
 
     name = models.CharField(max_length=20, unique=True)
 
@@ -61,231 +61,233 @@ class AbstractNameModel(models.Model):
         abstract = True
 
     def __str__(self):
-        return f'{self.name}'
+        return f"{self.name}"
 
 
 class Programme(AbstractNameModel):
 
-    """ Programme Model """
+    """Programme Model"""
 
     pass
 
 
 class Degree(AbstractNameModel):
 
-    """ Degree Model """
+    """Degree Model"""
 
     full_form = models.CharField(max_length=100)
 
 
 class Regulation(models.Model):
 
-    """ Regulation Model """
+    """Regulation Model"""
 
-    year = models.IntegerField(unique=True, validators=[
-        MinValueValidator(2010), MaxValueValidator(timezone.now().year)
-    ])
+    year = models.IntegerField(
+        unique=True,
+        validators=[MinValueValidator(2010), MaxValueValidator(timezone.now().year)],
+    )
 
     def __str__(self):
-        return f'{self.year}'
+        return f"{self.year}"
 
 
 class Department(models.Model):
 
-    """ Department Model """
+    """Department Model"""
 
     programme = models.ForeignKey(
-        Programme, on_delete=models.CASCADE, related_name='departments'
+        Programme, on_delete=models.CASCADE, related_name="departments"
     )
     degree = models.ForeignKey(
-        Degree, on_delete=models.CASCADE, related_name='departments'
+        Degree, on_delete=models.CASCADE, related_name="departments"
     )
     branch = models.CharField(max_length=80)
     branch_code = models.CharField(max_length=10)
     hod = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='departments', blank=True, null=True
+        User,
+        on_delete=models.CASCADE,
+        related_name="departments",
+        blank=True,
+        null=True,
     )
 
     class Meta:
-        unique_together = ['programme', 'degree', 'branch_code']
+        unique_together = ["programme", "degree", "branch_code"]
 
     def __str__(self):
-        return f'{self.programme} | {self.degree} | {self.branch_code}'
+        return f"{self.programme} | {self.degree} | {self.branch_code}"
 
 
 class Subject(models.Model):
 
-    """ Subject Model """
+    """Subject Model"""
 
     code = models.CharField(max_length=15)
     subject_name = models.CharField(max_length=70)
     co = models.CharField(max_length=7)
-    co_description = models.CharField(max_length=200)
-    course_outcome = models.TextField()
-    coe = models.ManyToManyField(
-        User, related_name='subjects', blank=True
-    )
+    # co_description = models.CharField(max_length=200)
+    # course_outcome = models.TextField()
+    # coe = models.ManyToManyField(
+    #     User, related_name='subjects', blank=True
+    # )
 
     class Meta:
-        unique_together = ['code', 'co']
+        unique_together = ["code", "co"]
 
     def __str__(self):
-        return f'{self.code} | {self.subject_name} | {self.co}'
+        return f"{self.code} | {self.subject_name} | {self.co}"
 
 
 class Lesson(models.Model):
 
-    """ Lesson Model """
+    """Lesson Model"""
 
     name = models.CharField(max_length=200)
     subject = models.ForeignKey(
-        Subject, on_delete=models.CASCADE, related_name='lessons'
+        Subject, on_delete=models.CASCADE, related_name="lessons"
     )
+    objective = models.TextField()
+    outcome = models.TextField()
 
     class Meta:
-        unique_together = ['name', 'subject']
+        unique_together = ["name", "subject"]
 
     def __str__(self) -> str:
-        return f'{self.name} | {self.subject}'
+        return f"{self.name} | {self.subject}"
 
 
 class Topic(models.Model):
 
-    """ Topic Model """
+    """Topic Model"""
 
     name = models.CharField(max_length=200)
-    lesson = models.ForeignKey(
-        Lesson, on_delete=models.CASCADE, related_name='topics'
-    )
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="topics")
     active = models.BooleanField(default=True)
     priority = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ['name', 'lesson']
+        unique_together = ["name", "lesson"]
 
     def __str__(self) -> str:
-        return f'{self.name} | {self.lesson}'
+        return f"{self.name} | {self.lesson}"
 
 
 class Course(models.Model):
 
-    """ Course Model """
+    """Course Model"""
 
     regulation = models.ForeignKey(
-        Regulation, on_delete=models.CASCADE, related_name='courses'
+        Regulation, on_delete=models.CASCADE, related_name="courses"
     )
     semester = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(10)]
     )
     department = models.ForeignKey(
-        Department, on_delete=models.CASCADE, related_name='courses'
+        Department, on_delete=models.CASCADE, related_name="courses"
     )
     active = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = ['regulation', 'semester', 'department']
+        unique_together = ["regulation", "semester", "department"]
 
     def __str__(self):
-        return f'{self.regulation} | {self.semester} | {self.department}'
+        return f"{self.regulation} | {self.semester} | {self.department}"
 
 
 class Syllabus(models.Model):
 
-    """ Syllabus Model """
+    """Syllabus Model"""
 
     course = models.ForeignKey(
-        Course, on_delete=models.CASCADE, related_name='syllabuses'
+        Course, on_delete=models.CASCADE, related_name="syllabuses"
     )
-    unit = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(25)]
-    )
+    unit = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(25)])
     lesson = models.ForeignKey(
-        Lesson, on_delete=models.CASCADE, related_name='syllabuses'
+        Lesson, on_delete=models.CASCADE, related_name="syllabuses"
     )
 
     class Meta:
-        unique_together = ['course', 'unit', 'lesson']
+        unique_together = ["course", "unit", "lesson"]
 
     def __str__(self):
-        return f'{self.course} | {self.unit} | {self.lesson}'
+        return f"{self.course} | {self.unit} | {self.lesson}"
 
 
 class MarkRange(models.Model):
 
-    """ Mark Range Model """
+    """Mark Range Model"""
 
     start = models.IntegerField(
         validators=[MinValueValidator(2), MaxValueValidator(20)]
     )
-    end = models.IntegerField(
-        validators=[MinValueValidator(2), MaxValueValidator(20)]
-    )
+    end = models.IntegerField(validators=[MinValueValidator(2), MaxValueValidator(20)])
 
     def clean(self, *args, **kwargs):
         if self.start > self.end:
-            raise ValidationError(
-                'Ensure End must be lesser than or equal to Start')
+            raise ValidationError("Ensure End must be lesser than or equal to Start")
         super().clean(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.start} - {self.end}'
+        return f"{self.start} - {self.end}"
 
     class Meta:
-        unique_together = ['start', 'end']
+        unique_together = ["start", "end"]
 
 
 class FacultiesHandling(models.Model):
 
-    """ Faculties Handling Model """
+    """Faculties Handling Model"""
 
     course = models.ForeignKey(
-        Course, on_delete=models.CASCADE, related_name='faculties'
+        Course, on_delete=models.CASCADE, related_name="faculties"
     )
     subject = models.ForeignKey(
-        Subject, on_delete=models.CASCADE, related_name='faculties'
+        Subject, on_delete=models.CASCADE, related_name="faculties"
     )
-    faculties = models.ManyToManyField(User, related_name='faculties')
+    faculties = models.ManyToManyField(User, related_name="faculties")
 
     def __str__(self):
-        return f'{self.course} | {self.subject}'
+        return f"{self.course} | {self.subject}"
 
     class Meta:
-        unique_together = ['course', 'subject']
+        unique_together = ["course", "subject"]
 
     # TODO: Check the subject in syllabus before saving
 
 
 class Question(TimeStampedModel):
 
-    """ Question Paper Model """
+    """Question Paper Model"""
 
     class DifficultyEnum(models.TextChoices):
-        DIFFICULTY_EASY = 'E', 'Easy'
-        DIFFICULTY_MEDIUM = 'M', 'Medium'
-        DIFFICULTY_HARD = 'H', 'Hard'
+        DIFFICULTY_EASY = "E", "Easy"
+        DIFFICULTY_MEDIUM = "M", "Medium"
+        DIFFICULTY_HARD = "H", "Hard"
 
     lesson = models.ForeignKey(
-        Lesson, on_delete=models.CASCADE, related_name='questions'
+        Lesson, on_delete=models.CASCADE, related_name="questions"
     )
     question = models.TextField()
     answer = models.TextField(blank=True, null=True)
     mark = models.ForeignKey(
-        MarkRange, on_delete=models.CASCADE, related_name='questions', null=True, blank=False
+        MarkRange,
+        on_delete=models.CASCADE,
+        related_name="questions",
+        null=True,
+        blank=False,
     )
     start_mark = models.IntegerField(blank=True)
     end_mark = models.IntegerField(blank=True)
     btl = models.ForeignKey(
-        BloomsTaxonomyLevel, on_delete=models.CASCADE, related_name='questions'
+        BloomsTaxonomyLevel, on_delete=models.CASCADE, related_name="questions"
     )
     difficulty = TextChoicesField(choices_enum=DifficultyEnum)
     created_by = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='questions'
+        User, on_delete=models.CASCADE, related_name="questions"
     )
-    topics = models.ManyToManyField(
-        Topic, related_name='questions', blank=True
-    )
+    topics = models.ManyToManyField(Topic, related_name="questions", blank=True)
     previous_years = models.ManyToManyField(
-        PreviousYearsQP, related_name='questions', blank=True
+        PreviousYearsQP, related_name="questions", blank=True
     )
     # COE -> only one -> Expert for the subject model
 
@@ -296,4 +298,4 @@ class Question(TimeStampedModel):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.question}'
+        return f"{self.question}"

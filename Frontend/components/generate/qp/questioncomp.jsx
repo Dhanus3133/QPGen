@@ -13,8 +13,9 @@ const QuestionPaperGen = (props) => {
   // QUESTION PAPER
   const [vd, setVd] = useState(null);
   let b = props.data;
-  let courseObjective = props.cObj;
-  let courseOutcomes = props.cOut;
+  let courseObjectives = props.options.objectives;
+  let courseOutcomes = props.options.outcomes;
+  let subjectCO = props.options.subjectCO;
   let options = props.options;
   let semester = props.semester;
   let total = props.total;
@@ -27,29 +28,33 @@ const QuestionPaperGen = (props) => {
 
   let co = [];
   let a;
-  for (let i = 1; i <= 5; i++) {
+
+  courseObjectives.forEach(function (value, i) {
     a = (
       <tr>
-        <td className="text-center">{courseObjective[i].cono}</td>
-        <td className="pl-2">{courseObjective[i].text}</td>
+        <td className="text-center">{i+1}</td>
+        <td className="pl-2">{value}</td>
       </tr>
     );
     co.push(a);
-  }
+  });
 
   //------------------------------------
   //------------------------------------COURSE OUTCOMES
 
   let cout = [];
-  for (let i in courseOutcomes) {
+
+  courseOutcomes.forEach(function (value, i) {
     a = (
       <tr>
-        <td className="text-center">{courseOutcomes[i].cono}</td>
-        <td className="pl-2">{courseOutcomes[i].text}</td>
+        <td className="text-center">
+          {subjectCO}.{i+1}
+        </td>
+        <td className="pl-2">{value}</td>
       </tr>
     );
     cout.push(a);
-  }
+  });
 
   //------------------------------------
   //------------------------------------LOGIC FOR CHOICE CALCULATOR
@@ -214,7 +219,7 @@ const QuestionPaperGen = (props) => {
     let mark = options["marks"][num];
     let count = options["counts"][num];
     if (b[i][0][0][0]["roman"] === null) {
-      console.log(subdivsel, optsel);
+      // console.log(subdivsel, optsel);
       final = (
         <NoChoice
           part={i}
@@ -226,7 +231,7 @@ const QuestionPaperGen = (props) => {
         />
       );
     } else {
-      console.log(subdivsel, optsel);
+      // console.log(subdivsel, optsel);
       final = (
         <Choice
           part={i}

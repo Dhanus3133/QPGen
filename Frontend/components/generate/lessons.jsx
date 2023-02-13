@@ -53,7 +53,7 @@ export default function Lessons({
 
   if (error) return <p>Error: {error.message}</p>;
   if (loading) return "Loading...";
-  console.log(units);
+  // console.log(units);
 
   const handleChange = (e, unit) => {
     const checked = e.target.checked;

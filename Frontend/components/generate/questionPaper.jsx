@@ -4,6 +4,7 @@ import { useQuery } from "@apollo/client";
 import QuestionPaperGen from "./qp/questioncomp";
 
 const QuestionPaper = ({
+  course,
   lids,
   marks,
   counts,
@@ -14,7 +15,7 @@ const QuestionPaper = ({
   exam,
 }) => {
   const { data, loading, error } = useQuery(generateQuestionsQuery, {
-    variables: { lids, marks, counts, choices },
+    variables: { course, lids, marks, counts, choices },
   });
 
   if (loading) return "Loading...";
@@ -40,7 +41,7 @@ const QuestionPaper = ({
     },
     5: {
       cono: 5,
-      text: "	To understand the limitations of Algorithmic power.",
+      text: "To understand the limitations of Algorithmic power.",
     },
   };
   let courseOutcomes = {
@@ -62,17 +63,19 @@ const QuestionPaper = ({
     },
     5: {
       cono: "C123.5",
-      text: "	To understand the limitations of Algorithmic power.",
+      text: "To understand the limitations of Algorithmic power.",
     },
   };
 
+  // console.log(generatedData["options"]["objectives"]);
+  // console.log(generatedData["options"]["outcomes"]);
   return (
     <>
       <QuestionPaperGen
         data={generatedData["questions"]}
         options={generatedData["options"]}
-        cObj={courseObjective}
-        cOut={courseOutcomes}
+        // cObj={courseObjective}
+        // cOut={courseOutcomes}
         semester={semester}
         total={total}
         time={time}
