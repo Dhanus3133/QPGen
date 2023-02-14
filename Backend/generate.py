@@ -33,9 +33,11 @@ class Generate:
         self.marks = marks
         self.count = count
         self.choices = choices
-        self.questions = questions = Question.objects.filter(
-            lesson__in=lids
-        ).select_related("lesson", "mark", "btl", "lesson__subject")
+        self.questions = questions = (
+            Question.objects.filter(lesson__in=lids)
+            .select_related("lesson", "mark", "btl", "lesson__subject")
+            .prefetch_related("topics")
+        )
         self.choosen_questions = []
 
     def find_a_question_with_exact_mark(self, lesson, mark, add_to_list):
@@ -52,20 +54,27 @@ class Generate:
             self.choosen_questions.append(question.id)
         return {"q": question, "m": mark}
 
-    def find_a_question_with_exact_mark2(self, lesson, mark, add_to_list, avoid_ids):
-        question = (
+    def find_a_question_with_exact_mark2(
+        self, lesson, mark, add_to_list, tags, avoid_ids
+    ):
+        questions = (
             self.questions.filter(lesson=lesson)
             .exclude(id__in=self.choosen_questions)
             .exclude(id__in=avoid_ids)
             .filter(Q(start_mark__lte=mark) & Q(end_mark__gte=mark))
             .order_by("?")
-            .first()
         )
+        question = questions.exclude(topics__in=tags).first()
         if question == None:
-            return None, None
-        # if add_to_list:
-        #     self.choosen_questions.append(question.id)
-        return {"q": question, "m": mark}, question.id
+            question = questions.first()
+        if question == None:
+            return None, None, tags
+
+        for topic in question.topics.all():
+            if topic.id not in tags:
+                tags.append(topic.id)
+
+        return {"q": question, "m": mark}, question.id, tags
 
     def get_different_questions(
         self, lesson, mark, start_mark_range, question_number, option=None
@@ -78,14 +87,14 @@ class Generate:
             avoid_ids = []
             another = []
 
-            res, id = self.find_a_question_with_exact_mark2(
-                lesson, start, False, avoid_ids
+            res, id, t = self.find_a_question_with_exact_mark2(
+                lesson, start, False, [], avoid_ids
             )
             another.append(res)
             avoid_ids.append(id)
 
-            res, id = self.find_a_question_with_exact_mark2(
-                lesson, end, False, avoid_ids
+            res, id, t = self.find_a_question_with_exact_mark2(
+                lesson, end, False, t, avoid_ids
             )
             another.append(res)
             # avoid_ids.append(id)
