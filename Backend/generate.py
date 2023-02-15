@@ -234,10 +234,12 @@ class Generate:
         )
 
         outcomes = list(
-            Syllabus.objects.filter(course=self.course)
-            .filter(lesson__in=self.lids)
-            .order_by("unit")
-            .values_list("lesson__outcome", flat=True)
+            list(
+                Syllabus.objects.filter(course=1)
+                .filter(lesson__in=[6, 7, 8, 9, 10])
+                .order_by("unit")
+                .values_list("lesson__outcome", "lesson__outcome_btl__name")
+            )
         )
 
         options = {

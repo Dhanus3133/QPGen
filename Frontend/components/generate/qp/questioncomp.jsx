@@ -32,7 +32,7 @@ const QuestionPaperGen = (props) => {
   courseObjectives.forEach(function (value, i) {
     a = (
       <tr>
-        <td className="text-center">{i+1}</td>
+        <td className="text-center">{i + 1}</td>
         <td className="pl-2">{value}</td>
       </tr>
     );
@@ -48,9 +48,12 @@ const QuestionPaperGen = (props) => {
     a = (
       <tr>
         <td className="text-center">
-          {subjectCO}.{i+1}
+          {subjectCO}.{i + 1}
         </td>
-        <td className="pl-2">{value}</td>
+        <td className="pl-2">{value[0]}</td>
+        <td className="pl-2 text-center" width="7%">
+          {value[1]}
+        </td>
       </tr>
     );
     cout.push(a);
@@ -276,9 +279,9 @@ const QuestionPaperGen = (props) => {
               <td colSpan="3" className="text-center">
                 CHENNAI INSTITUTE OF TECHNOLOGY
                 <br />
-                Sarathy Nagar, Pudupedu, Chennai 600 069.
+                Autonomous Institution, Affiliated to Anna University, Chennai
                 <br />
-                {exam}
+                <b>{exam}</b>
               </td>
             </tr>
             <tr>
@@ -307,6 +310,8 @@ const QuestionPaperGen = (props) => {
         </table>
         <br />
         {/*TABLE FOR COURSE OBJECTIVES*/}
+        <b>Course Objectives:</b>
+        <p>The Student should be able</p>
         <table className="w-full">
           <thead>
             <tr>
@@ -318,18 +323,24 @@ const QuestionPaperGen = (props) => {
         </table>
         <br />
         {/*TABLE FOR COURSE OUTCOMES*/}
+        <b>Course Outcomes:</b>
+        <p>On completion of the course the students will be able to</p>
         <table className="w-full">
           <thead>
             <tr>
               <th>SlNO.</th>
               <th>Course Outcomes</th>
+              <th>RBT level</th>
             </tr>
           </thead>
           <tbody>{cout}</tbody>
         </table>
         <br />
-        <div id="generated-questions">{questions}</div>
-        <div className="flex justify-around pt-5">
+        <div>
+          <div id="generated-questions">{questions}</div>
+          <p className="text-center">~*All the Best*~</p>
+        </div>
+        <div className="flex justify-around pt-10">
           <div>Prepared by</div>
           <div>Verfied by</div>
           <div>IQAC</div>

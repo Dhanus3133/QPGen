@@ -148,6 +148,9 @@ class Lesson(models.Model):
     )
     objective = models.TextField()
     outcome = models.TextField()
+    outcome_btl = models.ForeignKey(
+        BloomsTaxonomyLevel, on_delete=models.CASCADE, related_name="lessons"
+    )
 
     class Meta:
         unique_together = ["name", "subject"]

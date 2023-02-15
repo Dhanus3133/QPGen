@@ -1,7 +1,18 @@
 const Choice = ({ part, count, mark, subdivsel, optsel, store }) => {
   return (
-    <table className="w-full">
+    <table className="w-full break-inside-avoid">
       <tbody>
+        {part == "A" && (
+          <tr>
+            <td className="text-center break-inside-avoid" colSpan={subdivsel + optsel + 6}>
+              <div className="font-bold">REVISED BLOOMS TAXONOMY(RBT)</div>
+              <div>
+                K1-Remembering, K2-Understanding, K3-Applying, K4-Analyzing,
+                K5-Evaluating, K6-Creating
+              </div>
+            </td>
+          </tr>
+        )}
         <tr>
           <td
             className="text-center font-bold"
