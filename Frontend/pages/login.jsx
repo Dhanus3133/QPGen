@@ -1,24 +1,40 @@
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useEffect, useState } from "react";
+import { isAuthorizedQuery } from "@/src/graphql/queries/isAuthorized";
 import { client } from "@/lib/apollo-client";
 import { loginMutation } from "@/src/graphql/mutations/login";
-import { logoutMutation } from "@/src/graphql/mutations/logout";
 import { useQuery, useMutation } from "@apollo/client";
-// import { getCookie, hasCookie } from "cookies-next";
 import Router from "next/router";
-import { useEffect, useState } from "react";
-import TextField from "@mui/material/TextField";
-import { isAuthorizedQuery } from "@/src/graphql/queries/isAuthorized";
+import { Alert, CircularProgress } from "@mui/material";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+
+const theme = createTheme();
 
 export default function SignIn() {
   const [authorized, setAuthorized] = useState(false);
-  const [email, setemail] = useState("");
-  const [password, setPassword] = useState("");
+  const [loginErrorMessage, setLoginErrorMessage] = useState(null);
+
+  const { data: isAuthorized } = useQuery(isAuthorizedQuery);
+
   const [Login, { data: loginData, loading: loginLoading, error: loginError }] =
     useMutation(loginMutation);
-  const { data: isAuthorized } = useQuery(isAuthorizedQuery);
 
   useEffect(() => {
     if (isAuthorized?.isAuthorized) setAuthorized(isAuthorized?.isAuthorized);
   }, [isAuthorized]);
+
+  if (authorized) {
+    Router.push("/");
+  }
 
   useEffect(() => {
     if (loginData) {
@@ -27,47 +43,108 @@ export default function SignIn() {
     }
   }, [loginData]);
 
-  function onSubmit(e) {
-    e.preventDefault();
-    Login({ variables: { email: email, password: password } });
-    client.refetchQueries({ include: "active" });
+  if (loginError) {
+    const err = loginError.networkError.result.errors[0]?.message;
+    if (err !== loginErrorMessage)
+      setLoginErrorMessage(loginError.networkError.result.errors[0]?.message);
   }
 
-  if (authorized) {
-    console.log(authorized);
-    Router.push("/");
-  }
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+
+    Login({
+      variables: {
+        email: data.get("email").trim(),
+        password: data.get("password"),
+      },
+    }).catch((error) => {
+      console.log("Error: " + error);
+    });
+  };
 
   return (
-    <div className={`flex flex-col justify-center items-center`}>
-      <div className="bg-[#3f51b5] w-3/12 px-6 pb-6 mt-14 rounded-2xl flex flex-col justify-center items-center shadow-[0_20px_260px_5px_rgba(99,102,241,0.3)] border-4 border-blue-800">
-        <div>
-          <h1 className="dark:text-white text-white text-6xl font-bold mt-8 max-w-lg text-center tracking-wide leading-snug ">
-            Login to QPGen
-          </h1>
-        </div>
-        <form onSubmit={onSubmit} className="flex flex-col items-center mt-10">
-          <input
-            type="text"
-            placeholder="E-mail"
-            onChange={(e) => setemail(e.target.value.trim())}
-            className="mb-3 w-full rounded-lg h-12 p-4 text-2xl focus:border-blue-800 focus:outline-none focus:border-[3px]"
-          ></input>
-          <input
-            type="password"
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value.trim())}
-            className="mb-6 w-full rounded-lg h-12 p-4 text-2xl focus:border-blue-800 focus:outline-none focus:border-[3px]"
-          ></input>
-          <button
-            type="submit"
-            className="transition ease-in delay-150 w-4/5 bg-gray-900 rounded-md text-[#3f51b5] h-12 text-xl font-semibold text-center items-center mb-3 hover:bg-black hover:text-white hover:scale-105 duration-200"
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
+            <AccountCircleIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Log In
+          </Typography>
+          {loginErrorMessage && (
+            <Alert sx={{ mt: 3, mb: 2 }} variant="filled" severity="error">
+              {loginErrorMessage}
+            </Alert>
+          )}
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
           >
-            Sign In
-          </button>
-        </form>
-        {/* <button onClick={() => logOut()} className="transition ease-in delay-150 w-80 bg-gray-900 rounded-md text-[#3f51b5] font-semibold h-12 text-xl text-center items-center hover:bg-black hover:text-white hover:scale-105 duration-200">Log Out</button> */}
-      </div>
-    </div>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
+            {!loginLoading ? (
+              <Button
+                className="bg-[#1976d2]"
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Log In
+              </Button>
+            ) : (
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                disabled
+              >
+                <CircularProgress color="success" />
+              </Button>
+            )}
+            <Grid
+              container
+              direction="column"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Link href="/signup" variant="body2">
+                {"Don't have an account? Sign Up"}
+              </Link>
+            </Grid>
+          </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 }

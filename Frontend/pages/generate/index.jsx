@@ -8,6 +8,7 @@ import Subjects from "components/generate/subjects";
 import Lessons from "components/generate/lessons";
 import { useRouter } from "next/router";
 import QuestionPaper from "components/generate/questionPaper";
+import DateTime from "components/generate/qp/datetime";
 
 const { getCoursesQuery } = require("@/src/graphql/queries/getCourses");
 const { useQuery } = require("@apollo/client");
@@ -20,6 +21,7 @@ export default function Generate() {
   const [marks, setMarks] = useState([]);
   const [counts, setCounts] = useState([]);
   const [choices, setChoices] = useState([]);
+  const [dateTime, setDateTime] = useState(null);
   const [time, setTime] = useState(null);
   const [examTitle, setExamTitle] = useState(null);
   const [valid, setValid] = useState(false);
@@ -34,10 +36,14 @@ export default function Generate() {
   // }, [course, subject]);
   // console.log("semester", semester);
   if (!generate) {
+    // if (dateTime) console.log(dateTime.getDate());
+    // console.log(dateTime.format('DD'), "-", dateTime.format('MM'), "-", dateTime.format('YYYY'));
+    // console.log(dateTime.format("m"));
     return (
       <>
         <Grid container justifyContent="center">
           <div className="p-3 center">
+            <DateTime dateTime={dateTime} setDateTime={setDateTime} />
             <div className="py-6">
               <Courses setCourse={setCourse} setSemester={setSemester} />
             </div>
@@ -105,6 +111,7 @@ export default function Generate() {
         total={total}
         time={time}
         exam={examTitle}
+        dateTime={dateTime}
       />
     );
   }

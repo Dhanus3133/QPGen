@@ -1,6 +1,7 @@
 import { generateQuestionsQuery } from "@/src/graphql/queries/generateQuestions";
 import { romanize } from "@/src/utils";
 import { useQuery } from "@apollo/client";
+import Analytics from "./qp/analytics";
 import QuestionPaperGen from "./qp/questioncomp";
 
 const QuestionPaper = ({
@@ -33,6 +34,10 @@ const QuestionPaper = ({
         time={time}
         exam={exam}
         dateTime={dateTime}
+      />
+      <Analytics
+        co={generatedData["analytics"]["co"]}
+        btl={generatedData["analytics"]["btl"]}
       />
     </>
   );

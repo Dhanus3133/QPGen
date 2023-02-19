@@ -3,26 +3,18 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
-import { AiOutlineArrowLeft } from "react-icons/ai";
+import { AiOutlineArrowLeft, AiFillHome } from "react-icons/ai";
+import { FaSignOutAlt } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Router from "next/router";
-import styles from "styles/Navbar.module.css";
-import Logo from "./Logo";
-import LogoDark from "./LogoDark";
 import { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { client } from "@/lib/apollo-client";
 import { isAuthorizedQuery } from "@/src/graphql/queries/isAuthorized";
 import { logoutMutation } from "@/src/graphql/mutations/logout";
+import Image from "next/image";
+import { Button } from "@mui/material";
 
 export default function MenuAppBar() {
   const [auth, setAuth] = React.useState(true);
@@ -43,28 +35,9 @@ export default function MenuAppBar() {
 
   const handleLogout = () => {
     LogoutMutation();
-    client.refetchQueries({ include: "all" });
+    client.refetchQueries({ include: "active" });
     Router.push("/");
   };
-
-  const handleChange = (event) => {
-    setAuth(event.target.checked);
-  };
-
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  useEffect(() => {
-    setIsDark(
-      globalThis?.window?.matchMedia("(prefers-color-scheme: dark)").matches
-    );
-  }, []);
-
   return (
     <div id="navbar">
       <Box sx={{ flexGrow: 1 }}>
@@ -72,57 +45,30 @@ export default function MenuAppBar() {
           <Toolbar sx={{ backgroundColor: "#333333" }}>
             <AiOutlineArrowLeft
               onClick={() => router.back()}
-              className="logo mr-3"
+              className="mr-4"
             />
             <Typography
-              className={styles.logo}
               variant="h6"
               component="div"
-              sx={{ flexGrow: 1 }}
+              sx={{ flexGrow: 1, mt: 1 }}
             >
-              <LogoDark />
+              <Image src="/cit-logo.png" alt="CIT" width="220" height="40" />
             </Typography>
-            {auth && (
-              <div>
-                <IconButton
-                  size="large"
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleMenu}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorEl)}
-                  onClose={handleClose}
-                >
-                  <Link href="/">
-                    <MenuItem onClick={handleClose}>Dashboard</MenuItem>
-                  </Link>
-                  {authorized ? (
-                    <Link href="/login">
-                      <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                    </Link>
-                  ) : (
-                    <Link href="/login">
-                      <MenuItem onClick={handleClose}>Login</MenuItem>
-                    </Link>
-                  )}
-                </Menu>
-              </div>
+            {authorized && (
+              <>
+                <Link href="/">
+                  <Button color="inherit">
+                    {" "}
+                    <AiFillHome className="mr-2" />
+                    Home
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button color="inherit" onClick={handleLogout}>
+                    <FaSignOutAlt />
+                  </Button>
+                </Link>
+              </>
             )}
           </Toolbar>
         </AppBar>

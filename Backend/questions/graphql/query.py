@@ -166,6 +166,7 @@ class Query:
         department: str,
         subject_code: str,
         unit: int,
+        search: str,
     ) -> List[QuestionType]:
         return Question.objects.filter(
             lesson__syllabuses__course__regulation__year=regulation,
@@ -175,6 +176,7 @@ class Query:
             lesson__syllabuses__course__department__branch_code__iexact=department,
             lesson__syllabuses__lesson__subject__code=subject_code,
             lesson__syllabuses__unit=unit,
+            question__icontains=search,
         ).order_by("-updated_at", "-created_at")
 
     @gql.django.field

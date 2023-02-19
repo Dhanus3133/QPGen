@@ -5,12 +5,12 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  important: "#root",
+  // important: "#root",
   theme: {
     extend: {},
   },
   plugins: [],
-  corePlugins: {
-    preflight: false,
-  },
+  // corePlugins: {
+  //   preflight: false,
+  // },
 };

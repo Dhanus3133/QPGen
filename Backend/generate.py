@@ -1,4 +1,4 @@
-from questions.models import Lesson, Question, Subject, Syllabus
+from questions.models import BloomsTaxonomyLevel, Lesson, Question, Subject, Syllabus
 from django.db.models import F, Q
 import json
 import yaml
@@ -39,6 +39,10 @@ class Generate:
             .prefetch_related("topics")
         )
         self.choosen_questions = []
+        self.co_analytics = {}
+        self.btl_analytics = {}
+        for btl in BloomsTaxonomyLevel.objects.all():
+            self.btl_analytics[btl.name] = 0
 
     def find_a_question_with_exact_mark(self, lesson, mark, add_to_list):
         question = (
@@ -77,7 +81,7 @@ class Generate:
         return {"q": question, "m": mark}, question.id, tags
 
     def get_different_questions(
-        self, lesson, mark, start_mark_range, question_number, option=None
+        self, lesson, mark, start_mark_range, question_number, part, option=None
     ):
         selected = []
         start = start_mark_range
@@ -123,19 +127,19 @@ class Generate:
             question = random.choice(selected)
 
         for arr in question:
-            # print("==Start==")
-            # print(arr)
-            # print("==End==")
-            # for q in arr['q']:
             self.choosen_questions.append(arr["q"].id)
-
+            co = f"CO{Syllabus.objects.filter(course=self.course).get(lesson=lesson).unit}"
+            if co not in self.co_analytics[part]:
+                self.co_analytics[part][co] = 1
+            else:
+                self.co_analytics[part][co] += 1
+            self.btl_analytics[arr["q"].btl.name] += 1
         if len(selected) == 0:
-            print(selected)
+            # print(selected)
             print("No questions")
             return
         if option != None:
             option += 65
-        # if len(question) > 1:
 
         questions = []
         for i in range(len(question)):
@@ -182,6 +186,8 @@ class Generate:
             part = chr(65 + i)
             data[part] = []
             questions = []
+            self.co_analytics[part] = {}
+
             # print(f'================= Part {part} =================')
             current_count = 0
             for current_lesson in self.lids:
@@ -192,6 +198,7 @@ class Generate:
                             total_mark,
                             2 if total_mark == 2 else 3,
                             question_number,
+                            part,
                             current_count % 2 if has_choice else None,
                         )
                     )
@@ -212,6 +219,7 @@ class Generate:
                             total_mark,
                             2 if total_mark == 2 else 3,
                             question_number,
+                            part,
                             current_count % 2 if has_choice else None,
                         )
                     )
@@ -253,7 +261,8 @@ class Generate:
             "objectives": objectives,
             "outcomes": outcomes,
         }
-        questionsData = {"questions": data, "options": options}
+        analytics = {"co": self.co_analytics, "btl": self.btl_analytics}
+        questionsData = {"questions": data, "options": options, "analytics": analytics}
         j = json.dumps(questionsData)
         return j
 

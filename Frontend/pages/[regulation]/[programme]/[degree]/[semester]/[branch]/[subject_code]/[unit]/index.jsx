@@ -8,7 +8,9 @@ import Stack from "@mui/material/Stack";
 import Vditor from "vditor";
 import RenderVditor from "components/renderVditor";
 import style from "styles/Question.module.css";
-import { Button } from "@mui/material";
+import { Button, FormControl, Grid, OutlinedInput } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import { Box } from "@mui/system";
 
 export default function Lesson() {
   const router = useRouter();
@@ -31,6 +33,7 @@ export default function Lesson() {
       department: router.query.branch,
       subjectCode: router.query.subject_code,
       unit: parseInt(router.query.unit),
+      search: router.query.search || "",
       first: limit,
       after: after,
     },
@@ -53,6 +56,14 @@ export default function Lesson() {
     }
   }, []);
 
+  const handleSearch = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    router.push({
+      query: { ...router.query, search: data.get("search") },
+    });
+  };
+
   if (!router.isReady || loading) return "Loading...";
 
   if (error) return <p>Error: {error.message}</p>;
@@ -64,19 +75,61 @@ export default function Lesson() {
         <p className={`${style.paragraph} ml-1 mb-10 mt-2 text-xl`}>
           Questions are listed below for the selected unit
         </p>
-        <p className={`${style.paragraph} ml-1 mb-10`}>
-          <Link
-            href={{
-              pathname: `${router.pathname}/[questionNumber]`,
-              query: {
-                ...router.query,
-                questionNumber: "add",
-              },
-            }}
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Box
+            component="form"
+            noValidate
+            sx={{ mt: 1 }}
+            onSubmit={handleSearch}
           >
-            <Button variant="text">Add new question</Button>
-          </Link>
-        </p>
+            <Grid item className={`${style.paragraph} ml-1 mb-10`}>
+              <Grid
+                container
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <FormControl sx={{ width: "25ch" }}>
+                  <OutlinedInput
+                    placeholder="Search Question"
+                    name="search"
+                    defaultValue={router.query.search || undefined}
+                  />
+                </FormControl>
+                <Button
+                  className="bg-[#1976d2] ml-2 py-4"
+                  type="submit"
+                  variant="contained"
+                >
+                  <SearchIcon />
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+          <Grid
+            item
+            alignContent="right"
+            alignSelf="right"
+            className={`${style.paragraph} ml-1 mb-10`}
+          >
+            <Link
+              href={{
+                pathname: `${router.pathname}/[questionNumber]`,
+                query: {
+                  ...router.query,
+                  questionNumber: "add",
+                },
+              }}
+            >
+              <Button variant="text">Add new question</Button>
+            </Link>
+          </Grid>
+        </Grid>
       </div>
       <div id="questions" className="mb-5">
         {questions?.map((question, itr) => {
@@ -84,7 +137,7 @@ export default function Lesson() {
           vd ? vd.setValue(q["question"]) : "";
           return (
             <div key={question["cursor"]}>
-              <div className="flex flex-row py-2 w-3/4 mx-auto">
+              <div className="flex flex-row py-2 w-4/5 mx-auto">
                 <div
                   id={q["id"]}
                   className={`basis-10/12 pl-4 ${style.paragraph}`}
@@ -111,7 +164,7 @@ export default function Lesson() {
                 </Link>
                 <br />
               </div>
-              <div className={`${style.line} w-3/4 bg-slate-500 mx-auto`}></div>
+              <div className={`${style.line} w-4/5 bg-slate-500 mx-auto`}></div>
             </div>
           );
         })}

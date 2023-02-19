@@ -60,6 +60,7 @@ INSTALLED_APPS = (
         "core.apps.CoreConfig",
         "users.apps.UsersConfig",
         "questions.apps.QuestionsConfig",
+        "coe.apps.CoeConfig",
     ]
 )
 
@@ -177,13 +178,13 @@ if DEBUG:
     MEDIA_URL = "/backend_media/"
     MEDIA_ROOT = BASE_DIR / "media"
 else:
-    STATIC_URL = '/backend_static/'
+    STATIC_URL = "/backend_static/"
 
     STATICFILES_DIRS = [
-        BASE_DIR / "static", # os.path.join(BASE_DIR, 'static')
+        BASE_DIR / "static",  # os.path.join(BASE_DIR, 'static')
     ]
 
-    STATIC_ROOT = BASE_DIR / "staticfiles-cdn" # in production, we want cdn
+    STATIC_ROOT = BASE_DIR / "staticfiles-cdn"  # in production, we want cdn
     MEDIA_URL = "/backend_media/"
 
     MEDIA_ROOT = BASE_DIR / "staticfiles-cdn" / "uploads"
@@ -243,6 +244,7 @@ CORS_ORIGIN_ALLOW_ALL = False
 # )
 if DEBUG:
     import socket
+
     INTERNAL_IPS = ["127.0.0.1", "localhost", "172.18.*", "172.18.0.5"]
     hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
     INTERNAL_IPS += [ip[:-1] + "1" for ip in ips]

@@ -9,6 +9,7 @@ export const getQuestionsQuery = gql`
     $department: String!
     $subjectCode: String!
     $unit: Int!
+    $search: String!
     $first: Int
     $after: String
   ) {
@@ -20,6 +21,7 @@ export const getQuestionsQuery = gql`
       department: $department
       subjectCode: $subjectCode
       unit: $unit
+      search: $search
       first: $first
       after: $after
     ) {
