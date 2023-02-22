@@ -9,7 +9,7 @@ import BloomsTaxonomies from "components/question/BloomsTaxonomies";
 import Difficulty from "components/question/Difficulty";
 import Topics from "components/question/Topics";
 import PreviousYears from "components/question/PreviousYears";
-import { Button } from "@mui/material";
+import { Button, Rating } from "@mui/material";
 import { createQuestionMutation } from "@/src/graphql/mutations/createQuestion";
 import { getLessonsQuery } from "@/src/graphql/queries/getLessons";
 import { meQuery } from "@/src/graphql/queries/me";
@@ -32,6 +32,7 @@ export default function EditQuestion() {
   const [difficulty, setDifficulty] = useState(null);
   const [topics, setTopics] = useState([]);
   const [previousYears, setPreviousYears] = useState([]);
+  const [priority, setPriority] = useState(null);
 
   const globalID = btoa(`QuestionType:${questionNumber}`);
 
@@ -135,6 +136,7 @@ export default function EditQuestion() {
     setDifficulty(data?.question.difficulty);
     setTopics(data?.question.topics);
     setPreviousYears(data?.question.previousYears);
+    setPriority(data?.question.priority);
   }, [data]);
 
   useEffect(() => {
@@ -155,6 +157,7 @@ export default function EditQuestion() {
   if (questionNumber !== "add" && !called) {
     loadQuestion();
   }
+  console.log(priority);
 
   return (
     <>
@@ -227,6 +230,31 @@ export default function EditQuestion() {
               />
             </div>
           </div>
+          <div className="flex mt-2 items-baseline">
+            <p className="text-xl mr-1 mt-2 font-medium">Priority: </p>
+            {priority ? (
+              <Rating
+                name="rating-3"
+                sx={{ ml: 5 }}
+                max={3}
+                value={priority}
+                defaultValue={priority}
+                onChange={(event, newValue) => {
+                  setPriority(newValue);
+                }}
+              />
+            ) : (
+              <Rating
+                name="rating-3"
+                sx={{ ml: 5 }}
+                max={3}
+                value={0}
+                onChange={(event, newValue) => {
+                  setPriority(newValue);
+                }}
+              />
+            )}
+          </div>
           {question ? (
             <div className="mt-10 mb-3 ">
               <Button
@@ -254,6 +282,7 @@ export default function EditQuestion() {
                       difficulty: difficulty,
                       topics: topicsQL,
                       previousYears: previousYearsQL,
+                      priority: priority,
                     },
                   });
                 }}

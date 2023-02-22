@@ -21,6 +21,8 @@ const QuestionPaperGen = (props) => {
   let total = props.total;
   let time = props.time;
   let exam = props.exam;
+  let set = props.set;
+  let dateTime = props.dateTime;
 
   //------------------------------------
 
@@ -286,7 +288,13 @@ const QuestionPaperGen = (props) => {
             </tr>
             <tr>
               <td className="pl-2">Date/Time</td>
-              <td className="pl-2">Date/Time</td>
+              <td className="pl-2">
+                {dateTime
+                  ? `${dateTime.format("DD")}-${dateTime.format("MM")}-${
+                      dateTime.format("YYYY") % 100
+                    } / ${dateTime.format("hh")}:${dateTime.format("mm")}`
+                  : "Date/Time"}
+              </td>
               <td className="pl-2">Max Marks</td>
               <td className="pl-2">{total} Marks</td>
             </tr>
@@ -300,7 +308,10 @@ const QuestionPaperGen = (props) => {
             </tr>
             <tr>
               <td className="pl-2">Branch</td>
-              <td className="pl-2">CSE Set A</td>
+              <td className="pl-2">
+                {options["branch"]}
+                {set ? ` Set ${set}` : ""}
+              </td>
               <td className="pl-2">Year/Semester</td>
               <td className="pl-2">
                 {romanize((semester + 1) / 2)}/{romanize(semester)}

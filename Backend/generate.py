@@ -1,9 +1,13 @@
-from questions.models import BloomsTaxonomyLevel, Lesson, Question, Subject, Syllabus
+from questions.models import (
+    BloomsTaxonomyLevel,
+    Course,
+    Lesson,
+    Question,
+    Subject,
+    Syllabus,
+)
 from django.db.models import F, Q
 import json
-import yaml
-import os
-import django
 import random
 
 # from django.db.models.query import sync_to_async
@@ -28,7 +32,7 @@ def int_to_roman(number):
 
 class Generate:
     def __init__(self, course, lids, marks, count, choices):
-        self.course = course
+        self.course = Course.objects.get(id=course)
         self.lids = lids
         self.marks = marks
         self.count = count
@@ -45,13 +49,17 @@ class Generate:
             self.btl_analytics[btl.name] = 0
 
     def find_a_question_with_exact_mark(self, lesson, mark, add_to_list):
-        question = (
+        questions = (
             self.questions.filter(lesson=lesson)
             .exclude(id__in=self.choosen_questions)
             .filter(Q(start_mark__lte=mark) & Q(end_mark__gte=mark))
             .order_by("?")
-            .first()
         )
+        if random.choice([True, False, False]):
+            questions.order_by("-priority")
+
+        question = questions.first()
+
         if question == None:
             return None
         if add_to_list:
@@ -59,7 +67,7 @@ class Generate:
         return {"q": question, "m": mark}
 
     def find_a_question_with_exact_mark2(
-        self, lesson, mark, add_to_list, tags, avoid_ids
+        self, lesson, mark, add_to_list, tags, avoid_ids, difficulties
     ):
         questions = (
             self.questions.filter(lesson=lesson)
@@ -68,17 +76,27 @@ class Generate:
             .filter(Q(start_mark__lte=mark) & Q(end_mark__gte=mark))
             .order_by("?")
         )
-        question = questions.exclude(topics__in=tags).first()
+
+        if random.choice([True, False, False]):
+            questions.order_by("-priority")
+
+        question = (
+            questions.exclude(topics__in=tags)
+            .exclude(difficulty__in=difficulties)
+            .first()
+        )
         if question == None:
             question = questions.first()
         if question == None:
-            return None, None, tags
+            return None, None, tags, difficulties
+
+        difficulties.append(question.difficulty.value)
 
         for topic in question.topics.all():
             if topic.id not in tags:
                 tags.append(topic.id)
 
-        return {"q": question, "m": mark}, question.id, tags
+        return {"q": question, "m": mark}, question.id, tags, difficulties
 
     def get_different_questions(
         self, lesson, mark, start_mark_range, question_number, part, option=None
@@ -87,18 +105,21 @@ class Generate:
         start = start_mark_range
         end = mark - start_mark_range
 
+        # difficulty_enum = {"E": 1, "M": 2, "H": 3}
+
         while start <= end:
             avoid_ids = []
             another = []
+            difficulties = []
 
-            res, id, t = self.find_a_question_with_exact_mark2(
-                lesson, start, False, [], avoid_ids
+            res, id, t, difficulties = self.find_a_question_with_exact_mark2(
+                lesson, start, False, [], avoid_ids, difficulties
             )
             another.append(res)
             avoid_ids.append(id)
 
-            res, id, t = self.find_a_question_with_exact_mark2(
-                lesson, end, False, t, avoid_ids
+            res, id, t, difficulties = self.find_a_question_with_exact_mark2(
+                lesson, end, False, t, avoid_ids, difficulties
             )
             another.append(res)
             # avoid_ids.append(id)
@@ -244,10 +265,18 @@ class Generate:
         outcomes = list(
             list(
                 Syllabus.objects.filter(course=1)
-                .filter(lesson__in=[6, 7, 8, 9, 10])
+                .filter(lesson__in=self.lids)
                 .order_by("unit")
                 .values_list("lesson__outcome", "lesson__outcome_btl__name")
             )
+        )
+
+        depts = (
+            Syllabus.objects.filter(
+                course__semester=self.course.semester, lesson__subject=subject
+            )
+            .distinct("course", "lesson__subject")
+            .values_list("course__department__branch_code", flat=True)
         )
 
         options = {
@@ -260,6 +289,7 @@ class Generate:
             "subjectCO": subject.co,
             "objectives": objectives,
             "outcomes": outcomes,
+            "branch": "/".join(depts),
         }
         analytics = {"co": self.co_analytics, "btl": self.btl_analytics}
         questionsData = {"questions": data, "options": options, "analytics": analytics}

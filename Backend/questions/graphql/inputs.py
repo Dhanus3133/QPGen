@@ -32,6 +32,7 @@ class QuestionInput:
     created_by: Optional[gql.NodeInput]
     topics: gql.auto
     previous_years: gql.auto
+    priority: gql.auto
 
 
 @gql.django.partial(Question)

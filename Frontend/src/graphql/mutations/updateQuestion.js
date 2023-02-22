@@ -11,6 +11,7 @@ export const updateQuestionMutation = gql`
     $difficulty: DifficultyEnum!
     $topics: [NodeInputPartial!]
     $previousYears: [NodeInputPartial!]
+    $priority: Int!
   ) {
     updateQuestion(
       input: {
@@ -23,6 +24,7 @@ export const updateQuestionMutation = gql`
         difficulty: $difficulty
         topics: { set: $topics }
         previousYears: { set: $previousYears }
+        priority: $priority
       }
     ) {
       ... on QuestionType {

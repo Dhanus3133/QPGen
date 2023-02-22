@@ -28,6 +28,7 @@ export const getQuestionQuery = gql`
         month
         year
       }
+      priority
       createdAt
       updatedAt
     }

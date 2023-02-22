@@ -172,7 +172,7 @@ export default function Lesson() {
 
       <Stack alignItems="center">
         <Pagination
-          count={Math.floor(totalCount / limit)}
+          count={Math.ceil(totalCount / limit)}
           page={pageNo}
           color="primary"
           variant="outlined"

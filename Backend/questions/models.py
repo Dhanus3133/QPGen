@@ -292,7 +292,9 @@ class Question(TimeStampedModel):
     previous_years = models.ManyToManyField(
         PreviousYearsQP, related_name="questions", blank=True
     )
-    # COE -> only one -> Expert for the subject model
+    priority = models.IntegerField(
+        default=0, validators=[MinValueValidator(0), MaxValueValidator(3)]
+    )
 
     def save(self, *args, **kwargs):
         self.start_mark = self.mark.start

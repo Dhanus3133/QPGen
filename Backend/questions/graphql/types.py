@@ -141,5 +141,6 @@ class QuestionType(gql.Node):
     created_by: UserType
     topics: List[TopicType]
     previous_years: List[PreviousYearsQPType]
+    priority: gql.auto
     created_at: gql.auto
     updated_at: gql.auto

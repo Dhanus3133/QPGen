@@ -12,36 +12,49 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import { useMutation } from "@apollo/client";
+import { signupMutation } from "@/src/graphql/mutations/signup";
+import { useState } from "react";
+import { CircularProgress } from "@mui/material";
 
 const theme = createTheme();
 
 export default function SignUp() {
+  const [Signup, { data, loading, error }] = useMutation(signupMutation);
+  const [errors, setErrors] = useState(null);
+  console.log(data);
+
   const handleSubmit = (event) => {
     event.preventDefault();
+    setErrors(null);
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+    Signup({
+      variables: {
+        firstName: data.get("firstName"),
+        lastName: data.get("lastName"),
+        email: data.get("email"),
+        password: data.get("password"),
+      },
+    }).catch((error) => {
+      console.log("Error: " + error);
     });
   };
+
+  if (error && !errors) {
+    try {
+      setErrors(JSON.parse(error.message.replace(/'/g, '"')));
+    } catch (err) {
+      console.log(error);
+    }
+  }
+  if (data?.createNewUser) {
+    return (
+      <>
+        <p>Verification Email Sent!</p>
+        <Link href="login">Click here to Login!</Link>
+      </>
+    );
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -70,12 +83,14 @@ export default function SignUp() {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  autoComplete="given-name"
+                  autoComplete="first-name"
                   name="firstName"
                   required
                   fullWidth
                   id="firstName"
                   label="First Name"
+                  error={errors?.first_name ? true : false}
+                  helperText={errors?.first_name ? errors.first_name : ""}
                   autoFocus
                 />
               </Grid>
@@ -86,6 +101,8 @@ export default function SignUp() {
                   id="lastName"
                   label="Last Name"
                   name="lastName"
+                  error={errors?.last_name ? true : false}
+                  helperText={errors?.last_name ? errors.last_name : ""}
                   autoComplete="family-name"
                 />
               </Grid>
@@ -96,6 +113,8 @@ export default function SignUp() {
                   id="email"
                   label="Email Address"
                   name="email"
+                  error={errors?.email ? true : false}
+                  helperText={errors?.email ? errors.email : ""}
                   autoComplete="email"
                 />
               </Grid>
@@ -107,36 +126,39 @@ export default function SignUp() {
                   label="Password"
                   type="password"
                   id="password"
+                  error={errors?.password ? true : false}
+                  helperText={errors?.password ? errors.password : ""}
                   autoComplete="new-password"
                 />
               </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
-                  }
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
-              </Grid>
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign Up
-            </Button>
+            {!loading ? (
+              <Button
+                className="bg-[#1976d2]"
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign Up
+              </Button>
+            ) : (
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                disabled
+              >
+                <CircularProgress color="success" />
+              </Button>
+            )}
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
-                  Already have an account? Sign in
-                </Link>
+                <Link href={"/login"}>Already have an account? Sign in</Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>
   );

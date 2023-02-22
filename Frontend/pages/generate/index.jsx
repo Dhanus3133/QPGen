@@ -1,17 +1,11 @@
 import { useEffect, useState } from "react";
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
 import Courses from "components/generate/courses";
-import { Button, Grid } from "@mui/material";
+import { Button, Grid, TextField } from "@mui/material";
 import Marks from "components/generate/marks";
 import Subjects from "components/generate/subjects";
 import Lessons from "components/generate/lessons";
-import { useRouter } from "next/router";
 import QuestionPaper from "components/generate/questionPaper";
 import DateTime from "components/generate/qp/datetime";
-
-const { getCoursesQuery } = require("@/src/graphql/queries/getCourses");
-const { useQuery } = require("@apollo/client");
 
 export default function Generate() {
   const [courses, setCourses] = useState([]);
@@ -29,6 +23,7 @@ export default function Generate() {
   const [units, setUnits] = useState([]);
   const [lessonsIDs, setLessonsIDs] = useState([]);
   const [generate, setGenerate] = useState(false);
+  const [set, setSet] = useState(null);
 
   // useEffect(() => {
   //   setCourse(1);
@@ -36,6 +31,11 @@ export default function Generate() {
   // }, [course, subject]);
   // console.log("semester", semester);
   if (!generate) {
+    if (dateTime) {
+      // console.log(dateTime.format("DD"));
+      console.log();
+      // ${dateTime.format("mm"})`);
+    }
     // if (dateTime) console.log(dateTime.getDate());
     // console.log(dateTime.format('DD'), "-", dateTime.format('MM'), "-", dateTime.format('YYYY'));
     // console.log(dateTime.format("m"));
@@ -44,6 +44,15 @@ export default function Generate() {
         <Grid container justifyContent="center">
           <div className="p-3 center">
             <DateTime dateTime={dateTime} setDateTime={setDateTime} />
+            <div className="py-6">
+              <TextField
+                id="set"
+                label="Set"
+                fullWidth
+                variant="filled"
+                onChange={(e) => setSet(e.target.value)}
+              />
+            </div>
             <div className="py-6">
               <Courses setCourse={setCourse} setSemester={setSemester} />
             </div>
@@ -112,8 +121,8 @@ export default function Generate() {
         time={time}
         exam={examTitle}
         dateTime={dateTime}
+        set={set}
       />
     );
   }
 }
-// <Subjects course={course} setLesson={setLesson} />

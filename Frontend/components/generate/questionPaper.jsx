@@ -15,6 +15,7 @@ const QuestionPaper = ({
   time,
   exam,
   dateTime,
+  set,
 }) => {
   const { data, loading, error } = useQuery(generateQuestionsQuery, {
     variables: { course, lids, marks, counts, choices },
@@ -34,6 +35,7 @@ const QuestionPaper = ({
         time={time}
         exam={exam}
         dateTime={dateTime}
+        set={set}
       />
       <Analytics
         co={generatedData["analytics"]["co"]}

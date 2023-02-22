@@ -1,9 +1,20 @@
+import uuid
+from django.conf import settings
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
 from django.contrib.auth.base_user import BaseUserManager
 from django.apps import apps
 from django.contrib.auth.hashers import make_password
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models.fields import validators
 from django.utils.translation import gettext_lazy as _
+from django.utils.html import strip_tags
+from django.template.loader import render_to_string
+
+from core.models import TimeStampedModel
+
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -42,19 +53,79 @@ class UserManager(BaseUserManager):
 
         return self._create_user(email, password, **extra_fields)
 
-
     # objects = UserManager()
 
+
 class User(AbstractUser):
-    email = models.EmailField(_('Email Address'), unique=True)
+    email = models.EmailField(_("Email Address"), unique=True)
     username = None
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
     objects = UserManager()
 
 
+def validate_email(email):
+    if User.objects.filter(email=email).exists():
+        raise ValidationError("User with this email already exists!")
+    if email.split("@")[-1] != "citchennai.net":
+        raise ValidationError("Not an Valid Email!")
 
-    # email = models.EmailField(_('Email Address'), unique=True)
-    # REQUIRED_FIELDS = ['email']
 
+class NewUser(TimeStampedModel):
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    email = models.EmailField(max_length=150, validators=[validate_email], unique=True)
+    password = models.TextField(max_length=150)
+    email_verified = models.BooleanField(default=False)
+    email_secret = models.CharField(
+        max_length=120, default="", blank=True, editable=False
+    )
+    approved = models.BooleanField(default=False)
 
+    def verify_email(self):
+        if self.email_verified is False:
+            secret = uuid.uuid4().hex[:30]
+            self.email_secret = secret
+            html_message = render_to_string(
+                "emails/verify_email.html",
+                context={
+                    "domain": settings.DOMAIN,
+                    "secret": secret,
+                    "name": f"{self.first_name} {self.last_name}",
+                },
+            )
+            send_mail(
+                "Verify your Account!",
+                strip_tags(html_message),
+                "Email Verification",
+                [self.email],
+                fail_silently=False,
+                html_message=html_message,
+            )
+            self.save()
+        return
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        if not self.id:
+            try:
+                validate_password(self.password, self)
+            except ValidationError as err:
+                raise ValidationError({"password": err})
+            self.password = make_password(self.password)
+        if self.approved:
+            if self.email_verified:
+                User.objects.create(
+                    first_name=self.first_name,
+                    last_name=self.last_name,
+                    email=self.email,
+                    password=self.password,
+                )
+                self.delete()
+                return
+            else:
+                raise ValidationError("User didn't yet verifed the Email!")
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.email
