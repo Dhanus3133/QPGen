@@ -310,42 +310,12 @@ class Question(TimeStampedModel):
         return f"{self.question}"
 
 
-class CreateSubject(TimeStampedModel):
-    subject = models.ForeignKey(
-        Subject,
-        on_delete=models.CASCADE,
-        related_name="created_subjects",
-        null=True,
-        blank=True,
+class CreateSyllabus(TimeStampedModel):
+    syllabus = models.ManyToManyField(
+        Syllabus,
+        related_name="created_syllabus",
     )
     faculty = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="create_subjects"
     )
-    secret = models.CharField(max_length=120, default="", blank=True)
     is_completed = models.BooleanField(default=False)
-
-    @sync_to_async
-    def send_token_email(self):
-        if self.is_completed is False:
-            print("sending email...")
-            secret = uuid.uuid4().hex[:30]
-            self.secret = secret
-            print("Sending email to ", self.faculty.email)
-            html_message = render_to_string(
-                "add/subject_email.html",
-                context={
-                    "domain": settings.DOMAIN,
-                    "secret": secret,
-                    "name": f"{self.faculty.first_name} {self.faculty.last_name}",
-                },
-            )
-            send_mail(
-                "Create New Subject!",
-                strip_tags(html_message),
-                "Create New Subject",
-                [self.faculty.email],
-                fail_silently=False,
-                html_message=html_message,
-            )
-            self.save()
-        return

@@ -3,7 +3,7 @@ from typing import List, cast
 
 from strawberry_django_plus.relay import GlobalID
 from questions.graphql.permissions import IsAFaculty
-from questions.models import CreateSubject, Lesson, Topic
+from questions.models import CreateSyllabus, Lesson, Topic
 from strawberry.types import Info
 from strawberry_django_plus import gql
 from strawberry_django_jwt.decorators import login_required
@@ -52,14 +52,12 @@ class Mutation:
             ),
         )
 
-
     @gql.django.field
     async def assign_subject_to_faculties(
         self, info: Info, faculties: List[int]
     ) -> bool:
         for faculty in faculties:
-            cs = await CreateSubject.objects.acreate(
+            cs = await CreateSyllabus.objects.acreate(
                 faculty=await User.objects.aget(id=faculty)
             )
-            await cs.send_token_email()
         return True

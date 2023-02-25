@@ -15,6 +15,7 @@ from questions.graphql.types import (
     BloomsTaxonomyLevelType,
     CourseType,
     FacultiesHandlingType,
+    LessonType,
     MarkRangeType,
     PreviousYearsQPType,
     QuestionType,
@@ -25,7 +26,8 @@ from questions.graphql.types import (
 
 from questions.models import (
     Course,
-    CreateSubject,
+    CreateSyllabus,
+    Lesson,
     Question,
     Subject,
     Syllabus,
@@ -214,10 +216,10 @@ class Query:
 
     @gql.django.field
     @login_required
-    async def validate_create_subject_token(self, info: Info, token: str) -> bool:
+    async def validate_create_syllabus(self, info: Info) -> bool:
         user = await get_current_user_from_info(info)
-        if await CreateSubject.objects.filter(
-            secret=token, faculty=user, is_completed=False
+        if await CreateSyllabus.objects.filter(
+            faculty=user, is_completed=False
         ).aexists():
             return True
         else:
@@ -227,3 +229,8 @@ class Query:
     @login_required
     async def get_all_subjects(self, info: Info) -> List[SubjectType]:
         return await sync_to_async(list)(Subject.objects.all())
+
+    @gql.django.field
+    @login_required
+    async def get_lessons_by_subject_id(self, subject_id: int) -> List[LessonType]:
+        return await sync_to_async(list)(Lesson.objects.filter(subject=subject_id))

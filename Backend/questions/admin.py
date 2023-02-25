@@ -6,7 +6,11 @@ from .models import *
 
 @admin.register(Image)
 class ImageModelAdmin(admin.ModelAdmin):
-    list_display = ("__str__", "uploaded_at", "get_thumbnail",)
+    list_display = (
+        "__str__",
+        "uploaded_at",
+        "get_thumbnail",
+    )
 
     def get_thumbnail(self, obj):
         return mark_safe(f'<img width="50px" src="{obj.photo.url}"')
@@ -56,9 +60,18 @@ class LessonModelAdmin(admin.ModelAdmin):
 
 @admin.register(Topic)
 class TopicModelAdmin(admin.ModelAdmin):
-    list_display = ('name', 'lesson', 'active', 'priority',)
-    list_filter = ('lesson', 'active', 'priority',)
-    search_fields = ('name',)
+    list_display = (
+        "name",
+        "lesson",
+        "active",
+        "priority",
+    )
+    list_filter = (
+        "lesson",
+        "active",
+        "priority",
+    )
+    search_fields = ("name",)
 
 
 @admin.register(Course)
@@ -86,9 +99,13 @@ class QuestionModelAdmin(admin.ModelAdmin):
     # formfield_overrides = {
     #     models.TextField: {'widget': VditorWidget}
     # }
-    list_filter = ('start_mark', 'end_mark', 'lesson',)
-    search_fields = ('question',)
-    raw_id_fields = ('lesson',)
+    list_filter = (
+        "start_mark",
+        "end_mark",
+        "lesson",
+    )
+    search_fields = ("question",)
+    raw_id_fields = ("lesson",)
     # pass
 
     def save_model(self, request, obj, form, change):
@@ -96,14 +113,10 @@ class QuestionModelAdmin(admin.ModelAdmin):
         obj.save()
 
 
-
-
-@admin.register(CreateSubject)
-class CreateSubjectModelAdmin(admin.ModelAdmin):
+@admin.register(CreateSyllabus)
+class CreateSyllabusModelAdmin(admin.ModelAdmin):
     list_display = (
         "faculty",
-        "subject",
         "is_completed",
     )
     list_filter = ("is_completed",)
-
