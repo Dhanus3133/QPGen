@@ -32,7 +32,11 @@ export default function Regulation() {
 
   return (
     <>
-      <SuperCard data={cleanData} currentPath={router.asPath} type="Programme" />
+      <SuperCard
+        data={cleanData}
+        currentPath={router.asPath}
+        type="Programme"
+      />
     </>
   );
 }

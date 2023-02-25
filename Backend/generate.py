@@ -6,7 +6,7 @@ from questions.models import (
     Subject,
     Syllabus,
 )
-from django.db.models import F, Q
+from django.db.models import Count, F, Q
 import json
 import random
 
@@ -56,8 +56,9 @@ class Generate:
             .order_by("?")
         )
         if random.choice([True, False, False]):
-            questions.order_by("-priority")
-
+            questions = questions.annotate(
+                total=(F("priority") * 2) + Count("previous_years")
+            ).order_by("-total", "-priority")
         question = questions.first()
 
         if question == None:
@@ -78,7 +79,9 @@ class Generate:
         )
 
         if random.choice([True, False, False]):
-            questions.order_by("-priority")
+            questions = questions.annotate(
+                total=(F("priority") * 2) + Count("previous_years")
+            ).order_by("-total", "-priority")
 
         question = (
             questions.exclude(topics__in=tags)

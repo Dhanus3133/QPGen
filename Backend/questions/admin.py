@@ -94,3 +94,16 @@ class QuestionModelAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         obj.created_by = request.user
         obj.save()
+
+
+
+
+@admin.register(CreateSubject)
+class CreateSubjectModelAdmin(admin.ModelAdmin):
+    list_display = (
+        "faculty",
+        "subject",
+        "is_completed",
+    )
+    list_filter = ("is_completed",)
+

@@ -15,6 +15,6 @@ class UserFactory(factory.django.DjangoModelFactory):
     #     lambda x, n: f'{x.first_name.lower()}{x.last_name.lower()}{n+random.randrange(1,100)}'
     # )
     email = factory.LazyAttributeSequence(
-        lambda x, n: f'{x.first_name.lower()}{x.last_name.lower()}{n+random.randrange(1,100)}@gmail.com'
+        lambda x, n: f'{x.first_name.lower()}{x.last_name.lower()}{n+random.randrange(1,100)}@testcitchennai.net'
     )
     password = make_password('123')

@@ -1,6 +1,4 @@
-import { client } from "@/lib/apollo-client";
 import { departmentsAccessToQuery } from "@/src/graphql/queries/deptAccess";
-import { allUsersQuery } from "@/src/graphql/queries/users";
 import { useQuery } from "@apollo/client";
 import SuperCard from "components/SuperCard";
 

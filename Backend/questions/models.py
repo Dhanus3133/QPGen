@@ -1,8 +1,14 @@
+import uuid
+from asgiref.sync import sync_to_async
+from django.conf import settings
+from django.core.mail import send_mail
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator, ValidationError
 from django.utils import timezone
 from django.utils.text import slugify
 from django_choices_field import TextChoicesField
+from django.utils.html import strip_tags
+from django.template.loader import render_to_string
 from core.models import TimeStampedModel
 from users.models import User
 
@@ -96,16 +102,16 @@ class Department(models.Model):
     """Department Model"""
 
     programme = models.ForeignKey(
-        Programme, on_delete=models.CASCADE, related_name="departments"
+        Programme, on_delete=models.PROTECT, related_name="departments"
     )
     degree = models.ForeignKey(
-        Degree, on_delete=models.CASCADE, related_name="departments"
+        Degree, on_delete=models.PROTECT, related_name="departments"
     )
     branch = models.CharField(max_length=80)
     branch_code = models.CharField(max_length=10)
     hod = models.ForeignKey(
         User,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="departments",
         blank=True,
         null=True,
@@ -144,13 +150,11 @@ class Lesson(models.Model):
 
     name = models.CharField(max_length=200)
     subject = models.ForeignKey(
-        Subject, on_delete=models.CASCADE, related_name="lessons"
+        Subject, on_delete=models.PROTECT, related_name="lessons"
     )
     objective = models.TextField()
     outcome = models.TextField()
-    outcome_btl = models.ForeignKey(
-        BloomsTaxonomyLevel, on_delete=models.CASCADE, related_name="lessons"
-    )
+    outcome_btl = models.ManyToManyField(BloomsTaxonomyLevel, related_name="lessons")
 
     class Meta:
         unique_together = ["name", "subject"]
@@ -164,7 +168,7 @@ class Topic(models.Model):
     """Topic Model"""
 
     name = models.CharField(max_length=200)
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="topics")
+    lesson = models.ForeignKey(Lesson, on_delete=models.PROTECT, related_name="topics")
     active = models.BooleanField(default=True)
     priority = models.BooleanField(default=False)
 
@@ -180,13 +184,13 @@ class Course(models.Model):
     """Course Model"""
 
     regulation = models.ForeignKey(
-        Regulation, on_delete=models.CASCADE, related_name="courses"
+        Regulation, on_delete=models.PROTECT, related_name="courses"
     )
     semester = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(10)]
     )
     department = models.ForeignKey(
-        Department, on_delete=models.CASCADE, related_name="courses"
+        Department, on_delete=models.PROTECT, related_name="courses"
     )
     active = models.BooleanField(default=True)
 
@@ -202,11 +206,11 @@ class Syllabus(models.Model):
     """Syllabus Model"""
 
     course = models.ForeignKey(
-        Course, on_delete=models.CASCADE, related_name="syllabuses"
+        Course, on_delete=models.PROTECT, related_name="syllabuses"
     )
     unit = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(25)])
     lesson = models.ForeignKey(
-        Lesson, on_delete=models.CASCADE, related_name="syllabuses"
+        Lesson, on_delete=models.PROTECT, related_name="syllabuses"
     )
 
     class Meta:
@@ -242,10 +246,10 @@ class FacultiesHandling(models.Model):
     """Faculties Handling Model"""
 
     course = models.ForeignKey(
-        Course, on_delete=models.CASCADE, related_name="faculties"
+        Course, on_delete=models.PROTECT, related_name="faculties"
     )
     subject = models.ForeignKey(
-        Subject, on_delete=models.CASCADE, related_name="faculties"
+        Subject, on_delete=models.PROTECT, related_name="faculties"
     )
     faculties = models.ManyToManyField(User, related_name="faculties")
 
@@ -268,13 +272,13 @@ class Question(TimeStampedModel):
         DIFFICULTY_HARD = "H", "Hard"
 
     lesson = models.ForeignKey(
-        Lesson, on_delete=models.CASCADE, related_name="questions"
+        Lesson, on_delete=models.PROTECT, related_name="questions"
     )
     question = models.TextField()
     answer = models.TextField(blank=True, null=True)
     mark = models.ForeignKey(
         MarkRange,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="questions",
         null=True,
         blank=False,
@@ -282,11 +286,11 @@ class Question(TimeStampedModel):
     start_mark = models.IntegerField(blank=True)
     end_mark = models.IntegerField(blank=True)
     btl = models.ForeignKey(
-        BloomsTaxonomyLevel, on_delete=models.CASCADE, related_name="questions"
+        BloomsTaxonomyLevel, on_delete=models.PROTECT, related_name="questions"
     )
     difficulty = TextChoicesField(choices_enum=DifficultyEnum)
     created_by = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="questions"
+        User, on_delete=models.PROTECT, related_name="questions"
     )
     topics = models.ManyToManyField(Topic, related_name="questions", blank=True)
     previous_years = models.ManyToManyField(
@@ -304,3 +308,44 @@ class Question(TimeStampedModel):
 
     def __str__(self):
         return f"{self.question}"
+
+
+class CreateSubject(TimeStampedModel):
+    subject = models.ForeignKey(
+        Subject,
+        on_delete=models.CASCADE,
+        related_name="created_subjects",
+        null=True,
+        blank=True,
+    )
+    faculty = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="create_subjects"
+    )
+    secret = models.CharField(max_length=120, default="", blank=True)
+    is_completed = models.BooleanField(default=False)
+
+    @sync_to_async
+    def send_token_email(self):
+        if self.is_completed is False:
+            print("sending email...")
+            secret = uuid.uuid4().hex[:30]
+            self.secret = secret
+            print("Sending email to ", self.faculty.email)
+            html_message = render_to_string(
+                "add/subject_email.html",
+                context={
+                    "domain": settings.DOMAIN,
+                    "secret": secret,
+                    "name": f"{self.faculty.first_name} {self.faculty.last_name}",
+                },
+            )
+            send_mail(
+                "Create New Subject!",
+                strip_tags(html_message),
+                "Create New Subject",
+                [self.faculty.email],
+                fail_silently=False,
+                html_message=html_message,
+            )
+            self.save()
+        return

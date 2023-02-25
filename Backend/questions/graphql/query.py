@@ -1,6 +1,8 @@
+from django.core.exceptions import ObjectDoesNotExist
 from strawberry_django_plus.gql import relay
 from typing import Iterable, List, Optional
 from asgiref.sync import sync_to_async
+from coe.graphql.permissions import IsACOE
 from generate import Generate
 import strawberry
 from strawberry.scalars import JSON
@@ -23,6 +25,7 @@ from questions.graphql.types import (
 
 from questions.models import (
     Course,
+    CreateSubject,
     Question,
     Subject,
     Syllabus,
@@ -75,7 +78,7 @@ class Query:
             ).distinct("subject")
         )
 
-    @gql.django.field
+    @gql.django.field(permission_classes=[IsACOE])
     @login_required
     def generate_questions(
         self,
@@ -208,3 +211,19 @@ class Query:
                 lesson__syllabuses__unit=unit,
             ).order_by("name")
         )
+
+    @gql.django.field
+    @login_required
+    async def validate_create_subject_token(self, info: Info, token: str) -> bool:
+        user = await get_current_user_from_info(info)
+        if await CreateSubject.objects.filter(
+            secret=token, faculty=user, is_completed=False
+        ).aexists():
+            return True
+        else:
+            return False
+
+    @gql.django.field
+    @login_required
+    async def get_all_subjects(self, info: Info) -> List[SubjectType]:
+        return await sync_to_async(list)(Subject.objects.all())

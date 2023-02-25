@@ -15,7 +15,6 @@ export default function VerifyEmail() {
       VerifyEmailSignup({ variables: { token } });
     }
   }, [token]);
-  console.log(data);
 
   if (loading) {
     return <p>Checking StandBy!</p>;

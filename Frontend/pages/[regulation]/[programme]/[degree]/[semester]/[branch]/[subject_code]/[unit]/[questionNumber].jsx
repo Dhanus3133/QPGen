@@ -9,7 +9,7 @@ import BloomsTaxonomies from "components/question/BloomsTaxonomies";
 import Difficulty from "components/question/Difficulty";
 import Topics from "components/question/Topics";
 import PreviousYears from "components/question/PreviousYears";
-import { Button, Rating } from "@mui/material";
+import { Button, Rating, Switch } from "@mui/material";
 import { createQuestionMutation } from "@/src/graphql/mutations/createQuestion";
 import { getLessonsQuery } from "@/src/graphql/queries/getLessons";
 import { meQuery } from "@/src/graphql/queries/me";
@@ -157,7 +157,6 @@ export default function EditQuestion() {
   if (questionNumber !== "add" && !called) {
     loadQuestion();
   }
-  console.log(priority);
 
   return (
     <>
@@ -255,6 +254,11 @@ export default function EditQuestion() {
               />
             )}
           </div>
+          <div className="flex mt-2 items-baseline">
+            <p className="text-xl mr-1 mt-2 font-medium">Scenario Based: </p>
+            <Switch />
+          </div>
+
           {question ? (
             <div className="mt-10 mb-3 ">
               <Button
