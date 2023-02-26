@@ -1,4 +1,3 @@
-from django.core.exceptions import ObjectDoesNotExist
 from strawberry_django_plus.gql import relay
 from typing import Iterable, List, Optional
 from asgiref.sync import sync_to_async
@@ -27,6 +26,7 @@ from questions.graphql.types import (
 from questions.models import (
     Course,
     CreateSyllabus,
+    FacultiesHandling,
     Lesson,
     Question,
     Subject,
@@ -234,3 +234,11 @@ class Query:
     @login_required
     async def get_lessons_by_subject_id(self, subject_id: int) -> List[LessonType]:
         return await sync_to_async(list)(Lesson.objects.filter(subject=subject_id))
+
+    @gql.django.field(permission_classes=[IsACOE])
+    async def faculties_handlings(
+        self, info: Info, course: int, subject: int
+    ) -> List[FacultiesHandlingType]:
+        return await sync_to_async(list)(
+            FacultiesHandling.objects.filter(course=course, subject=subject)
+        )

@@ -214,7 +214,7 @@ class Syllabus(models.Model):
     )
 
     class Meta:
-        unique_together = ["course", "unit", "lesson"]
+        unique_together = ["course", "lesson"]
 
     def __str__(self):
         return f"{self.course} | {self.unit} | {self.lesson}"
@@ -299,6 +299,7 @@ class Question(TimeStampedModel):
     priority = models.IntegerField(
         default=0, validators=[MinValueValidator(0), MaxValueValidator(3)]
     )
+    scenario_based = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         self.start_mark = self.mark.start
@@ -312,8 +313,7 @@ class Question(TimeStampedModel):
 
 class CreateSyllabus(TimeStampedModel):
     syllabus = models.ManyToManyField(
-        Syllabus,
-        related_name="created_syllabus",
+        Syllabus, related_name="created_syllabus", blank=True
     )
     faculty = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="create_subjects"

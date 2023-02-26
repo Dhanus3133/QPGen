@@ -1,19 +1,44 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import Courses from "components/generate/courses";
-import { Autocomplete, Button } from "@mui/material";
+import { Alert, Autocomplete, Button } from "@mui/material";
 import Subjects from "components/add/subject/subjects";
 import Lessons from "components/add/subject/lessons";
 import { Box } from "@mui/system";
 import ValidateSyllabus from "components/createSyllabus/validateSyllabus";
+import { createSyllabusesMutation } from "@/src/graphql/mutations/createSyllabuses";
+import { getID } from "@/src/utils";
 
-export default function AddSubject() {
+export default function AddSyllabus() {
   const [valid, setValid] = useState(false);
   const [course, setCourse] = useState(null);
   const [semester, setSemester] = useState(null);
   const [subject, setSubject] = useState(null);
   const [lessons, setLessons] = useState([]);
+
+  const [CreateSyllabuses, { data, loading, error }] = useMutation(
+    createSyllabusesMutation
+  );
+
+  const handleSubmit = () => {
+    const units = [];
+    const lessonIds = [];
+    lessons.map((lesson) => {
+      lessonIds.push(parseInt(getID(lesson["id"])));
+      units.push(lesson["unit"]);
+    });
+
+    CreateSyllabuses({
+      variables: { course: course, units: units, lessons: lessonIds },
+    }).catch((error) => {
+      console.log("Error: " + error);
+    });
+  };
+
+  if (data?.createSyllabuses) {
+    return <p>Syllabus has been created!</p>;
+  }
 
   return (
     <>
@@ -23,7 +48,7 @@ export default function AddSubject() {
             <Courses setCourse={setCourse} setSemester={setSemester} />
           </Box>
           <Box sx={{ pt: 2 }}>
-            <Subjects setSubject={setSubject} />
+            <Subjects subject={subject} setSubject={setSubject} />
           </Box>
           <Box sx={{ pt: 2 }}>
             <Lessons
@@ -32,14 +57,16 @@ export default function AddSubject() {
               setLessons={setLessons}
             />
           </Box>
+          {error && (
+            <Alert sx={{ mt: 3, mb: 2 }} variant="filled" severity="error">
+              {error.message}
+            </Alert>
+          )}
           <Button
             className="bg-[#1976d2]"
-            type="submit"
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            onClick={() => {
-              console.log(lessons);
-            }}
+            onClick={handleSubmit}
           >
             Create
           </Button>

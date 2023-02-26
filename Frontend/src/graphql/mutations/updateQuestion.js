@@ -12,6 +12,7 @@ export const updateQuestionMutation = gql`
     $topics: [NodeInputPartial!]
     $previousYears: [NodeInputPartial!]
     $priority: Int!
+    $scenarioBased: Boolean!
   ) {
     updateQuestion(
       input: {
@@ -25,6 +26,7 @@ export const updateQuestionMutation = gql`
         topics: { set: $topics }
         previousYears: { set: $previousYears }
         priority: $priority
+        scenarioBased: $scenarioBased
       }
     ) {
       ... on QuestionType {

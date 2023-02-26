@@ -144,3 +144,4 @@ class QuestionType(gql.Node):
     priority: gql.auto
     created_at: gql.auto
     updated_at: gql.auto
+    scenario_based: gql.auto

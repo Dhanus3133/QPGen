@@ -14,7 +14,7 @@ export default function Subjects({ course, setSubject }) {
   }, [data]);
 
   useEffect(() => {
-    if (course !== null) {
+    if (course) {
       getSubjects({
         variables: {
           courseId: course,

@@ -21,7 +21,7 @@ export default function Courses({ setCourse, setSemester }) {
       onChange={(event, course) => {
         const id = course ? parseInt(getID(course["id"])) : null;
         setCourse(id);
-        setSemester(course["semester"]);
+        setSemester && setSemester(course["semester"]);
       }}
       getOptionLabel={(option) =>
         `${option["regulation"]["year"]} | ${option["department"]["programme"]["name"]} | ${option["department"]["degree"]["name"]} | ${option["department"]["branchCode"]} | ${option["semester"]}`

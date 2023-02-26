@@ -33,6 +33,7 @@ export default function EditQuestion() {
   const [topics, setTopics] = useState([]);
   const [previousYears, setPreviousYears] = useState([]);
   const [priority, setPriority] = useState(null);
+  const [scenarioBased, setScenarioBased] = useState(false);
 
   const globalID = btoa(`QuestionType:${questionNumber}`);
 
@@ -137,6 +138,7 @@ export default function EditQuestion() {
     setTopics(data?.question.topics);
     setPreviousYears(data?.question.previousYears);
     setPriority(data?.question.priority);
+    setScenarioBased(data?.question.scenarioBased);
   }, [data]);
 
   useEffect(() => {
@@ -256,7 +258,10 @@ export default function EditQuestion() {
           </div>
           <div className="flex mt-2 items-baseline">
             <p className="text-xl mr-1 mt-2 font-medium">Scenario Based: </p>
-            <Switch />
+            <Switch
+              checked={scenarioBased}
+              onChange={(event) => setScenarioBased(event.target.checked)}
+            />
           </div>
 
           {question ? (
@@ -287,6 +292,7 @@ export default function EditQuestion() {
                       topics: topicsQL,
                       previousYears: previousYearsQL,
                       priority: priority,
+                      scenarioBased: scenarioBased,
                     },
                   });
                 }}

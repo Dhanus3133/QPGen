@@ -1,6 +1,8 @@
 import { getLessonsBySubjectIdQuery } from "@/src/graphql/queries/getLessonsBySubjectID";
 import { getID } from "@/src/utils";
 import { useLazyQuery } from "@apollo/client";
+import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
+import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
 import {
   Checkbox,
   FormControl,
@@ -13,11 +15,16 @@ import {
   TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import CreateLesson from "./createLesson";
 
 export default function Lessons({ subject, lessons, setLessons }) {
   const [getLessons, { loading, error, data }] = useLazyQuery(
     getLessonsBySubjectIdQuery
   );
+
+  useEffect(() => {
+    if (subject !== null) getLessons({ variables: { subjectId: subject } });
+  }, [subject]);
 
   useEffect(() => {
     const newLessons = [];
@@ -31,26 +38,14 @@ export default function Lessons({ subject, lessons, setLessons }) {
     setLessons(newLessons);
   }, [data]);
 
-  useEffect(() => {
-    if (subject !== null) {
-      getLessons({
-        variables: {
-          subjectId: subject,
-        },
-      });
-    } else {
-      setLessons([]);
-    }
-  }, [subject]);
-
   if (error) return <p>Error: {error.message}</p>;
   if (loading) return "Loading...";
 
-  const handleUnitChange = (event, l) => {
-    if (0 > event.target.value < 10) {
+  const handleUnitChange = (l, v) => {
+    if (l["unit"] + v >= 0 && l["unit"] + v <= 5) {
       const updatedLessons = lessons.map((lesson) => {
         if (l["id"] === lesson["id"]) {
-          return { ...lesson, unit: parseInt(event.target.value) };
+          return { ...lesson, unit: lesson["unit"] + v };
         } else {
           return lesson;
         }
@@ -59,6 +54,9 @@ export default function Lessons({ subject, lessons, setLessons }) {
       setLessons(sortedLessons);
     }
   };
+  if (!subject) {
+    return <></>;
+  }
 
   return (
     <>
@@ -77,8 +75,8 @@ export default function Lessons({ subject, lessons, setLessons }) {
                 label="Unit"
                 type="number"
                 variant="outlined"
-                defaultValue={lesson["unit"]}
-                onChange={(event) => handleUnitChange(event, lesson)}
+                value={lesson["unit"]}
+                disabled
               />
             </Grid>
             <Grid item>
@@ -91,9 +89,18 @@ export default function Lessons({ subject, lessons, setLessons }) {
                 disabled
               />
             </Grid>
+            <Grid item>
+              <ArrowCircleUpIcon onClick={() => handleUnitChange(lesson, 1)} />
+            </Grid>
+            <Grid item>
+              <ArrowCircleDownIcon
+                onClick={() => handleUnitChange(lesson, -1)}
+              />
+            </Grid>
           </Grid>
         );
       })}
+      {lessons.length < 5 && <CreateLesson subject={subject} />}
     </>
   );
 }

@@ -29,6 +29,7 @@ export const getQuestionQuery = gql`
         year
       }
       priority
+      scenarioBased
       createdAt
       updatedAt
     }

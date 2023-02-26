@@ -1,7 +1,14 @@
 from typing import List, Optional
 from strawberry_django_plus import gql
 
-from questions.models import Lesson, Question, Subject
+from questions.models import FacultiesHandling, Lesson, Question, Subject, Syllabus
+
+
+@gql.django.input(Syllabus)
+class SyllabusInput:
+    course: int
+    unit: int
+    lesson: int
 
 
 @gql.django.input(Subject)
@@ -9,16 +16,15 @@ class SubjectInput:
     code: gql.auto
     subject_name: gql.auto
     co: gql.auto
-    # co_description: gql.auto
-    # course_outcome: gql.auto
 
 
 @gql.django.input(Lesson)
 class LessonInput:
     name: gql.auto
-    subject: gql.NodeInput
+    subject: int
     objective: gql.auto
     outcome: gql.auto
+    outcome_btl: List[int]
 
 
 @gql.django.input(Question)
@@ -33,6 +39,7 @@ class QuestionInput:
     topics: gql.auto
     previous_years: gql.auto
     priority: gql.auto
+    scenario_based: gql.auto
 
 
 @gql.django.partial(Question)

@@ -16,8 +16,11 @@ class IsAFaculty(BasePermission):
         else:
             l = Lesson.objects.get(pk=kwargs["input"]["lesson"]["id"].node_id)
 
-        f = FacultiesHandling.objects.get(subject=l.subject)
         user = info.context.request.user
-        if f.faculties.contains(user):
-            return True
+
+        fh = FacultiesHandling.objects.filter(subject=l.subject, course__active=True)
+        user = info.context.request.user
+        for f in fh:
+            if f.faculties.contains(user):
+                return True
         return False

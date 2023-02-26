@@ -1,14 +1,34 @@
-from os import walk
 from typing import List, cast
+from asgiref.sync import sync_to_async, async_to_sync
+from django.db.utils import IntegrityError
+from strawberry_django_plus.permissions import IsAuthenticated
+from coe.graphql.permissions import IsACOE
 
-from strawberry_django_plus.relay import GlobalID
 from questions.graphql.permissions import IsAFaculty
-from questions.models import CreateSyllabus, Lesson, Topic
+from questions.models import (
+    Course,
+    CreateSyllabus,
+    FacultiesHandling,
+    Lesson,
+    Subject,
+    Topic,
+    Syllabus,
+)
 from strawberry.types import Info
 from strawberry_django_plus import gql
 from strawberry_django_jwt.decorators import login_required
-from questions.graphql.inputs import QuestionInput, QuestionInputPartial
-from questions.graphql.types import QuestionType, TopicType
+from questions.graphql.inputs import (
+    LessonInput,
+    QuestionInput,
+    QuestionInputPartial,
+    SubjectInput,
+)
+from questions.graphql.types import (
+    LessonType,
+    QuestionType,
+    SubjectType,
+    TopicType,
+)
 from users.models import User
 
 
@@ -19,6 +39,12 @@ class Mutation:
     )
     update_question: QuestionType = gql.django.update_mutation(
         QuestionInputPartial, permission_classes=[IsAFaculty]
+    )
+    create_subject: SubjectType = gql.django.create_mutation(
+        SubjectInput, directives=[IsAuthenticated]
+    )
+    create_lesson: LessonType = gql.django.create_mutation(
+        LessonInput, directives=[IsAuthenticated]
     )
 
     @login_required
@@ -56,8 +82,44 @@ class Mutation:
     async def assign_subject_to_faculties(
         self, info: Info, faculties: List[int]
     ) -> bool:
-        for faculty in faculties:
-            cs = await CreateSyllabus.objects.acreate(
-                faculty=await User.objects.aget(id=faculty)
-            )
+        objs = [
+            CreateSyllabus(faculty=await User.objects.aget(id=faculty))
+            for faculty in faculties
+        ]
+        await CreateSyllabus.objects.abulk_create(objs=objs)
+        return True
+
+    @gql.django.field
+    def create_syllabuses(
+        self, info: Info, course: int, units: List[int], lessons: List[int]
+    ) -> bool:
+        c = Course.objects.get(id=course)
+        cs = CreateSyllabus.objects.filter(
+            is_completed=False, faculty=info.context.request.user
+        ).first()
+        if not cs:
+            return ValueError("You don't have the permisson!")
+        objs = [
+            Syllabus(course=c, unit=units[i], lesson=Lesson.objects.get(id=lessons[i]))
+            for i in range(len(units))
+        ]
+        try:
+            s = Syllabus.objects.bulk_create(objs=objs)
+        except IntegrityError as err:
+            raise ValueError("Syllabus with this Course and Lesson already exists.")
+        cs.is_completed = True
+        cs.syllabus.set(s)
+        cs.save(update_fields=["is_completed"])
+        return True
+
+    @gql.django.field(permission_classes=[IsACOE])
+    def assign_faculties(
+        self, info: Info, course: int, subject: int, faculties: List[int]
+    ) -> bool:
+        fh, created = FacultiesHandling.objects.get_or_create(
+            course=Course.objects.get(id=course),
+            subject=Subject.objects.get(id=subject),
+        )
+        f = User.objects.filter(id__in=faculties)
+        fh.faculties.set(f)
         return True
