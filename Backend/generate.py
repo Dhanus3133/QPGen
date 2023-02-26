@@ -185,7 +185,7 @@ class Generate:
             prev = []
             # print("=====================")
             for i in question[i]["q"].previous_years.all():
-                prev.append(f"{i.month} {i.year} ")
+                prev.append(f"{i.month} {i.year % 100} ")
                 # print(i.year)
             dataQuestion["QPRef"] = prev
 
@@ -286,7 +286,6 @@ class Generate:
             "marks": self.marks,
             "counts": self.count,
             "choices": self.choices,
-            "date": "21-02-2004",
             "subjectName": subject.subject_name,
             "subjectCode": subject.code,
             "subjectCO": subject.co,
