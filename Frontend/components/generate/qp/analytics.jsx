@@ -1,4 +1,4 @@
-import { Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import Chart from "chart.js/auto";
 
 export default function AnalyticsTest({ co, btl }) {
@@ -44,10 +44,10 @@ export default function AnalyticsTest({ co, btl }) {
   return (
     <div>
       <div className="max-w-lg text-center">
-        <Line data={btlData} options={options} width={200} height={200} />
+        <Bar data={btlData} options={options} width={200} height={200} />
       </div>
       <div className="max-w-lg text-center">
-        <Line data={coData} options={options} width={200} height={200} />
+        <Bar data={coData} options={options} width={200} height={200} />
       </div>
     </div>
   );
