@@ -93,6 +93,7 @@ class LessonType(gql.Node):
 class TopicType(gql.Node):
     id: gql.auto
     name: gql.auto
+    active: gql.auto
 
 
 @gql.django.type(Course)

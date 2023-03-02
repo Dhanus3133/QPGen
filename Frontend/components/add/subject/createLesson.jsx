@@ -78,7 +78,7 @@ export default function CreateLesson({ subject }) {
           onSubmit={handleCreateLesson}
           sx={{ mt: 3 }}
         >
-          <DialogTitle>New Lesson</DialogTitle>
+          <DialogTitle>Create a New Unit</DialogTitle>
           <DialogContent>
             <DialogContentText sx={{ pb: 1 }}>
               Enter the Details properly, incase of any mistakes inform to Exam
@@ -94,7 +94,7 @@ export default function CreateLesson({ subject }) {
                 autoFocus
                 id="name"
                 name="LessonName"
-                label="Lesson Name"
+                label="Unit Title"
                 type="text"
                 variant="standard"
                 fullWidth
@@ -104,7 +104,7 @@ export default function CreateLesson({ subject }) {
                 autoFocus
                 id="objecttive"
                 name="Objective"
-                label="Lesson Objective"
+                label="Course Objective"
                 type="text"
                 variant="standard"
                 sx={{ pt: 1 }}
@@ -115,7 +115,7 @@ export default function CreateLesson({ subject }) {
                 autoFocus
                 id="outcome"
                 name="Outcome"
-                label="Subject Outcome"
+                label="Course Outcome"
                 type="text"
                 variant="standard"
                 sx={{ pt: 1 }}

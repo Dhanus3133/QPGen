@@ -45,6 +45,7 @@ export default function EditQuestion() {
     branch,
     subject_code,
     unit,
+    search,
   } = router.query;
 
   const { data: uData } = useQuery(meQuery);
@@ -80,6 +81,7 @@ export default function EditQuestion() {
           department: branch,
           subjectCode: subject_code,
           unit: parseInt(unit),
+          search: search || "",
         },
       },
       // {
@@ -109,6 +111,7 @@ export default function EditQuestion() {
           department: branch,
           subjectCode: subject_code,
           unit: parseInt(unit),
+          search: search || "",
         },
       },
       {

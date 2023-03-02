@@ -170,7 +170,6 @@ class Topic(models.Model):
     name = models.CharField(max_length=200)
     lesson = models.ForeignKey(Lesson, on_delete=models.PROTECT, related_name="topics")
     active = models.BooleanField(default=True)
-    priority = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ["name", "lesson"]

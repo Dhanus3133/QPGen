@@ -9,6 +9,7 @@ from strawberry.types import Info
 from strawberry_django_plus import gql
 from strawberry_django_jwt.decorators import login_required
 from core.utils import get_current_user_from_info
+from questions.graphql.permissions import IsAFaculty
 
 from questions.graphql.types import (
     BloomsTaxonomyLevelType,
