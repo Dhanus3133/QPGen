@@ -15,5 +15,5 @@ export default function ValidateSyllabus({ children, setValid }) {
   if (data?.validateCreateSyllabus) {
     return <>{children}</>;
   }
-  return <p>You don't have yet the permission to create!</p>;
+  return <p>You don&apos;t have yet the permission to create!</p>;
 }
