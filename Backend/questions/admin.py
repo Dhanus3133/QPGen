@@ -64,12 +64,10 @@ class TopicModelAdmin(admin.ModelAdmin):
         "name",
         "lesson",
         "active",
-        "priority",
     )
     list_filter = (
         "lesson",
         "active",
-        "priority",
     )
     search_fields = ("name",)
 

@@ -24,7 +24,7 @@ const QuestionPaper = ({
   if (loading) return "Loading...";
   if (error) return <p>Error: {error.message}</p>;
   const generatedData = JSON.parse(data["generateQuestions"]);
-
+  console.log(generatedData);
   return (
     <>
       <QuestionPaperGen

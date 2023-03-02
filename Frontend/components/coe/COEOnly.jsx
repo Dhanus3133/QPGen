@@ -7,6 +7,6 @@ export default function COEOnly({ children }) {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
   return (
-    <>{data.isCoe ? <>{children}</> : <p>You don't have permission!</p>}</>
+    <>{data.isCoe ? <>{children}</> : <p>You don&apos;t have permission!</p>}</>
   );
 }

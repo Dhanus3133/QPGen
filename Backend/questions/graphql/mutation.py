@@ -123,3 +123,9 @@ class Mutation:
         f = User.objects.filter(id__in=faculties)
         fh.faculties.set(f)
         return True
+
+    @login_required
+    @gql.django.field
+    async def update_topic(self, info: Info, topic: int, active: bool) -> bool:
+        await Topic.objects.filter(id=topic).aupdate(active=active)
+        return True

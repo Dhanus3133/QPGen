@@ -119,6 +119,16 @@ export default function Lesson() {
           >
             <Link
               href={{
+                pathname: `${router.pathname}/topics`,
+                query: {
+                  ...router.query,
+                },
+              }}
+            >
+              <Button variant="text">Topics</Button>
+            </Link>
+            <Link
+              href={{
                 pathname: `${router.pathname}/[questionNumber]`,
                 query: {
                   ...router.query,

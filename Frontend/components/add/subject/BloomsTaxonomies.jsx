@@ -37,7 +37,7 @@ export default function BloomsTaxonomies({ btls, setBtls }) {
         autoHighlight
         onChange={(_, t) => setBtls([...t])}
         renderInput={(params) => (
-          <TextField {...params} label="Outcome BTLs" placeholder="Outcome BTLs" />
+          <TextField {...params} label="Course RBT" placeholder="Course RBT" />
         )}
       />
     )
