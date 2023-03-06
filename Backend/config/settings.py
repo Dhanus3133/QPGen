@@ -172,7 +172,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-if DEBUG:
+if env('STORAGE').lower() == 'local':
     STATIC_URL = "/backend_static/"
     STATIC_ROOT = BASE_DIR / "static"
     MEDIA_URL = "/backend_media/"
