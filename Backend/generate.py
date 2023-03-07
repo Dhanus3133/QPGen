@@ -33,6 +33,7 @@ def int_to_roman(number):
 class Generate:
     def __init__(self, course, lids, marks, count, choices):
         self.course = Course.objects.get(id=course)
+        self.subject = Lesson.objects.get(id=lids[0]).subject
         self.lids = lids
         self.marks = marks
         self.count = count
@@ -260,15 +261,15 @@ class Generate:
 
         objectives = list(
             Syllabus.objects.filter(course=self.course)
-            .filter(lesson__in=self.lids)
+            .filter(lesson__subject=self.subject)
             .order_by("unit")
             .values_list("lesson__objective", flat=True)
         )
 
         outcomes = list(
             list(
-                Syllabus.objects.filter(course=1)
-                .filter(lesson__in=self.lids)
+                Syllabus.objects.filter(course=self.course)
+                .filter(lesson__subject=self.subject)
                 .order_by("unit")
                 .values_list("lesson__outcome", "lesson__outcome_btl__name")
             )
