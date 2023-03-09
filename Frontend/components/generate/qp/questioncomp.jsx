@@ -314,7 +314,7 @@ const QuestionPaperGen = (props) => {
               </td>
               <td className="pl-2">Year/Semester</td>
               <td className="pl-2">
-                {romanize((semester + 1) / 2)}/{romanize(semester)}
+                {romanize(Math.ceil(semester / 2))}/{romanize(semester)}
               </td>
             </tr>
           </tbody>
