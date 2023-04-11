@@ -318,3 +318,10 @@ class CreateSyllabus(TimeStampedModel):
         User, on_delete=models.CASCADE, related_name="create_subjects"
     )
     is_completed = models.BooleanField(default=False)
+
+
+class GeneratedQuestionsJSON(TimeStampedModel):
+    data = models.JSONField()
+
+    def __str__(self):
+        return self.created_at.strftime("%d-%m-%Y %H:%M:%S")

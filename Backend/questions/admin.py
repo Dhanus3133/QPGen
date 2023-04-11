@@ -118,3 +118,8 @@ class CreateSyllabusModelAdmin(admin.ModelAdmin):
         "is_completed",
     )
     list_filter = ("is_completed",)
+
+
+@admin.register(GeneratedQuestionsJSON)
+class GeneratedQuestionsJSONModelAdmin(admin.ModelAdmin):
+    pass

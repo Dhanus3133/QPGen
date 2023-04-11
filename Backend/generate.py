@@ -5,6 +5,7 @@ from questions.models import (
     Question,
     Subject,
     Syllabus,
+    GeneratedQuestionsJSON,
 )
 from django.db.models import Count, F, Q
 import json
@@ -297,6 +298,7 @@ class Generate:
         analytics = {"co": self.co_analytics, "btl": self.btl_analytics}
         questionsData = {"questions": data, "options": options, "analytics": analytics}
         j = json.dumps(questionsData)
+        GeneratedQuestionsJSON.objects.create(data=j)
         return j
 
 
