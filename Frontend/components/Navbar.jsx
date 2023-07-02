@@ -13,14 +13,10 @@ import { useQuery, useMutation } from "@apollo/client";
 import { client } from "@/lib/apollo-client";
 import { isAuthorizedQuery } from "@/src/graphql/queries/isAuthorized";
 import { logoutMutation } from "@/src/graphql/mutations/logout";
-import Image from "next/image";
 import { Button } from "@mui/material";
 
 export default function MenuAppBar() {
-  const [auth, setAuth] = React.useState(true);
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const router = useRouter();
-  const [isDark, setIsDark] = React.useState(false);
   const [authorized, setAuthorized] = useState(false);
   const { data: isAuthorized } = useQuery(isAuthorizedQuery);
   const [LogoutMutation] = useMutation(logoutMutation);
@@ -52,7 +48,7 @@ export default function MenuAppBar() {
               component="div"
               sx={{ flexGrow: 1, mt: 1 }}
             >
-              <Image src="/cit-logo.png" alt="CIT" width="220" height="40" />
+              <img src="/cit-logo.png" alt="CIT" width="220" height="40" />
             </Typography>
             {authorized && (
               <>

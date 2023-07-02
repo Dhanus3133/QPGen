@@ -97,7 +97,7 @@ class NewUser(TimeStampedModel):
             send_mail(
                 "Verify your Account!",
                 strip_tags(html_message),
-                "Email Verification",
+                "CIT COE",
                 [self.email],
                 fail_silently=False,
                 html_message=html_message,
@@ -124,7 +124,8 @@ class NewUser(TimeStampedModel):
                 self.delete()
                 return
             else:
-                raise ValidationError("User didn't yet verifed the Email!")
+                self.approved = False
+                # raise ValidationError("User didn't yet verifed the Email!")
         super().save(*args, **kwargs)
 
     def __str__(self):
