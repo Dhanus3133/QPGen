@@ -42,8 +42,9 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
     volumes:
-      - ./Frontend/:/app
-      - /app/node_modules
+      - ./Frontend/src:/app/src
+      - ./Frontend/public:/app/public
+    restart: always
     depends_on:
       - django
 

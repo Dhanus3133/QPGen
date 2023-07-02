@@ -1,22 +1,16 @@
-# pull official base image
-FROM node:lts-alpine
+FROM node:18-alpine
 
-# set work directory
-WORKDIR /app/
+WORKDIR /app
 
-# add to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+# Install dependencies based on the preferred package manager
+COPY package.json* yarn.lock* package-lock.json* ./
+RUN yarn --frozen-lockfile
 
-# install app dependencies
-COPY package.json ./
-COPY yarn.lock ./
+COPY src ./src
+COPY public ./public
+COPY next.config.js .
+COPY tsconfig.json .
+COPY tailwind.config.js . 
+COPY postcss.config.js .
 
-RUN yarn
-RUN yarn install --frozen-lockfile
-
-# add app
-COPY . ./
-# RUN chmod -R 777 node_modules
-# RUN yarn build
-
-# WORKDIR /
+ENV NEXT_TELEMETRY_DISABLED 1
