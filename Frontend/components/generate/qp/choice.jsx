@@ -1,6 +1,6 @@
 const Choice = ({ part, count, mark, subdivsel, optsel, store }) => {
   return (
-    <table className="w-full break-inside-avoid">
+    <table className="w-full">
       <tbody>
         {part == "A" && (
           <tr>
