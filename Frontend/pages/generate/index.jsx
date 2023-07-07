@@ -28,7 +28,7 @@ export default function Generate() {
     return (
       <>
         <Grid container justifyContent="center">
-          <div className="p-3 center">
+          <div className="p-3 flex flex-col items-center">
             <DateTime dateTime={dateTime} setDateTime={setDateTime} />
             <div className="py-6">
               <TextField

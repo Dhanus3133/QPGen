@@ -8,7 +8,6 @@ export default function InitializeVditor({ id, value, vd, setVd }) {
         after: () => {
           setVd(vditor);
         },
-        theme: "dark",
         lang: "en_US",
         width: "100%",
         upload: {

@@ -32,6 +32,33 @@ export const updateQuestionMutation = gql`
       ... on QuestionType {
         id
         question
+        answer
+        difficulty
+        mark {
+          id
+          start
+          end
+        }
+        btl {
+          id
+          name
+        }
+        topics {
+          id
+          name
+        }
+        createdBy {
+          email
+        }
+        previousYears {
+          id
+          month
+          year
+        }
+        priority
+        scenarioBased
+        createdAt
+        updatedAt
       }
     }
   }

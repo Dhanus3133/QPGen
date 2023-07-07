@@ -13,11 +13,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Box } from "@mui/system";
 import { decodeBase64, encodeBase64 } from "@/src/utils";
 
+export const limit = 20;
+
 export default function Lesson() {
   const router = useRouter();
   const [vd, setVd] = useState(null);
 
-  const limit = 20;
   let { page } = router.query;
 
   const pageNo = parseInt(page) || 1;
@@ -147,7 +148,7 @@ export default function Lesson() {
           vd ? vd.setValue(q["question"]) : "";
           return (
             <div key={question["cursor"]}>
-              <div className="flex flex-row py-2 w-4/5 mx-auto">
+              <div className="flex flex-row py-2 w-4/5 mx-auto items-center">
                 <div
                   id={q["id"]}
                   className={`basis-10/12 pl-4 ${style.paragraph}`}

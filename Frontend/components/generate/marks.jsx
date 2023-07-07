@@ -110,7 +110,7 @@ function Marks({
         getOptionLabel={(option) => {
           return option["label"];
         }}
-        sx={{ width: 300 }}
+        sx={{ width: 400 }}
         renderInput={(params) => <TextField {...params} label="Exam" />}
       />
       {custom && (

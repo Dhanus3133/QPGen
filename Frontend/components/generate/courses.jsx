@@ -26,7 +26,7 @@ export default function Courses({ setCourse, setSemester }) {
       getOptionLabel={(option) =>
         `${option["regulation"]["year"]} | ${option["department"]["programme"]["name"]} | ${option["department"]["degree"]["name"]} | ${option["department"]["branchCode"]} | ${option["semester"]}`
       }
-      sx={{ width: 300 }}
+      sx={{ width: 400 }}
       renderInput={(params) => <TextField {...params} label="Courses" />}
     />
   );
