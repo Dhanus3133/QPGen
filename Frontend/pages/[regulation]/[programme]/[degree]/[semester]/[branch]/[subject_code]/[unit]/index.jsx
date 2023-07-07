@@ -11,17 +11,17 @@ import style from "styles/Question.module.css";
 import { Button, FormControl, Grid, OutlinedInput } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box } from "@mui/system";
+import { decodeBase64, encodeBase64 } from "@/src/utils";
 
 export default function Lesson() {
   const router = useRouter();
   const [vd, setVd] = useState(null);
 
   const limit = 20;
-  // console.log(md2html("hello"));
   let { page } = router.query;
 
   const pageNo = parseInt(page) || 1;
-  const after = btoa(`arrayconnection:${(pageNo - 1) * limit - 1}`);
+  const after = encodeBase64(`arrayconnection:${(pageNo - 1) * limit - 1}`);
   const { data, loading, error } = useQuery(getQuestionsQuery, {
     ssr: false,
     skip: !router.isReady,
@@ -94,7 +94,7 @@ export default function Lesson() {
                 justifyContent="center"
                 alignItems="center"
               >
-                <FormControl sx={{ width: "25ch" }}>
+                <FormControl sx={{ width: "25ch" }} className="mr-2">
                   <OutlinedInput
                     placeholder="Search Question"
                     name="search"
@@ -102,7 +102,7 @@ export default function Lesson() {
                   />
                 </FormControl>
                 <Button
-                  className="bg-[#1976d2] ml-2 py-4"
+                  className="bg-[#1976d2] ml-2 py-4 h-11"
                   type="submit"
                   variant="contained"
                 >
@@ -142,7 +142,7 @@ export default function Lesson() {
         </Grid>
       </div>
       <div id="questions" className="mb-5">
-        {questions?.map((question, itr) => {
+        {questions?.map((question) => {
           const q = question["node"];
           vd ? vd.setValue(q["question"]) : "";
           return (
@@ -164,7 +164,9 @@ export default function Lesson() {
                     pathname: `${router.pathname}/[questionNumber]`,
                     query: {
                       ...router.query,
-                      questionNumber: parseInt(atob(q["id"]).split(":")[1]),
+                      questionNumber: parseInt(
+                        decodeBase64(q["id"]).split(":")[1]
+                      ),
                     },
                   }}
                 >
@@ -180,13 +182,13 @@ export default function Lesson() {
         })}
       </div>
 
-      <Stack alignItems="center">
+      <Stack alignItems="center" className="mb-20">
         <Pagination
           count={Math.ceil(totalCount / limit)}
           page={pageNo}
           color="primary"
           variant="outlined"
-          onChange={(e, p) => {
+          onChange={(_, p) => {
             router.push({
               pathname: router.pathname,
               query: { ...router.query, page: p },
@@ -194,7 +196,6 @@ export default function Lesson() {
           }}
         />
       </Stack>
-      <div className="h-20"></div>
     </>
   );
 }

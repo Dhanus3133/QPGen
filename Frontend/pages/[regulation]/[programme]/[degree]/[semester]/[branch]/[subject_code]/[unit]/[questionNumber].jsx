@@ -3,7 +3,6 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import CustomVditor from "components/vditor";
-import style from "styles/Question.module.css";
 import MarkRanges from "components/question/MarkRanges";
 import BloomsTaxonomies from "components/question/BloomsTaxonomies";
 import Difficulty from "components/question/Difficulty";
@@ -16,7 +15,7 @@ import { meQuery } from "@/src/graphql/queries/me";
 import { updateQuestionMutation } from "@/src/graphql/mutations/updateQuestion";
 import { getQuestionsQuery } from "@/src/graphql/queries/getQuestions";
 import "styles/Question.module.css";
-import { getID } from "@/src/utils";
+import { encodeBase64 } from "@/src/utils";
 
 export default function EditQuestion() {
   const router = useRouter();
@@ -35,7 +34,7 @@ export default function EditQuestion() {
   const [priority, setPriority] = useState(null);
   const [scenarioBased, setScenarioBased] = useState(false);
 
-  const globalID = btoa(`QuestionType:${questionNumber}`);
+  const globalID = encodeBase64(`QuestionType:${questionNumber}`);
 
   const {
     regulation,

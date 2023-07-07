@@ -1,5 +1,4 @@
 from typing import List, cast
-from asgiref.sync import sync_to_async, async_to_sync
 from django.db.utils import IntegrityError
 from strawberry_django_plus.permissions import IsAuthenticated
 from coe.graphql.permissions import IsACOE
@@ -100,13 +99,15 @@ class Mutation:
         if not cs:
             return ValueError("You don't have the permisson!")
         objs = [
-            Syllabus(course=c, unit=units[i], lesson=Lesson.objects.get(id=lessons[i]))
+            Syllabus(course=c, unit=units[i],
+                     lesson=Lesson.objects.get(id=lessons[i]))
             for i in range(len(units))
         ]
         try:
             s = Syllabus.objects.bulk_create(objs=objs)
         except IntegrityError as err:
-            raise ValueError("Syllabus with this Course and Lesson already exists.")
+            raise ValueError(
+                "Syllabus with this Course and Lesson already exists.")
         cs.is_completed = True
         cs.syllabus.set(s)
         cs.save(update_fields=["is_completed"])

@@ -18,7 +18,7 @@ export default function Courses({ setCourse, setSemester }) {
     <Autocomplete
       id="courses"
       options={courses}
-      onChange={(event, course) => {
+      onChange={(_, course) => {
         const id = course ? parseInt(getID(course["id"])) : null;
         setCourse(id);
         setSemester && setSemester(course["semester"]);

@@ -3,7 +3,7 @@ from asgiref.sync import sync_to_async
 from strawberry.permission import BasePermission
 from strawberry.types import Info
 
-from questions.models import FacultiesHandling, Lesson, Question
+from questions.models import FacultiesHandling, Lesson
 
 
 class IsAFaculty(BasePermission):
