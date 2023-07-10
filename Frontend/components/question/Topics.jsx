@@ -1,12 +1,6 @@
 import { getTopicsQuery } from "@/src/graphql/queries/getTopics";
-import { getID } from "@/src/utils";
 import { useQuery } from "@apollo/client";
-import {
-  Autocomplete,
-  FormControl,
-  InputLabel,
-  TextField,
-} from "@mui/material";
+import { Autocomplete, TextField } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useEffect, useState } from "react";
 import AddTopic from "./AddTopic";
@@ -49,7 +43,7 @@ export default function Topics({ router, lesson, topics, setTopics }) {
             }
             getOptionLabel={(option) => option["name"]}
             filterSelectedOptions
-            onChange={(e, t) => setTopics([...t])}
+            onChange={(_, t) => setTopics([...t])}
             renderInput={(params) => (
               <TextField {...params} label="Topics" placeholder="Topics" />
             )}
