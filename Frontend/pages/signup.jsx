@@ -158,7 +158,12 @@ export default function SignUp() {
               <CircularProgress color="success" />
             </Button>
           )}
-          <Grid container justifyContent="flex-end">
+          <Grid
+            container
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+          >
             <Grid item>
               <Link href={"/login"}>Already have an account? Sign in</Link>
             </Grid>

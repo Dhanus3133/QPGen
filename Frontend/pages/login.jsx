@@ -129,9 +129,7 @@ export default function SignIn() {
             alignItems="center"
             justifyContent="center"
           >
-            <Link href="/signup" variant="body2">
-              {"Don't have an account? Sign Up"}
-            </Link>
+            <Link href="/signup">{"Don't have an account? Sign Up"}</Link>
           </Grid>
         </Box>
       </Box>
