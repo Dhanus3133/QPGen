@@ -42,7 +42,7 @@ export default function Lessons({ subject, lessons, setLessons }) {
   if (loading) return "Loading...";
 
   const handleUnitChange = (l, v) => {
-    if (l["unit"] + v >= 0 && l["unit"] + v <= 5) {
+    if (l["unit"] + v > 0 && l["unit"] + v <= 5) {
       const updatedLessons = lessons.map((lesson) => {
         if (l["id"] === lesson["id"]) {
           return { ...lesson, unit: lesson["unit"] + v };
@@ -72,7 +72,7 @@ export default function Lessons({ subject, lessons, setLessons }) {
             <Grid item>
               <TextField
                 id={`unit${unit}`}
-                label="Unit"
+                label="Unit No"
                 type="number"
                 variant="outlined"
                 value={lesson["unit"]}
@@ -82,7 +82,7 @@ export default function Lessons({ subject, lessons, setLessons }) {
             <Grid item>
               <TextField
                 id={`lesson${unit}`}
-                label="Lesson"
+                label="Name"
                 variant="outlined"
                 defaultValue={lesson["name"]}
                 multiline

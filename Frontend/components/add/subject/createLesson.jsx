@@ -8,7 +8,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useMutation } from "@apollo/client";
 import { Box } from "@mui/system";
 import { useState, useEffect } from "react";
-import { Alert } from "@mui/material";
+import { Alert, Grid } from "@mui/material";
 import { createLessonMutation } from "@/src/graphql/mutations/createLesson";
 import { getLessonsBySubjectIdQuery } from "@/src/graphql/queries/getLessonsBySubjectID";
 import BloomsTaxonomies from "./BloomsTaxonomies";
@@ -68,9 +68,17 @@ export default function CreateLesson({ subject }) {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Create New Unit
-      </Button>
+      <Grid
+        container
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        className="mt-2"
+      >
+        <Button variant="outlined" onClick={handleClickOpen}>
+          Create New Unit
+        </Button>
+      </Grid>
       <Dialog open={open} onClose={handleClose}>
         <Box
           component="form"

@@ -61,7 +61,7 @@ export default function CreateSubject({ setSubject }) {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button className="mt-4" variant="outlined" onClick={handleClickOpen}>
         Create New Subject
       </Button>
       <Dialog open={open} onClose={handleClose}>
