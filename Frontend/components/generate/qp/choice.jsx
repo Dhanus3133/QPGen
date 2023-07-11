@@ -1,14 +1,17 @@
-const Choice = ({ part, count, mark, subdivsel, optsel, store }) => {
+const Choice = ({ part, count, mark, subdivsel, optsel, store, isAnswer }) => {
   return (
     <table className="w-full">
       <tbody>
-        {part == "A" && (
+        {part == "A" && !isAnswer && (
           <tr>
-            <td className="text-center break-inside-avoid" colSpan={subdivsel + optsel + 6}>
+            <td
+              className="text-center break-inside-avoid"
+              colSpan={subdivsel + optsel + 6}
+            >
               <div className="font-bold">REVISED BLOOMS TAXONOMY(RBT)</div>
               <div>
-                K1-Remembering, K2-Understanding, K3-Applying, K4-Analyzing,
-                K5-Evaluating, K6-Creating
+                L1-Remembering, L2-Understanding, L3-Applying, L4-Analyzing,
+                L5-Evaluating, L6-Creating
               </div>
             </td>
           </tr>
@@ -20,24 +23,28 @@ const Choice = ({ part, count, mark, subdivsel, optsel, store }) => {
           >
             Part-{part}-({count}x{mark}={count * mark} marks)
             <br />
-            {count > 1 && "(Answer all the questions)"}
+            {count > 1 && !isAnswer && "(Answer all the questions)"}
           </td>
-          <td className="text-center font-bold px-2">CO</td>
-          <td className="text-center font-bold px-2">
-            BT
-            <br />
-            Level
-          </td>
-          <td className="text-center font-bold px-2">
-            Univ
-            <br />
-            QP
-          </td>
-          <td className="text-center font-bold px-2">
-            Mark
-            <br />
-            Allocated
-          </td>
+          {!isAnswer && (
+            <>
+              <td className="text-center font-bold px-2">CO</td>
+              <td className="text-center font-bold px-2">
+                BT
+                <br />
+                Level
+              </td>
+              <td className="text-center font-bold px-2">
+                Univ
+                <br />
+                QP
+              </td>
+              <td className="text-center font-bold px-2">
+                Mark
+                <br />
+                Allocated
+              </td>
+            </>
+          )}
         </tr>
       </tbody>
       <tbody>{store}</tbody>

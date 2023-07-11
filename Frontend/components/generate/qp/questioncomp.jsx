@@ -13,6 +13,7 @@ const QuestionPaperGen = (props) => {
   // QUESTION PAPER
   const [vd, setVd] = useState(null);
   let b = props.data;
+  let isAnswer = props.isAnswer;
   let courseObjectives = props.options.objectives;
   let courseOutcomes = props.options.outcomes;
   let subjectCO = props.options.subjectCO;
@@ -108,10 +109,18 @@ const QuestionPaperGen = (props) => {
                 q = (
                   <tr>
                     <Number rs={r[null]} data={l["number"]} />
-                    <Question data={l["question"]} vd={vd} setVd={setVd} />
-                    <QuestionAttributes data={l["co"]} />
-                    <QuestionAttributes data={l["btl"]} />
-                    <QuestionAttributes data={l["QPRef"]} />
+                    <Question
+                      data={isAnswer ? l["answer"] : l["question"]}
+                      vd={vd}
+                      setVd={setVd}
+                    />
+                    {!isAnswer && (
+                      <>
+                        <QuestionAttributes data={l["co"]} />
+                        <QuestionAttributes data={l["btl"]} />
+                        <QuestionAttributes data={l["QPRef"]} />
+                      </>
+                    )}
                   </tr>
                 );
                 store.push(q);
@@ -120,10 +129,19 @@ const QuestionPaperGen = (props) => {
                   <tr>
                     <Number rs={r[null]} data={l["number"]} />
                     <Roman data={l["roman"]} />
-                    <Question data={l["question"]} vd={vd} setVd={setVd} />
-                    <QuestionAttributes data={l["co"]} />
-                    <QuestionAttributes data={l["btl"]} />
-                    <QuestionAttributes data={l["QPRef"]} />
+                    <Question
+                      data={isAnswer ? l["answer"] : l["question"]}
+                      vd={vd}
+                      setVd={setVd}
+                    />
+
+                    {!isAnswer && (
+                      <>
+                        <QuestionAttributes data={l["co"]} />
+                        <QuestionAttributes data={l["btl"]} />
+                        <QuestionAttributes data={l["QPRef"]} />
+                      </>
+                    )}
                     <QuestionAttributes data={l["MarkAllocated"]} />
                   </tr>
                 );
@@ -136,10 +154,18 @@ const QuestionPaperGen = (props) => {
                   <tr>
                     <Number rs={r[null]} data={l["number"]} />
                     <Roman data={l["roman"]} />
-                    <Question data={l["question"]} vd={vd} setVd={setVd} />
-                    <QuestionAttributes data={l["co"]} />
-                    <QuestionAttributes data={l["btl"]} />
-                    <QuestionAttributes data={l["QPRef"]} />
+                    <Question
+                      data={isAnswer ? l["answer"] : l["question"]}
+                      vd={vd}
+                      setVd={setVd}
+                    />
+                    {!isAnswer && (
+                      <>
+                        <QuestionAttributes data={l["co"]} />
+                        <QuestionAttributes data={l["btl"]} />
+                        <QuestionAttributes data={l["QPRef"]} />
+                      </>
+                    )}
                     <QuestionAttributes data={l["MarkAllocated"]} />
                   </tr>
                 );
@@ -148,10 +174,18 @@ const QuestionPaperGen = (props) => {
                 q = (
                   <tr>
                     <Roman data={l["roman"]} />
-                    <Question data={l["question"]} vd={vd} setVd={setVd} />
-                    <QuestionAttributes data={l["co"]} />
-                    <QuestionAttributes data={l["btl"]} />
-                    <QuestionAttributes data={l["QPRef"]} />
+                    <Question
+                      data={isAnswer ? l["answer"] : l["question"]}
+                      vd={vd}
+                      setVd={setVd}
+                    />
+                    {!isAnswer && (
+                      <>
+                        <QuestionAttributes data={l["co"]} />
+                        <QuestionAttributes data={l["btl"]} />
+                        <QuestionAttributes data={l["QPRef"]} />
+                      </>
+                    )}
                     <QuestionAttributes data={l["MarkAllocated"]} />
                   </tr>
                 );
@@ -168,10 +202,18 @@ const QuestionPaperGen = (props) => {
                     <Number rs={arrlen + 1} data={l["number"]} />
                     <Option rs={r[l["option"]]} data={l["option"]} />
                     <Roman data={l["roman"]} />
-                    <Question data={l["question"]} vd={vd} setVd={setVd} />
-                    <QuestionAttributes data={l["co"]} />
-                    <QuestionAttributes data={l["btl"]} />
-                    <QuestionAttributes data={l["QPRef"]} />
+                    <Question
+                      data={isAnswer ? l["answer"] : l["question"]}
+                      vd={vd}
+                      setVd={setVd}
+                    />
+                    {!isAnswer && (
+                      <>
+                        <QuestionAttributes data={l["co"]} />
+                        <QuestionAttributes data={l["btl"]} />
+                        <QuestionAttributes data={l["QPRef"]} />
+                      </>
+                    )}
                     <QuestionAttributes data={l["MarkAllocated"]} />
                   </tr>
                 );
@@ -181,10 +223,18 @@ const QuestionPaperGen = (props) => {
                 opt = (
                   <tr>
                     <Roman data={l["roman"]} />
-                    <Question data={l["question"]} vd={vd} setVd={setVd} />
-                    <QuestionAttributes data={l["co"]} />
-                    <QuestionAttributes data={l["btl"]} />
-                    <QuestionAttributes data={l["QPRef"]} />
+                    <Question
+                      data={isAnswer ? l["answer"] : l["question"]}
+                      vd={vd}
+                      setVd={setVd}
+                    />
+                    {!isAnswer && (
+                      <>
+                        <QuestionAttributes data={l["co"]} />
+                        <QuestionAttributes data={l["btl"]} />
+                        <QuestionAttributes data={l["QPRef"]} />
+                      </>
+                    )}
                     <QuestionAttributes data={l["MarkAllocated"]} />
                   </tr>
                 );
@@ -198,10 +248,18 @@ const QuestionPaperGen = (props) => {
                     {l["option"]}
                   </td>
                   <Roman data={l["roman"]} />
-                  <Question data={l["question"]} vd={vd} setVd={setVd} />
-                  <QuestionAttributes data={l["co"]} />
-                  <QuestionAttributes data={l["btl"]} />
-                  <QuestionAttributes data={l["QPRef"]} />
+                  <Question
+                    data={isAnswer ? l["answer"] : l["question"]}
+                    vd={vd}
+                    setVd={setVd}
+                  />
+                  {!isAnswer && (
+                    <>
+                      <QuestionAttributes data={l["co"]} />
+                      <QuestionAttributes data={l["btl"]} />
+                      <QuestionAttributes data={l["QPRef"]} />
+                    </>
+                  )}
                   <QuestionAttributes data={l["MarkAllocated"]} />
                 </tr>
               );
@@ -233,6 +291,7 @@ const QuestionPaperGen = (props) => {
           subdivsel={subdivsel}
           optsel={optsel}
           store={store}
+          isAnswer={isAnswer}
         />
       );
     } else {
@@ -245,6 +304,7 @@ const QuestionPaperGen = (props) => {
           subdivsel={subdivsel}
           optsel={optsel}
           store={store}
+          isAnswer={isAnswer}
         />
       );
     }
@@ -262,12 +322,14 @@ const QuestionPaperGen = (props) => {
         {/*TABLE FOR PAPER HEADER */}
         <table className="w-full">
           <tbody>
-            <tr>
-              <td colSpan="2" className="text-right pr-4">
-                RegNO.
-              </td>
-              <td colSpan="2"></td>
-            </tr>
+            {!isAnswer && (
+              <tr>
+                <td colSpan="2" className="text-right pr-4">
+                  RegNO.
+                </td>
+                <td colSpan="2"></td>
+              </tr>
+            )}
             <tr>
               <td className="text-center">
                 <img
@@ -283,7 +345,9 @@ const QuestionPaperGen = (props) => {
                 <br />
                 Autonomous Institution, Affiliated to Anna University, Chennai
                 <br />
-                <b>{exam}</b>
+                <b>
+                  {exam} {isAnswer && "Answer Key"}
+                </b>
               </td>
             </tr>
             <tr>
@@ -321,42 +385,48 @@ const QuestionPaperGen = (props) => {
         </table>
         <br />
         {/*TABLE FOR COURSE OBJECTIVES*/}
-        <b>Course Objectives:</b>
-        <p>The Student should be able</p>
-        <table className="w-full">
-          <thead>
-            <tr>
-              <th>SlNO.</th>
-              <th>Course Objective</th>
-            </tr>
-          </thead>
-          <tbody>{co}</tbody>
-        </table>
-        <br />
-        {/*TABLE FOR COURSE OUTCOMES*/}
-        <b>Course Outcomes:</b>
-        <p>On completion of the course the students will be able to</p>
-        <table className="w-full">
-          <thead>
-            <tr>
-              <th>SlNO.</th>
-              <th>Course Outcomes</th>
-              <th>RBT level</th>
-            </tr>
-          </thead>
-          <tbody>{cout}</tbody>
-        </table>
-        <br />
+        {!isAnswer && (
+          <>
+            <b>Course Objectives:</b>
+            <p>The Student should be able</p>
+            <table className="w-full">
+              <thead>
+                <tr>
+                  <th>SlNO.</th>
+                  <th>Course Objective</th>
+                </tr>
+              </thead>
+              <tbody>{co}</tbody>
+            </table>
+            <br />
+            {/*TABLE FOR COURSE OUTCOMES*/}
+            <b>Course Outcomes:</b>
+            <p>On completion of the course the students will be able to</p>
+            <table className="w-full">
+              <thead>
+                <tr>
+                  <th>SlNO.</th>
+                  <th>Course Outcomes</th>
+                  <th>RBT level</th>
+                </tr>
+              </thead>
+              <tbody>{cout}</tbody>
+            </table>
+            <br />
+          </>
+        )}
         <div>
           <div id="generated-questions">{questions}</div>
-          <p className="text-center">~*All the Best*~</p>
+          {!isAnswer && <p className="text-center">~*All the Best*~</p>}
         </div>
-        <div className="flex justify-around pt-10">
-          <div>Prepared by</div>
-          <div>Verfied by</div>
-          <div>IQAC</div>
-          <div>Approved by</div>
-        </div>
+        {!isAnswer && (
+          <div className="flex justify-around pt-10">
+            <div>Prepared by</div>
+            <div>Verfied by</div>
+            <div>IQAC</div>
+            <div>Approved by</div>
+          </div>
+        )}
       </div>
       <RenderVditor id="generated-questions" />
     </>
