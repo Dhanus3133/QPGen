@@ -29,7 +29,9 @@ class Command(BaseCommand):
             Degree.objects.bulk_create(
                 [
                     Degree(name="BE", full_form="Bachelor of Engineering"),
+                    Degree(name="ME", full_form="Master of Engineering"),
                     Degree(name="BTECH", full_form="Bachelor of Technology"),
+                    Degree(name="MTECH", full_form="Master of Technology"),
                 ]
             )
         except:
@@ -62,24 +64,120 @@ class Command(BaseCommand):
             pass
 
         try:
-            Department.objects.create(
-                programme=Programme.objects.get(name="UG"),
-                degree=Degree.objects.get(name="BE"),
-                branch="Computer Science Engineering",
-                branch_code="CSE",
-            )
+            ug = Programme.objects.get(name="UG")
+            pg = Programme.objects.get(name="PG")
+            be = Degree.objects.get(name="BE")
+            me = Degree.objects.get(name="ME")
+            btech = Degree.objects.get(name="BTECH")
+            Department.objects.bulk_create([
+                Department(
+                    programme=ug,
+                    degree=be,
+                    branch="Computer Science Engineering",
+                    branch_code="CSE"
+                ),
+                Department(
+                    programme=ug,
+                    degree=btech,
+                    branch="Artificial Intelligence and Data Science",
+                    branch_code="AIDS"
+                ),
+                Department(
+                    programme=ug,
+                    degree=be,
+                    branch="CSE Artificial Intelligence and Machine Learning",
+                    branch_code="AM"
+                ),
+                Department(
+                    programme=ug,
+                    degree=be,
+                    branch="Biomedical Engineering",
+                    branch_code="BME"
+                ),
+                Department(
+                    programme=ug,
+                    degree=be,
+                    branch="Civil Engineering",
+                    branch_code="CIVIL"
+                ),
+                Department(
+                    programme=ug,
+                    degree=be,
+                    branch="Computer Science and Business Systems",
+                    branch_code="CSBS"
+                ),
+                Department(
+                    programme=ug,
+                    degree=be,
+                    branch="CSE Cybersecurity",
+                    branch_code="CZ"
+                ),
+                Department(
+                    programme=ug,
+                    degree=be,
+                    branch="Electronics and Communication Engineering ",
+                    branch_code="ECE"
+                ),
+                Department(
+                    programme=ug,
+                    degree=be,
+                    branch="Electrical and Electronics Engineering",
+                    branch_code="EEE"
+                ),
+                Department(
+                    programme=ug,
+                    degree=btech,
+                    branch="Information Technology",
+                    branch_code="IT"
+                ),
+                Department(
+                    programme=ug,
+                    degree=be,
+                    branch="Mechatronics Engineering",
+                    branch_code="MCT"
+                ),
+                Department(
+                    programme=ug,
+                    degree=be,
+                    branch="Mechanical Engineering",
+                    branch_code="MECH"
+                ),
+
+                # PG
+
+                Department(
+                    programme=pg,
+                    degree=me,
+                    branch="Applied Electronics",
+                    branch_code="AE"
+                ),
+                Department(
+                    programme=pg,
+                    degree=me,
+                    branch="CAD/CAM",
+                    branch_code="CC"
+                ),
+                Department(
+                    programme=pg,
+                    degree=me,
+                    branch="Computer Science Engineering",
+                    branch_code="CSE"
+                ),
+            ])
         except:
             pass
 
         try:
             BloomsTaxonomyLevel.objects.bulk_create(
                 [
-                    BloomsTaxonomyLevel(name="K1", description="Remembering"),
-                    BloomsTaxonomyLevel(name="K2", description="Understanding"),
-                    BloomsTaxonomyLevel(name="K3", description="Applying"),
-                    BloomsTaxonomyLevel(name="K4", description="Analysing"),
-                    BloomsTaxonomyLevel(name="K5", description="Evaluating"),
-                    BloomsTaxonomyLevel(name="K6", description="Creating"),
+                    BloomsTaxonomyLevel(name="L1", description="Remembering"),
+                    BloomsTaxonomyLevel(
+                        name="L2", description="Understanding"
+                    ),
+                    BloomsTaxonomyLevel(name="L3", description="Applying"),
+                    BloomsTaxonomyLevel(name="L4", description="Analysing"),
+                    BloomsTaxonomyLevel(name="L5", description="Evaluating"),
+                    BloomsTaxonomyLevel(name="L6", description="Creating"),
                 ]
             )
         except:
