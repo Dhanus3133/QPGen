@@ -303,7 +303,7 @@ class Generate:
             "outcomes": outcomes,
             "branch": "/".join(depts),
         }
-        print(data)
+        # print(data)
         analytics = {"co": self.co_analytics, "btl": self.btl_analytics}
         questionsData = {"questions": data,
                          "options": options, "analytics": analytics}
