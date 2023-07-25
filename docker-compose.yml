@@ -15,7 +15,6 @@ services:
       - nextjs
       - db
 
-
   django:
     build: ./Backend
     container_name: qpgen-django
@@ -23,7 +22,7 @@ services:
     ports:
       - 8001:8002
     env_file:
-      - ./Backend/config/.env
+      - ./.env
     volumes:
       - ./Backend/:/app
       - ./Backend/static:/app/static
@@ -48,7 +47,7 @@ services:
       - django
 
   db:
-    image: postgres:12-alpine
+    image: postgres:latest
     container_name: qpgen-db
     ports:
       - 5433:5432
@@ -56,10 +55,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
     environment:
       POSTGRES_HOST_AUTH_METHOD: "trust"
-      POSTGRES_DB: qpgen
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-
+      POSTGRES_DB: $DB_NAME
+      POSTGRES_USER: $DB_USER
+      POSTGRES_PASSWORD: $DB_PASSWORD
 
 volumes:
   postgres_data:

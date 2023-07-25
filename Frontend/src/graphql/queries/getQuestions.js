@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const getQuestionsQuery = gql`
-  query GetLessons(
+  query GetQuestions(
     $regulation: Int!
     $programme: String!
     $degree: String!

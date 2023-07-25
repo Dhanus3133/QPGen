@@ -55,7 +55,6 @@ export default function Topics() {
     });
     setTopics(updatedTopics);
   };
-  console.log(uLoading);
 
   return (
     <>

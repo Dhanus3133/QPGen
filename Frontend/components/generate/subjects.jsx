@@ -39,7 +39,7 @@ export default function Subjects({ course, setSubject }) {
       getOptionLabel={(option) => {
         return `${option["subjectName"]} | ${option["code"]}`;
       }}
-      sx={{ width: 300 }}
+      sx={{ width: 400 }}
       renderInput={(params) => <TextField {...params} label="Subjects" />}
     />
   );

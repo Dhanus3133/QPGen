@@ -1,8 +1,7 @@
 import { getSubjectsQuery } from "@/src/graphql/queries/getSubjects";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import SuperCard from "components/SuperCard";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 export default function Branch() {
   const router = useRouter();

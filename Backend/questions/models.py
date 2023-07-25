@@ -1,14 +1,8 @@
-import uuid
-from asgiref.sync import sync_to_async
-from django.conf import settings
-from django.core.mail import send_mail
+from django.core.exceptions import ValidationError
 from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator, ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
-from django.utils.text import slugify
 from django_choices_field import TextChoicesField
-from django.utils.html import strip_tags
-from django.template.loader import render_to_string
 from core.models import TimeStampedModel
 from users.models import User
 
@@ -40,10 +34,10 @@ class PreviousYearsQP(models.Model):
         MONTH_AM = "A/M", "A/M"
         MONTH_ND = "N/D", "N/D"
 
-    # month = models.CharField(max_length=3, choices=MONTH_CHOICES)
     month = TextChoicesField(choices_enum=MonthEnum)
     year = models.IntegerField(
-        validators=[MinValueValidator(1990), MaxValueValidator(timezone.now().year)]
+        validators=[MinValueValidator(
+            1990), MaxValueValidator(timezone.now().year)]
     )
 
     class Meta:
@@ -90,7 +84,9 @@ class Regulation(models.Model):
 
     year = models.IntegerField(
         unique=True,
-        validators=[MinValueValidator(2010), MaxValueValidator(timezone.now().year)],
+        validators=[
+            MinValueValidator(2010), MaxValueValidator(timezone.now().year)
+        ],
     )
 
     def __str__(self):
@@ -154,7 +150,8 @@ class Lesson(models.Model):
     )
     objective = models.TextField()
     outcome = models.TextField()
-    outcome_btl = models.ManyToManyField(BloomsTaxonomyLevel, related_name="lessons")
+    outcome_btl = models.ManyToManyField(
+        BloomsTaxonomyLevel, related_name="lessons")
 
     class Meta:
         unique_together = ["name", "subject"]
@@ -168,7 +165,8 @@ class Topic(models.Model):
     """Topic Model"""
 
     name = models.CharField(max_length=200)
-    lesson = models.ForeignKey(Lesson, on_delete=models.PROTECT, related_name="topics")
+    lesson = models.ForeignKey(
+        Lesson, on_delete=models.PROTECT, related_name="topics")
     active = models.BooleanField(default=True)
 
     class Meta:
@@ -207,7 +205,8 @@ class Syllabus(models.Model):
     course = models.ForeignKey(
         Course, on_delete=models.PROTECT, related_name="syllabuses"
     )
-    unit = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(25)])
+    unit = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(25)])
     lesson = models.ForeignKey(
         Lesson, on_delete=models.PROTECT, related_name="syllabuses"
     )
@@ -226,11 +225,13 @@ class MarkRange(models.Model):
     start = models.IntegerField(
         validators=[MinValueValidator(2), MaxValueValidator(20)]
     )
-    end = models.IntegerField(validators=[MinValueValidator(2), MaxValueValidator(20)])
+    end = models.IntegerField(
+        validators=[MinValueValidator(2), MaxValueValidator(20)])
 
     def clean(self, *args, **kwargs):
         if self.start > self.end:
-            raise ValidationError("Ensure End must be lesser than or equal to Start")
+            raise ValidationError(
+                "Ensure End must be lesser than or equal to Start")
         super().clean(*args, **kwargs)
 
     def __str__(self):
@@ -291,7 +292,8 @@ class Question(TimeStampedModel):
     created_by = models.ForeignKey(
         User, on_delete=models.PROTECT, related_name="questions"
     )
-    topics = models.ManyToManyField(Topic, related_name="questions", blank=True)
+    topics = models.ManyToManyField(
+        Topic, related_name="questions", blank=True)
     previous_years = models.ManyToManyField(
         PreviousYearsQP, related_name="questions", blank=True
     )

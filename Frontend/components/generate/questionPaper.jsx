@@ -1,8 +1,9 @@
 import { generateQuestionsQuery } from "@/src/graphql/queries/generateQuestions";
-import { romanize } from "@/src/utils";
 import { useQuery } from "@apollo/client";
+import { Button } from "@mui/material";
 import Analytics from "./qp/analytics";
 import QuestionPaperGen from "./qp/questioncomp";
+import { useState } from "react";
 
 const QuestionPaper = ({
   course,
@@ -21,14 +22,28 @@ const QuestionPaper = ({
     variables: { course, lids, marks, counts, choices },
   });
 
+  const [isAnswer, setIsAnswer] = useState(false);
+
   if (loading) return "Loading...";
   if (error) return <p>Error: {error.message}</p>;
   const generatedData = JSON.parse(data["generateQuestions"]);
-  console.log(generatedData);
   return (
     <>
+      <Button
+        variant="outlined"
+        color={"success"}
+        className="print:hidden"
+        onClick={() => {
+          setIsAnswer(!isAnswer);
+          console.log(isAnswer);
+        }}
+      >
+        {isAnswer ? "Question Paper" : "Answer Paper"}
+      </Button>
+
       <QuestionPaperGen
         data={generatedData["questions"]}
+        isAnswer={isAnswer}
         options={generatedData["options"]}
         semester={semester}
         total={total}

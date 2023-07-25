@@ -18,7 +18,8 @@ import random
 
 def int_to_roman(number):
     num = [1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000]
-    sym = ["i", "iv", "v", "ix", "x", "xl", "l", "xc", "c", "cd", "d", "cm", "m"]
+    sym = ["i", "iv", "v", "ix", "x", "xl",
+           "l", "xc", "c", "cd", "d", "cm", "m"]
     i = 12
     roman = ""
     while number:
@@ -132,9 +133,15 @@ class Generate:
             selected.append(another)
             start += 1
             end -= 1
-        selected.append([self.find_a_question_with_exact_mark(lesson, mark, False)])
-        selected.append([self.find_a_question_with_exact_mark(lesson, mark, False)])
-        selected.append([self.find_a_question_with_exact_mark(lesson, mark, False)])
+        selected.append(
+            [self.find_a_question_with_exact_mark(lesson, mark, False)]
+        )
+        selected.append(
+            [self.find_a_question_with_exact_mark(lesson, mark, False)]
+        )
+        selected.append(
+            [self.find_a_question_with_exact_mark(lesson, mark, False)]
+        )
         question = random.choice(selected)
         # print(selected)
         while None in question and len(selected) > 0:
@@ -150,6 +157,10 @@ class Generate:
             #                     except:
             #                         pass
             selected.remove(question)
+            if len(selected) == 0:
+                raise Exception(
+                    f"Questions are too less to generarte for {Lesson.objects.get(id=lesson).name}"
+                )
             question = random.choice(selected)
 
         for arr in question:
@@ -160,10 +171,7 @@ class Generate:
             else:
                 self.co_analytics[part][co] += 1
             self.btl_analytics[arr["q"].btl.name] += 1
-        if len(selected) == 0:
-            # print(selected)
-            print("No questions")
-            return
+
         if option != None:
             option += 65
 
@@ -177,6 +185,7 @@ class Generate:
             dataQuestion["option"] = chr(option) if option != None else None
             dataQuestion["roman"] = int_to_roman(1 + i) if mark > 2 else None
             dataQuestion["question"] = question[i]["q"].question
+            dataQuestion["answer"] = question[i]["q"].answer
             dataQuestion["btl"] = question[i]["q"].btl.name
             dataQuestion["co"] = (
                 question[i]["q"].lesson.subject.co
@@ -295,8 +304,10 @@ class Generate:
             "outcomes": outcomes,
             "branch": "/".join(depts),
         }
+        # print(data)
         analytics = {"co": self.co_analytics, "btl": self.btl_analytics}
-        questionsData = {"questions": data, "options": options, "analytics": analytics}
+        questionsData = {"questions": data,
+                         "options": options, "analytics": analytics}
         j = json.dumps(questionsData)
         GeneratedQuestionsJSON.objects.create(data=j)
         return j

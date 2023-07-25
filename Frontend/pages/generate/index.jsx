@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Courses from "components/generate/courses";
 import { Button, Grid, TextField } from "@mui/material";
 import Marks from "components/generate/marks";
@@ -8,7 +8,6 @@ import QuestionPaper from "components/generate/questionPaper";
 import DateTime from "components/generate/qp/datetime";
 
 export default function Generate() {
-  const [courses, setCourses] = useState([]);
   const [course, setCourse] = useState(null);
   const [semester, setSemester] = useState(null);
   const [total, setTotal] = useState(null);
@@ -25,31 +24,18 @@ export default function Generate() {
   const [generate, setGenerate] = useState(false);
   const [set, setSet] = useState(null);
 
-  // useEffect(() => {
-  //   setCourse(1);
-  //   setSubject(1);
-  // }, [course, subject]);
-  // console.log("semester", semester);
   if (!generate) {
-    if (dateTime) {
-      // console.log(dateTime.format("DD"));
-      console.log();
-      // ${dateTime.format("mm"})`);
-    }
-    // if (dateTime) console.log(dateTime.getDate());
-    // console.log(dateTime.format('DD'), "-", dateTime.format('MM'), "-", dateTime.format('YYYY'));
-    // console.log(dateTime.format("m"));
     return (
       <>
         <Grid container justifyContent="center">
-          <div className="p-3 center">
+          <div className="p-3 flex flex-col items-center">
             <DateTime dateTime={dateTime} setDateTime={setDateTime} />
             <div className="py-6">
               <TextField
                 id="set"
                 label="Set"
                 fullWidth
-                variant="filled"
+                variant="outlined"
                 onChange={(e) => setSet(e.target.value)}
               />
             </div>
@@ -90,10 +76,6 @@ export default function Generate() {
               color={valid ? "success" : "error"}
               onClick={() => {
                 if (valid) {
-                  // console.log(lessonsIDs);
-                  // console.log(marks);
-                  // console.log(counts);
-                  // console.log(choices);
                   setGenerate(true);
                 }
               }}
@@ -106,9 +88,7 @@ export default function Generate() {
     );
   } else {
     const navbar = document.getElementById("navbar");
-    // document.body.style.backgroundColor = "black";
     navbar.style.display = "none";
-    // console.log(navbar);
     return (
       <QuestionPaper
         course={course}

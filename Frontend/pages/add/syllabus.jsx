@@ -67,6 +67,7 @@ export default function AddSyllabus() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             onClick={handleSubmit}
+            disabled={lessons.length !== 5 || !valid}
           >
             Create
           </Button>

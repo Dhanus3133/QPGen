@@ -1,5 +1,12 @@
+export const encodeBase64 = (data) => {
+  return Buffer.from(data).toString("base64");
+};
+export const decodeBase64 = (data) => {
+  return Buffer.from(data, "base64").toString("ascii");
+};
+
 export function getID(s) {
-  return atob(s).split(":")[1];
+  return decodeBase64(s).split(":")[1];
 }
 
 export function romanize(num) {

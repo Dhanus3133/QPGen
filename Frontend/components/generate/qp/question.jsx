@@ -1,6 +1,5 @@
 import Vditor from "vditor";
 import { useEffect } from "react";
-import RenderVditor from "components/renderVditor";
 
 const Question = ({ data, vd, setVd }) => {
   // console.log(data);
@@ -19,7 +18,7 @@ const Question = ({ data, vd, setVd }) => {
   }, []);
 
   vd ? vd.setValue(data) : "";
-  // {data}
+
   return (
     <>
       <td className="pl-2">

@@ -3,7 +3,6 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import CustomVditor from "components/vditor";
-import style from "styles/Question.module.css";
 import MarkRanges from "components/question/MarkRanges";
 import BloomsTaxonomies from "components/question/BloomsTaxonomies";
 import Difficulty from "components/question/Difficulty";
@@ -16,7 +15,8 @@ import { meQuery } from "@/src/graphql/queries/me";
 import { updateQuestionMutation } from "@/src/graphql/mutations/updateQuestion";
 import { getQuestionsQuery } from "@/src/graphql/queries/getQuestions";
 import "styles/Question.module.css";
-import { getID } from "@/src/utils";
+import { encodeBase64 } from "@/src/utils";
+import { limit } from ".";
 
 export default function EditQuestion() {
   const router = useRouter();
@@ -35,7 +35,7 @@ export default function EditQuestion() {
   const [priority, setPriority] = useState(null);
   const [scenarioBased, setScenarioBased] = useState(false);
 
-  const globalID = btoa(`QuestionType:${questionNumber}`);
+  const globalID = encodeBase64(`QuestionType:${questionNumber}`);
 
   const {
     regulation,
@@ -46,6 +46,7 @@ export default function EditQuestion() {
     subject_code,
     unit,
     search,
+    page,
   } = router.query;
 
   const { data: uData } = useQuery(meQuery);
@@ -70,27 +71,46 @@ export default function EditQuestion() {
     onCompleted: (data) => {
       router.back();
     },
-    refetchQueries: [
-      {
+    update: (cache, { data }) => {
+      const pageNo = 1;
+      const after = encodeBase64(`arrayconnection:${(pageNo - 1) * limit - 1}`);
+      const newQuestion = data.createQuestion;
+      const variables = {
+        regulation: parseInt(regulation),
+        programme: programme,
+        degree: degree,
+        semester: parseInt(semester),
+        department: branch,
+        subjectCode: subject_code,
+        unit: parseInt(unit),
+        search: search || "",
+        first: limit,
+        after: after,
+      };
+      const existingData = cache.readQuery({
         query: getQuestionsQuery,
-        variables: {
-          regulation: parseInt(regulation),
-          programme: programme,
-          degree: degree,
-          semester: parseInt(semester),
-          department: branch,
-          subjectCode: subject_code,
-          unit: parseInt(unit),
-          search: search || "",
+        variables: variables,
+      });
+      if (existingData === null) return;
+      const updatedData = {
+        ...existingData,
+        getQuestions: {
+          ...existingData.getQuestions,
+          edges: [
+            {
+              cursor: newQuestion.id,
+              node: newQuestion,
+            },
+            ...existingData.getQuestions.edges,
+          ],
         },
-      },
-      // {
-      //   query: getQuestionQuery,
-      //   variables: {
-      //     id: globalID,
-      //   },
-      // },
-    ],
+      };
+      cache.writeQuery({
+        query: getQuestionsQuery,
+        variables: variables,
+        data: updatedData,
+      });
+    },
   });
 
   const [
@@ -100,27 +120,48 @@ export default function EditQuestion() {
     onCompleted: (data) => {
       router.back();
     },
-    refetchQueries: [
-      {
+    update: (cache, { data }) => {
+      const updatedQuestion = data.updateQuestion;
+      const pageNo = parseInt(page) || 1;
+      const after = encodeBase64(`arrayconnection:${(pageNo - 1) * limit - 1}`);
+      const variables = {
+        regulation: parseInt(regulation),
+        programme: programme,
+        degree: degree,
+        semester: parseInt(semester),
+        department: branch,
+        subjectCode: subject_code,
+        unit: parseInt(unit),
+        search: search || "",
+        first: limit,
+        after: after,
+      };
+      const existingData = cache.readQuery({
         query: getQuestionsQuery,
-        variables: {
-          regulation: parseInt(regulation),
-          programme: programme,
-          degree: degree,
-          semester: parseInt(semester),
-          department: branch,
-          subjectCode: subject_code,
-          unit: parseInt(unit),
-          search: search || "",
+        variables: variables,
+      });
+      if (existingData === null) return;
+      const updatedData = {
+        ...existingData,
+        getQuestions: {
+          ...existingData.getQuestions,
+          edges: existingData.getQuestions.edges.map((edge) => {
+            if (edge.node.id === updatedQuestion.id) {
+              return {
+                node: updatedQuestion,
+                ...edge,
+              };
+            }
+            return edge;
+          }),
         },
-      },
-      {
-        query: getQuestionQuery,
-        variables: {
-          id: globalID,
-        },
-      },
-    ],
+      };
+      cache.writeQuery({
+        query: getQuestionsQuery,
+        variables: variables,
+        data: updatedData,
+      });
+    },
   });
 
   const [loadQuestion, { data, called, loading, error }] = useLazyQuery(
@@ -330,6 +371,8 @@ export default function EditQuestion() {
                       createdBy: user,
                       topics: topicsQL,
                       previousYears: previousYearsQL,
+                      priority: priority,
+                      scenarioBased: scenarioBased,
                     },
                   });
                 }}

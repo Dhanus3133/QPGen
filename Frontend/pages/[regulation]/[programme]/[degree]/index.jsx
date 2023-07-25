@@ -15,7 +15,7 @@ export default function Degree() {
   if (error) return <p>Error: {error.message}</p>;
   const programme_data = data?.departmentsAccessTo;
 
-  const filteredData = programme_data.filter(function (item, n) {
+  const filteredData = programme_data.filter(function (item) {
     return (
       item["course"]["regulation"]["year"] == regulation &&
       item["course"]["department"]["programme"]["name"] == programme &&
