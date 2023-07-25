@@ -36,6 +36,7 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS").split(" ")
 DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
+    "django.contrib.sites",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -261,3 +262,5 @@ EMAIL_HOST_PASSWORD = env("EMAIL_PASSWORD")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DOMAIN = env("DOMAIN")
+
+SITE_ID = 1
