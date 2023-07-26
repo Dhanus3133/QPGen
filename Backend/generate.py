@@ -5,7 +5,6 @@ from questions.models import (
     Question,
     Subject,
     Syllabus,
-    GeneratedQuestionsJSON,
 )
 from django.db.models import Count, F, Q
 import json
@@ -41,7 +40,7 @@ class Generate:
         self.count = count
         self.choices = choices
         self.questions = questions = (
-            Question.objects.filter(lesson__in=lids)
+            Question.objects.filter(lesson__in=lids).filter()
             .select_related("lesson", "mark", "btl", "lesson__subject")
             .prefetch_related("topics")
         )
@@ -309,7 +308,6 @@ class Generate:
         questionsData = {"questions": data,
                          "options": options, "analytics": analytics}
         j = json.dumps(questionsData)
-        GeneratedQuestionsJSON.objects.create(data=j)
         return j
 
 
