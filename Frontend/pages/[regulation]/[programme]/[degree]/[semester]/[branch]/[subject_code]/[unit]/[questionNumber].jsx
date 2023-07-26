@@ -32,7 +32,7 @@ export default function EditQuestion() {
   const [difficulty, setDifficulty] = useState(null);
   const [topics, setTopics] = useState([]);
   const [previousYears, setPreviousYears] = useState([]);
-  const [priority, setPriority] = useState(null);
+  const [priority, setPriority] = useState(0);
   const [scenarioBased, setScenarioBased] = useState(false);
 
   const globalID = encodeBase64(`QuestionType:${questionNumber}`);
