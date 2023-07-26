@@ -11,8 +11,8 @@ export const createQuestionMutation = gql`
     $createdBy: GlobalID!
     $topics: [NodeInputPartial!]
     $previousYears: [NodeInputPartial!]
-    $priority: Int!
-    $scenarioBased: Boolean!
+    $priority: Int
+    $scenarioBased: Boolean
   ) {
     createQuestion(
       input: {

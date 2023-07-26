@@ -11,8 +11,8 @@ export const updateQuestionMutation = gql`
     $difficulty: DifficultyEnum!
     $topics: [NodeInputPartial!]
     $previousYears: [NodeInputPartial!]
-    $priority: Int!
-    $scenarioBased: Boolean!
+    $priority: Int
+    $scenarioBased: Boolean
   ) {
     updateQuestion(
       input: {
