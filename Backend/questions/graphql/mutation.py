@@ -107,10 +107,18 @@ class Mutation:
             s = Syllabus.objects.bulk_create(objs=objs)
         except IntegrityError as err:
             raise ValueError(
-                "Syllabus with this Course and Lesson already exists.")
+                "Syllabus with this Course and Lesson already exists."
+            )
         cs.is_completed = True
         cs.syllabus.set(s)
         cs.save(update_fields=["is_completed"])
+
+        fh, created = FacultiesHandling.objects.get_or_create(
+            course=c,
+            subject=Lesson.objects.get(id=lessons[0]).subject,
+        )
+        fh.faculties.add(info.context.request.user)
+
         return True
 
     @gql.django.field(permission_classes=[IsACOE])

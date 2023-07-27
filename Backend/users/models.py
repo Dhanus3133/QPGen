@@ -115,12 +115,14 @@ class NewUser(TimeStampedModel):
             self.password = make_password(self.password)
         if self.approved:
             if self.email_verified:
-                User.objects.create(
+                user = User.objects.create(
                     first_name=self.first_name,
                     last_name=self.last_name,
                     email=self.email,
                     password=self.password,
                 )
+                from questions.models import CreateSyllabus
+                CreateSyllabus.objects.create(faculty=user)
                 self.delete()
                 return
             else:
