@@ -165,10 +165,10 @@ class Generate:
         for arr in question:
             self.choosen_questions.append(arr["q"].id)
             co = f"CO{Syllabus.objects.filter(course=self.course).get(lesson=lesson).unit}"
-            if co not in self.co_analytics[part]:
-                self.co_analytics[part][co] = 1
+            if not self.co_analytics[co]:
+                self.co_analytics[co] = 0
             else:
-                self.co_analytics[part][co] += 1
+                self.co_analytics[co] += 1
             self.btl_analytics[arr["q"].btl.name] += 1
 
         if option != None:
@@ -220,7 +220,6 @@ class Generate:
             part = chr(65 + i)
             data[part] = []
             questions = []
-            self.co_analytics[part] = {}
 
             # print(f'================= Part {part} =================')
             current_count = 0
