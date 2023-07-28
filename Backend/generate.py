@@ -165,7 +165,7 @@ class Generate:
         for arr in question:
             self.choosen_questions.append(arr["q"].id)
             co = f"CO{Syllabus.objects.filter(course=self.course).get(lesson=lesson).unit}"
-            if not self.co_analytics[co]:
+            if co not in self.co_analytics:
                 self.co_analytics[co] = 0
             else:
                 self.co_analytics[co] += 1
