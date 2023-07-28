@@ -43,6 +43,9 @@ export default function AnalyticsTest({ co, btl }) {
         align: "top",
         formatter: (value) => `${value}%`,
       },
+      legend: {
+        display: false,
+      },
     },
     scales: {
       y: {
@@ -53,25 +56,31 @@ export default function AnalyticsTest({ co, btl }) {
   };
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center mt-2">
       <div className="grid grid-cols-2 gap-4 max-w-3xl">
         <div className="text-center">
-          <Bar
-            data={btlData}
-            options={options}
-            width={280}
-            height={200}
-            plugins={[ChartDataLabels]}
-          />
+          <div>
+            <Bar
+              data={btlData}
+              options={options}
+              width={280}
+              height={200}
+              plugins={[ChartDataLabels]}
+            />
+          </div>
+          <p className="text-xs">Blooms Taxonomy (%)</p>
         </div>
         <div className="text-center">
-          <Bar
-            data={coData}
-            options={options}
-            width={280}
-            height={200}
-            plugins={[ChartDataLabels]}
-          />
+          <div>
+            <Bar
+              data={coData}
+              options={options}
+              width={280}
+              height={200}
+              plugins={[ChartDataLabels]}
+            />
+          </div>
+          <p className="text-xs">CO (%)</p>
         </div>
       </div>
     </div>
