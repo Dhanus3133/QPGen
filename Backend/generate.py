@@ -6,7 +6,10 @@ from questions.models import (
     Subject,
     Syllabus,
 )
-from django.db.models import Count, F, Q
+from django.db.models import Count, F, Q, Value
+from django.contrib.postgres.aggregates import ArrayAgg
+from django.contrib.postgres.aggregates.general import StringAgg
+from django.db.models.functions import Concat
 import json
 import random
 
@@ -275,12 +278,11 @@ class Generate:
         )
 
         outcomes = list(
-            list(
-                Syllabus.objects.filter(course=self.course)
-                .filter(lesson__subject=self.subject)
-                .order_by("unit")
-                .values_list("lesson__outcome", "lesson__outcome_btl__name")
-            )
+            Syllabus.objects.filter(course=1).filter(lesson__subject=3).values("lesson__outcome").annotate(
+                all_btl_names=ArrayAgg(
+                    Concat("lesson__outcome_btl__name", Value("")), distinct=True
+                )
+            ).values_list("lesson__outcome", "all_btl_names")
         )
 
         depts = (

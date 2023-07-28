@@ -54,8 +54,8 @@ const QuestionPaperGen = (props) => {
           {subjectCO}.{i + 1}
         </td>
         <td className="pl-2">{value[0]}</td>
-        <td className="pl-2 text-center" width="7%">
-          {value[1]}
+        <td className="pl-2 text-center">
+          {value[1].join(', ')}
         </td>
       </tr>
     );
