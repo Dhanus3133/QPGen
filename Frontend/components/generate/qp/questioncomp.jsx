@@ -118,7 +118,7 @@ const QuestionPaperGen = (props) => {
                       <>
                         <QuestionAttributes data={l["co"]} />
                         <QuestionAttributes data={l["btl"]} />
-                        <QuestionAttributes data={l["QPRef"]} />
+                        {/*<QuestionAttributes data={l["QPRef"]} />*/}
                       </>
                     )}
                   </tr>
@@ -139,7 +139,7 @@ const QuestionPaperGen = (props) => {
                       <>
                         <QuestionAttributes data={l["co"]} />
                         <QuestionAttributes data={l["btl"]} />
-                        <QuestionAttributes data={l["QPRef"]} />
+                        {/*<QuestionAttributes data={l["QPRef"]} />*/}
                       </>
                     )}
                     <QuestionAttributes data={l["MarkAllocated"]} />
@@ -163,7 +163,7 @@ const QuestionPaperGen = (props) => {
                       <>
                         <QuestionAttributes data={l["co"]} />
                         <QuestionAttributes data={l["btl"]} />
-                        <QuestionAttributes data={l["QPRef"]} />
+                        {/*<QuestionAttributes data={l["QPRef"]} />*/}
                       </>
                     )}
                     <QuestionAttributes data={l["MarkAllocated"]} />
@@ -183,7 +183,7 @@ const QuestionPaperGen = (props) => {
                       <>
                         <QuestionAttributes data={l["co"]} />
                         <QuestionAttributes data={l["btl"]} />
-                        <QuestionAttributes data={l["QPRef"]} />
+                        {/*<QuestionAttributes data={l["QPRef"]} />*/}
                       </>
                     )}
                     <QuestionAttributes data={l["MarkAllocated"]} />
@@ -211,7 +211,7 @@ const QuestionPaperGen = (props) => {
                       <>
                         <QuestionAttributes data={l["co"]} />
                         <QuestionAttributes data={l["btl"]} />
-                        <QuestionAttributes data={l["QPRef"]} />
+                        {/*<QuestionAttributes data={l["QPRef"]} />*/}
                       </>
                     )}
                     <QuestionAttributes data={l["MarkAllocated"]} />
@@ -232,7 +232,7 @@ const QuestionPaperGen = (props) => {
                       <>
                         <QuestionAttributes data={l["co"]} />
                         <QuestionAttributes data={l["btl"]} />
-                        <QuestionAttributes data={l["QPRef"]} />
+                        {/*<QuestionAttributes data={l["QPRef"]} />*/}
                       </>
                     )}
                     <QuestionAttributes data={l["MarkAllocated"]} />
@@ -257,7 +257,7 @@ const QuestionPaperGen = (props) => {
                     <>
                       <QuestionAttributes data={l["co"]} />
                       <QuestionAttributes data={l["btl"]} />
-                      <QuestionAttributes data={l["QPRef"]} />
+                      {/*<QuestionAttributes data={l["QPRef"]} />*/}
                     </>
                   )}
                   <QuestionAttributes data={l["MarkAllocated"]} />

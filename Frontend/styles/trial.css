@@ -14,3 +14,11 @@ td {
 .style-3 {
   font-family: "Times New Roman", Times, serif;
 }
+
+@media print {
+  .no-print,
+  .vditor-speech,
+  .no-print * {
+    display: none !important;
+  }
+}

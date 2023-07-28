@@ -32,7 +32,7 @@ const QuestionPaper = ({
       <Button
         variant="outlined"
         color={"success"}
-        className="print:hidden"
+        className="no-print"
         onClick={() => {
           setIsAnswer(!isAnswer);
           console.log(isAnswer);

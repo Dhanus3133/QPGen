@@ -33,11 +33,11 @@ function NoChoice({ part, count, mark, subdivsel, optsel, store, isAnswer }) {
                 <br />
                 Level
               </td>
-              <td className="text-center font-bold px-2">
+              {/* <td className="text-center font-bold px-2">
                 Univ
                 <br />
                 QP
-              </td>
+              </td>*/}
             </>
           )}
         </tr>
