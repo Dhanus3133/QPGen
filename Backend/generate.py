@@ -278,7 +278,7 @@ class Generate:
         )
 
         outcomes = list(
-            Syllabus.objects.filter(course=1).filter(lesson__subject=3).values("lesson__outcome").annotate(
+            Syllabus.objects.filter(course=self.course).filter(lesson__subject=self.subject).values("lesson__outcome").annotate(
                 all_btl_names=ArrayAgg(
                     Concat("lesson__outcome_btl__name", Value("")), distinct=True
                 )
