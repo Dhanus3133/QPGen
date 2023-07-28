@@ -1,78 +1,78 @@
 import { Bar } from "react-chartjs-2";
 import Chart from "chart.js/auto";
-// import 'chartjs-plugin-labels';
-export default function AnalyticsTest({ co, btl }) {
+import "chartjs-plugin-datalabels";
+import ChartDataLabels from "chartjs-plugin-datalabels";
+
+function getPercentageData(data, label) {
   let total = 0;
-  let percents = []
+  let percents = [];
   let setsOfData = [
     {
-        label: "Blooms Taxonomy",
-        // data: Object.values(btl),
-        fill: true,
-      },
-  ]
-  for (const [key, value] of Object.entries(btl)){
-    console.log(value);
-    total+=value;
+      label: `${label} (%)`,
+      fill: true,
+    },
+  ];
+  for (const [key, value] of Object.entries(data)) {
+    total += value;
   }
-  for (const [key, value] of Object.entries(btl)){
-    console.log(value);
-    percents.push((value/total*100).toFixed(0))
+  for (const [key, value] of Object.entries(data)) {
+    percents.push(((value / total) * 100).toFixed(0));
   }
-  console.log(percents)
-  for(let i of setsOfData ){
-    if(i.label == "Blooms Taxonomy"){
+  for (let i of setsOfData) {
+    if (i.label == `${label} (%)`) {
       i["data"] = percents;
     }
   }
-
-  const btlData = {
-    labels: Object.keys(btl),
-    datasets:setsOfData,
-    
+  const obj = {
+    labels: Object.keys(data),
+    datasets: setsOfData,
   };
+  return obj;
+}
 
-  const datasets = [];
-
-  for (const part in co) {
-    if (Object.hasOwnProperty.call(co, part)) {
-      const data = Object.values(co[part]);
-      datasets.push({
-        label: `Part ${part}`,
-        data: data,
-        fill: false,
-      });
-    }
-  }
-
-  const coData = {
-    labels: Object.keys(co["A"]),
-    datasets: datasets,
-  };
+export default function AnalyticsTest({ co, btl }) {
+  const btlData = getPercentageData(btl, "Blooms Taxonomy");
+  const coData = getPercentageData(co, "CO");
 
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    // style:'percent',
     plugins: {
-        labels: {
-          render: 'percentage',
-        }
+      datalabels: {
+        anchor: "end",
+        align: "top",
+        formatter: (value) => `${value}%`,
       },
+    },
     scales: {
       y: {
         beginAtZero: true,
       },
     },
+    barThickness: 20,
   };
 
   return (
-    <div>
-      <div className="max-w-lg text-center">
-        <Bar data={btlData} options={options} width={200} height={200} />
-      </div>
-      <div className="max-w-lg text-center">
-        <Bar data={coData} options={options} width={200} height={200} />
+    <div className="flex justify-center">
+      <div className="grid grid-cols-2 gap-4 max-w-3xl">
+        <div className="text-center">
+          <Bar
+            data={btlData}
+            options={options}
+            width={280}
+            height={200}
+            plugins={[ChartDataLabels]}
+          />
+        </div>
+        <div className="text-center">
+          <Bar
+            data={coData}
+            options={options}
+            width={280}
+            height={200}
+            plugins={[ChartDataLabels]}
+          />
+        </div>
       </div>
     </div>
   );
