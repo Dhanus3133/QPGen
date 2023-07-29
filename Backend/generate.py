@@ -278,7 +278,10 @@ class Generate:
         )
 
         outcomes = list(
-            Syllabus.objects.filter(course=self.course).filter(lesson__subject=self.subject).values("lesson__outcome").annotate(
+            Syllabus.objects.filter(course=self.course).filter(
+                lesson__subject=self.subject
+            ).order_by("unit")
+            .values("lesson__outcome").annotate(
                 all_btl_names=ArrayAgg(
                     Concat("lesson__outcome_btl__name", Value("")), distinct=True
                 )
