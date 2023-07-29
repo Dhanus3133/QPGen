@@ -46,8 +46,8 @@ class Command(BaseCommand):
                     MarkRange(start=8, end=9),
                     MarkRange(start=10, end=11),
                     MarkRange(start=12, end=13),
-                    MarkRange(start=14, end=14),
-                    MarkRange(start=15, end=16),
+                    MarkRange(start=14, end=16),
+                    MarkRange(start=20, end=25),
                 ]
             )
         except:
@@ -102,7 +102,7 @@ class Command(BaseCommand):
                 ),
                 Department(
                     programme=ug,
-                    degree=be,
+                    degree=btech,
                     branch="Computer Science and Business Systems",
                     branch_code="CSBS"
                 ),
