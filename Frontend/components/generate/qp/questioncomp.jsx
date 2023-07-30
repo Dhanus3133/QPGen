@@ -54,9 +54,7 @@ const QuestionPaperGen = (props) => {
           {subjectCO}.{i + 1}
         </td>
         <td className="pl-2">{value[0]}</td>
-        <td className="pl-2 text-center">
-          {value[1].join(', ')}
-        </td>
+        <td className="pl-2 text-center">{value[1].join(", ")}</td>
       </tr>
     );
     cout.push(a);
@@ -318,7 +316,7 @@ const QuestionPaperGen = (props) => {
 
   return (
     <>
-      <div className="flex flex-col bg-white style-1 mx-auto text-sm style-3 mt-10">
+      <div className="flex flex-col bg-white style-1 mx-auto text-sm style-3">
         {/*TABLE FOR PAPER HEADER */}
         <table className="w-full">
           <tbody>
@@ -416,7 +414,9 @@ const QuestionPaperGen = (props) => {
           </>
         )}
         <div>
-          <div id="generated-questions">{questions}</div>
+          <div id="generated-questions" className="text-base leading-tight">
+            {questions}
+          </div>
           {!isAnswer && <p className="text-center">~*All the Best*~</p>}
         </div>
         {!isAnswer && (

@@ -27,13 +27,13 @@ function NoChoice({ part, count, mark, subdivsel, optsel, store, isAnswer }) {
           </td>
           {!isAnswer && (
             <>
-              <td className="text-center font-bold px-2">CO</td>
-              <td className="text-center font-bold px-2">
+              <td className="text-center font-bold px-1">CO</td>
+              <td className="text-center font-bold px-1">
                 RBT
                 <br />
                 Level
               </td>
-              {/* <td className="text-center font-bold px-2">
+              {/* <td className="text-center font-bold px-1">
                 Univ
                 <br />
                 QP
