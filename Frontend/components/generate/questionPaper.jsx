@@ -35,10 +35,31 @@ const QuestionPaper = ({
         className="no-print"
         onClick={() => {
           setIsAnswer(!isAnswer);
-          console.log(isAnswer);
         }}
       >
         {isAnswer ? "Question Paper" : "Answer Paper"}
+      </Button>
+      <Button
+        variant="outlined"
+        color={"success"}
+        className="no-print"
+        onClick={() => {
+          document.title =
+            `${isAnswer ? "AK" : "QP"} - ` +
+            generatedData["options"]["subjectCode"] +
+            ` ${generatedData["options"]["subjectName"]} - ` +
+            exam +
+            `${
+              dateTime
+                ? ` - ${dateTime.format("DD")}-${dateTime.format("MM")}-${
+                    dateTime.format("YYYY") % 100
+                  }`
+                : ""
+            }`;
+          window.print();
+        }}
+      >
+        Print
       </Button>
 
       <QuestionPaperGen
