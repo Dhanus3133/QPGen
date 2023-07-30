@@ -1,5 +1,4 @@
 import { Autocomplete, Button, Checkbox, TextField } from "@mui/material";
-import { useState } from "react";
 
 function Marks({
   marks,
@@ -10,16 +9,13 @@ function Marks({
   setChoices,
   total,
   setTotal,
-  units,
   setUnits,
-  time,
   setTime,
   valid,
   setValid,
+  examTitle,
   setExamTitle,
 }) {
-  const [custom, setCustom] = useState(false);
-
   let num = 0;
 
   for (let i = 0; i < marks.length; i++) {
@@ -47,7 +43,6 @@ function Marks({
       choices: [false, true, true],
       units: [1],
       time: "1.30",
-      custom: false,
     },
     {
       label: "Internal Assessment 2",
@@ -57,7 +52,6 @@ function Marks({
       choices: [false, true, true],
       units: [2, 3],
       time: "1.30",
-      custom: false,
     },
     {
       label: "Model Exam",
@@ -67,7 +61,6 @@ function Marks({
       choices: [false, true],
       units: [1, 2, 3, 4, 5],
       time: "3",
-      custom: false,
     },
     {
       label: "Custom",
@@ -77,7 +70,6 @@ function Marks({
       choices: [],
       units: [],
       time: null,
-      custom: true,
     },
   ];
 
@@ -86,7 +78,7 @@ function Marks({
       <Autocomplete
         id="type"
         options={types}
-        onChange={(event, type) => {
+        onChange={(_, type) => {
           if (type) {
             setExamTitle(type["label"]);
             setMarks(type["marks"]);
@@ -95,7 +87,6 @@ function Marks({
             setUnits(type["units"]);
             setTime(type["time"]);
             setTotal(type["total"]);
-            setCustom(type["custom"]);
           } else {
             setExamTitle(null);
             setMarks([]);
@@ -104,7 +95,6 @@ function Marks({
             setUnits([]);
             setTime(null);
             setTotal(null);
-            setCustom(false);
           }
         }}
         getOptionLabel={(option) => {
@@ -113,7 +103,7 @@ function Marks({
         sx={{ width: 400 }}
         renderInput={(params) => <TextField {...params} label="Exam" />}
       />
-      {custom && (
+      {examTitle && (
         <>
           <div className="text-center">
             <TextField
@@ -122,7 +112,7 @@ function Marks({
               label="Total Marks"
               type="number"
               variant="outlined"
-              defaultValue={total}
+              value={total}
               InputProps={{
                 inputProps: { min: 1 },
               }}
@@ -133,7 +123,7 @@ function Marks({
             />
           </div>
           <ul>
-            {marks.map((mark, idx) => {
+            {marks.map((_, idx) => {
               return (
                 <div key={idx} className="p-3 pl-0">
                   <TextField

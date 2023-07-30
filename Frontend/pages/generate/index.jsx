@@ -53,12 +53,11 @@ export default function Generate() {
               setChoices={setChoices}
               total={total}
               setTotal={setTotal}
-              units={units}
               setUnits={setUnits}
-              time={time}
               setTime={setTime}
               valid={valid}
               setValid={setValid}
+              examTitle={examTitle}
               setExamTitle={setExamTitle}
             />
             <Lessons
