@@ -50,9 +50,14 @@ export default function AnalyticsTest({ co, btl }) {
     scales: {
       y: {
         beginAtZero: true,
+        ticks: {
+          callback: function (value) {
+            return value + "%";
+          },
+        },
       },
     },
-    barThickness: 20,
+    barThickness: 23,
   };
 
   return (

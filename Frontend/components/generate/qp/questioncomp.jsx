@@ -126,7 +126,6 @@ const QuestionPaperGen = (props) => {
                 q = (
                   <tr>
                     <Number rs={r[null]} data={l["number"]} />
-                    <Roman data={l["roman"]} />
                     <Question
                       data={isAnswer ? l["answer"] : l["question"]}
                       vd={vd}
@@ -151,11 +150,12 @@ const QuestionPaperGen = (props) => {
                 q = (
                   <tr>
                     <Number rs={r[null]} data={l["number"]} />
-                    <Roman data={l["roman"]} />
+                    {k.length > 1 && <Roman data={l["roman"]} />}
                     <Question
                       data={isAnswer ? l["answer"] : l["question"]}
                       vd={vd}
                       setVd={setVd}
+                      span={k.length > 1 ? 1 : 2}
                     />
                     {!isAnswer && (
                       <>
@@ -171,11 +171,12 @@ const QuestionPaperGen = (props) => {
               } else {
                 q = (
                   <tr>
-                    <Roman data={l["roman"]} />
+                    {k.length > 1 && <Roman data={l["roman"]} />}
                     <Question
                       data={isAnswer ? l["answer"] : l["question"]}
                       vd={vd}
                       setVd={setVd}
+                      span={k.length > 1 ? 1 : 2}
                     />
                     {!isAnswer && (
                       <>
@@ -199,11 +200,12 @@ const QuestionPaperGen = (props) => {
                   <tr>
                     <Number rs={arrlen + 1} data={l["number"]} />
                     <Option rs={r[l["option"]]} data={l["option"]} />
-                    <Roman data={l["roman"]} />
+                    {k.length > 1 && <Roman data={l["roman"]} />}
                     <Question
                       data={isAnswer ? l["answer"] : l["question"]}
                       vd={vd}
                       setVd={setVd}
+                      span={k.length > 1 ? 1 : 2}
                     />
                     {!isAnswer && (
                       <>
@@ -225,6 +227,7 @@ const QuestionPaperGen = (props) => {
                       data={isAnswer ? l["answer"] : l["question"]}
                       vd={vd}
                       setVd={setVd}
+                      span={k.length > 1 ? 1 : 2}
                     />
                     {!isAnswer && (
                       <>
@@ -245,11 +248,12 @@ const QuestionPaperGen = (props) => {
                   <td rowSpan={r[l["option"]]} className="style-2 text-center">
                     {l["option"]}
                   </td>
-                  <Roman data={l["roman"]} />
+                  {k.length > 1 && <Roman data={l["roman"]} />}
                   <Question
                     data={isAnswer ? l["answer"] : l["question"]}
                     vd={vd}
                     setVd={setVd}
+                    span={k.length > 1 ? 1 : 2}
                   />
                   {!isAnswer && (
                     <>

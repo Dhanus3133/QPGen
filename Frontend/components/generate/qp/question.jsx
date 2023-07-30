@@ -1,7 +1,7 @@
 import Vditor from "vditor";
 import { useEffect } from "react";
 
-const Question = ({ data, vd, setVd }) => {
+const Question = ({ data, vd, setVd, span }) => {
   // console.log(data);
   useEffect(() => {
     if (!vd) {
@@ -21,7 +21,7 @@ const Question = ({ data, vd, setVd }) => {
 
   return (
     <>
-      <td className="pl-2">
+      <td className="pl-2" colspan={span || 1}>
         <div
           id="generated-question"
           className="break-inside-avoid"

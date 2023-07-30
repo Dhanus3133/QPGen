@@ -11,7 +11,8 @@ function NoChoice({ part, count, mark, subdivsel, optsel, store, isAnswer }) {
               <div className="font-bold">REVISED BLOOMS TAXONOMY(RBT)</div>
               <div>
                 L1-Remembering, L2-Understanding, L3-Applying, L4-Analyzing,
-                L5-Evaluating, L6-Creating
+                L5-Evaluating, <br />
+                L6-Creating
               </div>
             </td>
           </tr>
