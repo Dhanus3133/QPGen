@@ -21,7 +21,7 @@ const Question = ({ data, vd, setVd, span }) => {
 
   return (
     <>
-      <td className="pl-2" colspan={span || 1}>
+      <td className="pl-2" colSpan={span || 1}>
         <div
           id="generated-question"
           className="break-inside-avoid"
