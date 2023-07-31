@@ -45,10 +45,10 @@ class HelloType:
 
 @gql.type
 class Query:
-    question: Optional[QuestionType] = relay.node()
-    questions: relay.Connection[QuestionType] = login_required(relay.connection())
-    subjects: List[SubjectType] = login_required(gql.django.field())
-    syllabuses: List[SyllabusType] = login_required(gql.django.field())
+    # question: Optional[QuestionType] = relay.node()
+    # questions: relay.Connection[QuestionType] = login_required(relay.connection())
+    # subjects: List[SubjectType] = login_required(gql.django.field())
+    # syllabuses: List[SyllabusType] = login_required(gql.django.field())
     mark_ranges: List[MarkRangeType] = login_required(gql.django.field())
     blooms_taxonomy_levels: List[BloomsTaxonomyLevelType] = login_required(
         gql.django.field()
@@ -56,6 +56,7 @@ class Query:
     previous_years: List[PreviousYearsQPType] = login_required(gql.django.field())
 
     @relay.connection
+    @login_required
     def question_contains_filter(self, question: str) -> Iterable[QuestionType]:
         return Question.objects.filter(question__icontains=question)
 

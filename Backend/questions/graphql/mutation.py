@@ -77,7 +77,7 @@ class Mutation:
             ),
         )
 
-    @gql.django.field
+    @gql.django.field(permission_classes=[IsACOE])
     async def assign_subject_to_faculties(
         self, info: Info, faculties: List[int]
     ) -> bool:
@@ -88,6 +88,7 @@ class Mutation:
         await CreateSyllabus.objects.abulk_create(objs=objs)
         return True
 
+    @login_required
     @gql.django.field
     def create_syllabuses(
         self, info: Info, course: int, units: List[int], lessons: List[int]
@@ -134,7 +135,7 @@ class Mutation:
         return True
 
     @login_required
-    @gql.django.field
+    @gql.django.field(permission_classes=[IsAFaculty])
     async def update_topic(self, info: Info, topic: int, active: bool) -> bool:
         await Topic.objects.filter(id=topic).aupdate(active=active)
         return True

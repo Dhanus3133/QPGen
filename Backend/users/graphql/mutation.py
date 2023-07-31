@@ -9,6 +9,7 @@ from strawberry_django_plus import gql
 import strawberry_django_jwt.mutations as jwt_mutations
 from strawberry_django_jwt.decorators import login_required
 from django.contrib.auth.password_validation import validate_password
+from coe.graphql.permissions import IsACOE
 
 from users.models import NewUser, User
 from .types import UserType
@@ -47,14 +48,14 @@ class Mutation:
     }
     """
 
-    register: UserType = auth.register(UserInput)
+    # register: UserType = auth.register(UserInput)
 
     token_auth = jwt_mutations.ObtainJSONWebTokenAsync.obtain
     verify_token = jwt_mutations.VerifyAsync.verify
     refresh_token = jwt_mutations.RefreshAsync.refresh
     delete_token_cookie = jwt_mutations.DeleteJSONWebTokenCookieAsync.delete_cookie
 
-    @gql.django.field
+    @gql.django.field(permission_classes=[IsACOE])
     @login_required
     def update_user(self, info: Info, data: UserInputPartial) -> UserType:
         user = info.context.request.user
