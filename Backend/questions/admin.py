@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.db import models
 from django.utils.safestring import mark_safe
+from import_export.admin import ImportExportModelAdmin
 from .models import *
 
 
@@ -93,7 +94,7 @@ class FacultiesHandlingModelAdmin(admin.ModelAdmin):
 
 
 @admin.register(Question)
-class QuestionModelAdmin(admin.ModelAdmin):
+class QuestionModelAdmin(ImportExportModelAdmin):
     # formfield_overrides = {
     #     models.TextField: {'widget': VditorWidget}
     # }

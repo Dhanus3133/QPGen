@@ -51,6 +51,7 @@ THIRD_PARTY_APPS = [
     "strawberry_django_plus",
     "corsheaders",
     "storages",
+    "import_export",
     # 'gqlauth',
 ]
 
