@@ -45,7 +45,7 @@ class HelloType:
 
 @gql.type
 class Query:
-    # question: Optional[QuestionType] = relay.node()
+    question: Optional[QuestionType] = relay.node()
     # questions: relay.Connection[QuestionType] = login_required(relay.connection())
     # subjects: List[SubjectType] = login_required(gql.django.field())
     # syllabuses: List[SyllabusType] = login_required(gql.django.field())
