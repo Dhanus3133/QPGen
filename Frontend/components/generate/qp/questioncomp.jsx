@@ -335,11 +335,11 @@ const QuestionPaperGen = (props) => {
             <tr>
               <td className="text-center">
                 <img
-                  className="py-0 pl-7 m-0"
+                  className="py-0 pl-0.5 m-0"
                   src="https://www.citchennai.edu.in/wp-content/themes/cit/images/logo.png"
                   alt="Logo"
-                  width="200"
-                  height="105"
+                  width="240"
+                  height="200"
                 />
               </td>
               <td colSpan="3" className="text-center">
