@@ -171,7 +171,7 @@ export default function EditQuestion() {
       variables: {
         id: globalID,
       },
-    }
+    },
   );
 
   useEffect(() => {
@@ -188,7 +188,7 @@ export default function EditQuestion() {
   useEffect(() => {
     setLesson(lData?.getLessons);
     const lId = lData?.getLessons.find(
-      (lesson) => lesson["unit"] === parseInt(unit)
+      (lesson) => lesson["unit"] === parseInt(unit),
     )["lesson"]["id"];
     setLesson(lId);
   }, [lData]);
@@ -314,6 +314,7 @@ export default function EditQuestion() {
                 variant="outlined"
                 size="large"
                 color="primary"
+                disabled={uLoading}
                 sx={{ width: "100%" }}
                 onClick={() => {
                   const topicsQL = [];
@@ -350,6 +351,7 @@ export default function EditQuestion() {
                 variant="outlined"
                 size="large"
                 color="secondary"
+                disabled={cLoading}
                 sx={{ width: "100%" }}
                 onClick={() => {
                   const topicsQL = [];
