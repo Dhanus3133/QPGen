@@ -1,29 +1,23 @@
-from asgiref.sync import sync_to_async
-from graphql.type import directives
-from strawberry_django_plus.permissions import IsAuthenticated
-from coe.graphql.permissions import IsACOE
-from core.utils import get_current_user_from_info
-from users.models import User
-from .types import UserType
 import strawberry
-from typing import List, Optional
-from strawberry.django import auth
+from typing import List
+from asgiref.sync import sync_to_async
+import strawberry_django
+from strawberry_django import auth
 from strawberry.types import Info
-from strawberry_django_plus import gql
-from strawberry_django_jwt.decorators import login_required
+from coe.graphql.permission import IsACOE
 
-# from gqlauth.core.directives import TokenRequired, IsAuthenticated
+from users.graphql.types import UserType
+from users.models import User
 
 
-@gql.type
+@strawberry.type
 class Query:
-    me: UserType = login_required(auth.current_user())
+    me: UserType = auth.current_user()
 
-    @gql.django.field
-    async def is_authorized(self, info: Info) -> bool:
+    @strawberry_django.field()
+    def is_authorized(self, info: Info) -> bool:
         return info.context.request.user.is_authenticated
 
-    @gql.django.field(permission_classes=[IsACOE])
-    @login_required
-    async def faculties(self, info: Info) -> List[UserType]:
+    @strawberry.field(extensions=[IsACOE()])
+    async def faculties(self, _: Info) -> List[UserType]:
         return await sync_to_async(list)(User.objects.filter(is_active=True))

@@ -74,7 +74,8 @@ def validate_email(email):
 class NewUser(TimeStampedModel):
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
-    email = models.EmailField(max_length=150, validators=[validate_email], unique=True)
+    email = models.EmailField(max_length=150, validators=[
+                              validate_email], unique=True)
     password = models.TextField(max_length=150)
     email_verified = models.BooleanField(default=False)
     email_secret = models.CharField(

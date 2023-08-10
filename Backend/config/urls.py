@@ -1,25 +1,16 @@
-# from asgiref.sync import sync_to_async
-from django.contrib import admin
-from django.conf.urls.static import re_path, static
-from django.urls import include, path
 from django.conf import settings
+from django.contrib import admin
+from django.urls import path, re_path
+from django.conf.urls.static import static
 from django.views.static import serve
+# from django.views.decorators.csrf import csrf_exempt
 
-from strawberry_django_jwt.decorators import jwt_cookie
-from strawberry_django_jwt.views import AsyncStatusHandlingGraphQLView as AGQLView
-from questions.views import upload_question_image
-
-# from strawberry_django_jwt.views import StatusHandlingGraphQLView as GQLView
-# from strawberry.django.views import AsyncGraphQLView
-from core import schema
-
+from strawberry.django.views import AsyncGraphQLView
+from core.schema import schema
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("graphql/", jwt_cookie(AGQLView.as_view(schema=schema.schema))),
-    # path('graphql/', AsyncGraphQLView.as_view(schema=schema.schema)),
-    path("upload/", upload_question_image),
-    path("__debug__/", include("debug_toolbar.urls")),
+    path('admin/', admin.site.urls),
+    path("graphql/", AsyncGraphQLView.as_view(schema=schema)),
 ]
 
 if settings.DEBUG:
@@ -40,3 +31,4 @@ else:
             {"document_root": settings.STATIC_ROOT},
         ),
     ]
+

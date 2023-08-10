@@ -26,3 +26,4 @@ COPY . .
 
 # run entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
+

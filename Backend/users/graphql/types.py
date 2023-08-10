@@ -1,30 +1,33 @@
 from django.contrib.auth.models import AbstractUser
-from strawberry_django_plus import gql
 from django.contrib.auth import get_user_model
+from strawberry import relay
+from strawberry import auto
+from strawberry.relay.types import GlobalID
+import strawberry_django
 
 
-@gql.django.type(get_user_model())
-class UserType(gql.relay.Node):
-    id: gql.auto
-    email: gql.auto
-    first_name: gql.auto
-    last_name: gql.auto
-    is_active: gql.auto
+@strawberry_django.type(get_user_model())
+class UserType(relay.Node):
+    id: GlobalID
+    email: auto
+    first_name: auto
+    last_name: auto
+    is_active: auto
 
-    @gql.django.field(only=["first_name", "last_name"])
+    @strawberry_django.field(only=["first_name", "last_name"])
     def full_name(self, root: AbstractUser) -> str:
         return f"{root.first_name or ''} {root.last_name or ''}".strip()
 
 
-@gql.django.type(get_user_model())
+@strawberry_django.type(get_user_model())
 class UserSignupInput:
-    first_name: gql.auto
-    last_name: gql.auto
-    email: gql.auto
-    password: gql.auto
+    first_name: auto
+    last_name: auto
+    email: auto
+    password: auto
 
 
-@gql.django.type(get_user_model())
+@strawberry_django.type(get_user_model())
 class UserLoginInput:
-    email: gql.auto
-    password: gql.auto
+    email: auto
+    password: auto

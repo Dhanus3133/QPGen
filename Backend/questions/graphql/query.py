@@ -1,16 +1,14 @@
-from strawberry_django_plus.gql import relay
-from typing import Iterable, List, Optional
+from typing import List, Optional
 from asgiref.sync import sync_to_async
-from coe.graphql.permissions import IsACOE
-from generate import Generate
-import strawberry
+from strawberry import extensions, relay
 from strawberry.scalars import JSON
 from strawberry.types import Info
-from strawberry_django_plus import gql
-from strawberry_django_jwt.decorators import login_required
-from core.utils import get_current_user_from_info
-from questions.graphql.permissions import IsAFaculty
-
+import strawberry_django
+from strawberry_django.filters import strawberry
+from strawberry_django.permissions import IsAuthenticated, Iterable
+from coe.graphql.permission import IsACOE
+from questions.generate import Generate
+from questions.graphql.permission import IsAFaculty
 from questions.graphql.types import (
     BloomsTaxonomyLevelType,
     CourseType,
@@ -36,32 +34,31 @@ from questions.models import (
 )
 
 
-@strawberry.type
+@strawberry_django.type
 class HelloType:
     hello: JSON
     name: str
     age: int
 
 
-@gql.type
+@strawberry.type
 class Query:
-    question: Optional[QuestionType] = login_required(relay.node())
-    # questions: relay.Connection[QuestionType] = login_required(relay.connection())
-    # subjects: List[SubjectType] = login_required(gql.django.field())
-    # syllabuses: List[SyllabusType] = login_required(gql.django.field())
-    mark_ranges: List[MarkRangeType] = login_required(gql.django.field())
-    blooms_taxonomy_levels: List[BloomsTaxonomyLevelType] = login_required(
-        gql.django.field()
+    question: Optional[QuestionType] = relay.node(extensions=[IsAFaculty()])
+    mark_ranges: List[MarkRangeType] = relay.node(
+        extensions=[IsAuthenticated()]
     )
-    previous_years: List[PreviousYearsQPType] = login_required(gql.django.field())
+    blooms_taxonomy_levels: BloomsTaxonomyLevelType = relay.node(
+        extensions=[IsAuthenticated()]
+    )
+    previous_years: List[PreviousYearsQPType] = relay.node(
+        extensions=[IsAuthenticated()]
+    )
 
-    @relay.connection
-    @login_required
-    def question_contains_filter(self, question: str) -> Iterable[QuestionType]:
+    @relay.connection(relay.ListConnection[QuestionType], extensions=[IsAFaculty()])
+    def question_contains_filter(self, question: str) -> Iterable[Question]:
         return Question.objects.filter(question__icontains=question)
 
-    @gql.django.field
-    @login_required
+    @strawberry_django.field(extensions=[IsAuthenticated()])
     async def get_subjects(
         self,
         info: Info,
@@ -71,7 +68,7 @@ class Query:
         semester: int,
         department: str,
     ) -> List[FacultiesHandlingType]:
-        user = await get_current_user_from_info(info)
+        user = info.context.request.user
         return await sync_to_async(list)(
             user.faculties.filter(
                 course__regulation__year=regulation,
@@ -82,11 +79,10 @@ class Query:
             ).distinct("subject")
         )
 
-    @gql.django.field(permission_classes=[IsACOE])
-    @login_required
+    @strawberry_django.field(extensions=[IsACOE()])
     def generate_questions(
         self,
-        info: Info,
+        _: Info,
         course: int,
         lids: List[int],
         marks: List[int],
@@ -100,10 +96,9 @@ class Query:
         # choices = [False, True, True]
         return Generate(course, lids, marks, counts, choices).generate_questions()
 
-    @gql.django.field
-    @login_required
+    @strawberry_django.field(extensions=[IsAuthenticated()])
     async def departments_access_to(self, info: Info) -> List[FacultiesHandlingType]:
-        user = await get_current_user_from_info(info)
+        user = info.context.request.user
         return await sync_to_async(list)(
             user.faculties.filter(course__active=True)
             .select_related(
@@ -115,8 +110,7 @@ class Query:
             .distinct("course__regulation", "course__department", "course__semester")
         )
 
-    @gql.django.field
-    @login_required
+    @strawberry_django.field(extensions=[IsAuthenticated()])
     async def get_lessons(
         self,
         info: Info,
@@ -127,7 +121,6 @@ class Query:
         department: str,
         subject_code: str,
     ) -> List[SyllabusType]:
-        user = await get_current_user_from_info(info)
         return await sync_to_async(list)(
             Syllabus.objects.filter(
                 course__regulation__year=regulation,
@@ -139,11 +132,10 @@ class Query:
             ).order_by("unit")
         )
 
-    @relay.connection()
-    @login_required
+    @relay.connection(relay.ListConnection[QuestionType], extensions=[IsAuthenticated()])
     def get_questions(
         self,
-        info: Info,
+        _: Info,
         regulation: int,
         programme: str,
         degree: str,
@@ -152,7 +144,7 @@ class Query:
         subject_code: str,
         unit: int,
         search: str,
-    ) -> List[QuestionType]:
+    ) -> Iterable[Question]:
         return Question.objects.filter(
             lesson__syllabuses__course__regulation__year=regulation,
             lesson__syllabuses__course__department__programme__name__iexact=programme,
@@ -164,15 +156,11 @@ class Query:
             question__icontains=search,
         ).order_by("-updated_at", "-created_at")
 
-    @gql.django.field
-    @login_required
-    # def get_courses(self, lessons: List[int]) -> List[CourseType]:
-    #     print(lessons)
+    @strawberry_django.field(extensions=[IsACOE()])
     async def get_courses(self) -> List[CourseType]:
         return await sync_to_async(list)(Course.objects.filter(active=True))
 
-    @gql.django.field
-    @login_required
+    @strawberry_django.field(extensions=[IsAuthenticated()])
     async def get_subjects_by_id(self, course_id: int) -> List[SubjectType]:
         return await sync_to_async(list)(
             Subject.objects.filter(lessons__syllabuses__course__id=course_id).distinct(
@@ -180,8 +168,7 @@ class Query:
             )
         )
 
-    @gql.django.field
-    @login_required
+    @strawberry_django.field(extensions=[IsAuthenticated()])
     async def get_lessons_by_id(
         self, course_id: int, subject_id: int
     ) -> List[SyllabusType]:
@@ -191,11 +178,10 @@ class Query:
             ).order_by("unit")
         )
 
-    @gql.django.field
-    @login_required
+    @strawberry_django.field(extensions=[IsAFaculty()])
     async def get_topics(
         self,
-        info: Info,
+        _: Info,
         regulation: int,
         programme: str,
         degree: str,
@@ -216,10 +202,9 @@ class Query:
             ).order_by("name")
         )
 
-    @gql.django.field
-    @login_required
+    @strawberry_django.field(extensions=[IsAuthenticated()])
     async def validate_create_syllabus(self, info: Info) -> bool:
-        user = await get_current_user_from_info(info)
+        user = info.context.request.user
         if await CreateSyllabus.objects.filter(
             faculty=user, is_completed=False
         ).aexists():
@@ -227,19 +212,17 @@ class Query:
         else:
             return False
 
-    @gql.django.field
-    @login_required
-    async def get_all_subjects(self, info: Info) -> List[SubjectType]:
+    @strawberry_django.field(extensions=[IsACOE()])
+    async def get_all_subjects(self, _: Info) -> List[SubjectType]:
         return await sync_to_async(list)(Subject.objects.all())
 
-    @gql.django.field
-    @login_required
+    @strawberry_django.field(extensions=[IsAuthenticated()])
     async def get_lessons_by_subject_id(self, subject_id: int) -> List[LessonType]:
         return await sync_to_async(list)(Lesson.objects.filter(subject=subject_id))
 
-    @gql.django.field(permission_classes=[IsACOE])
+    @strawberry_django.field(extensions=[IsACOE()])
     async def faculties_handlings(
-        self, info: Info, course: int, subject: int
+        self, _: Info, course: int, subject: int
     ) -> List[FacultiesHandlingType]:
         return await sync_to_async(list)(
             FacultiesHandling.objects.filter(course=course, subject=subject)

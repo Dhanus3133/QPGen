@@ -1,53 +1,35 @@
 from typing import List, cast
-from django.db.utils import IntegrityError
-from strawberry_django_plus.permissions import IsAuthenticated
-from coe.graphql.permissions import IsACOE
-
-from questions.graphql.permissions import IsAFaculty
-from questions.models import (
-    Course,
-    CreateSyllabus,
-    FacultiesHandling,
-    Lesson,
-    Subject,
-    Topic,
-    Syllabus,
-)
+from django.db import IntegrityError
+import strawberry
 from strawberry.types import Info
-from strawberry_django_plus import gql
-from strawberry_django_jwt.decorators import login_required
-from questions.graphql.inputs import (
-    LessonInput,
-    QuestionInput,
-    QuestionInputPartial,
-    SubjectInput,
-)
-from questions.graphql.types import (
-    LessonType,
-    QuestionType,
-    SubjectType,
-    TopicType,
-)
+from strawberry_django import mutations
+from strawberry_django.auth.queries import strawberry_django
+from strawberry_django.permissions import IsAuthenticated
+from coe.graphql.permission import IsACOE
+from questions.graphql.input import LessonInput, QuestionInput, QuestionInputPartial, SubjectInput
+from questions.graphql.permission import IsAFaculty
+
+from questions.graphql.types import LessonType, QuestionType, SubjectType, TopicType
+from questions.models import Course, CreateSyllabus, FacultiesHandling, Lesson, Subject, Syllabus, Topic
 from users.models import User
 
 
-@gql.type
+@strawberry.type
 class Mutation:
-    create_question: QuestionType = gql.django.create_mutation(
-        QuestionInput, permission_classes=[IsAFaculty]
+    create_question: QuestionType = mutations.create(
+        QuestionInput, extensions=[IsAFaculty()]
     )
-    update_question: QuestionType = gql.django.update_mutation(
-        QuestionInputPartial, permission_classes=[IsAFaculty]
+    update_question: QuestionType = mutations.update(
+        QuestionInputPartial, extensions=[IsAFaculty()]
     )
-    create_subject: SubjectType = gql.django.create_mutation(
-        SubjectInput, directives=[IsAuthenticated]
+    create_subject: SubjectType = mutations.create(
+        SubjectInput, extensions=[IsAuthenticated()]
     )
-    create_lesson: LessonType = gql.django.create_mutation(
-        LessonInput, directives=[IsAuthenticated]
+    create_lesson: LessonType = mutations.create(
+        LessonInput, extensions=[IsAuthenticated()]
     )
 
-    @login_required
-    @gql.django.input_mutation(permission_classes=[IsAFaculty])
+    @mutations.input_mutation(extensions=[IsAFaculty()])
     async def create_topic(
         self,
         info: Info,
@@ -61,7 +43,7 @@ class Mutation:
         subject_code: str,
         unit: int,
     ) -> TopicType:
-        return await cast(
+        return cast(
             TopicType,
             Topic.objects.acreate(
                 name=name,
@@ -77,9 +59,9 @@ class Mutation:
             ),
         )
 
-    @gql.django.field(permission_classes=[IsACOE])
+    @strawberry_django.field(extensions=[IsACOE()])
     async def assign_subject_to_faculties(
-        self, info: Info, faculties: List[int]
+        self, _: Info, faculties: List[int]
     ) -> bool:
         objs = [
             CreateSyllabus(faculty=await User.objects.aget(id=faculty))
@@ -88,8 +70,7 @@ class Mutation:
         await CreateSyllabus.objects.abulk_create(objs=objs)
         return True
 
-    @login_required
-    @gql.django.field
+    @strawberry_django.field
     def create_syllabuses(
         self, info: Info, course: int, units: List[int], lessons: List[int]
     ) -> bool:
@@ -98,10 +79,13 @@ class Mutation:
             is_completed=False, faculty=info.context.request.user
         ).first()
         if not cs:
-            return ValueError("You don't have the permisson!")
+            raise ValueError("You don't have the permisson!")
         objs = [
-            Syllabus(course=c, unit=units[i],
-                     lesson=Lesson.objects.get(id=lessons[i]))
+            Syllabus(
+                course=c,
+                unit=units[i],
+                lesson=Lesson.objects.get(id=lessons[i])
+            )
             for i in range(len(units))
         ]
         try:
@@ -114,17 +98,16 @@ class Mutation:
         cs.syllabus.set(s)
         cs.save(update_fields=["is_completed"])
 
-        fh, created = FacultiesHandling.objects.get_or_create(
+        fh, _ = FacultiesHandling.objects.get_or_create(
             course=c,
             subject=Lesson.objects.get(id=lessons[0]).subject,
         )
         fh.faculties.add(info.context.request.user)
-
         return True
 
-    @gql.django.field(permission_classes=[IsACOE])
+    @strawberry_django.field(extensions=[IsACOE()])
     def assign_faculties(
-        self, info: Info, course: int, subject: int, faculties: List[int]
+        self, _: Info, course: int, subject: int, faculties: List[int]
     ) -> bool:
         fh, created = FacultiesHandling.objects.get_or_create(
             course=Course.objects.get(id=course),
@@ -134,8 +117,7 @@ class Mutation:
         fh.faculties.set(f)
         return True
 
-    @login_required
-    @gql.django.field(permission_classes=[IsAFaculty])
-    async def update_topic(self, info: Info, topic: int, active: bool) -> bool:
+    @strawberry_django.field(extensions=[IsAFaculty()])
+    async def update_topic(self, _: Info, topic: int, active: bool) -> bool:
         await Topic.objects.filter(id=topic).aupdate(active=active)
         return True

@@ -8,7 +8,6 @@ from questions.models import (
 )
 from django.db.models import Count, F, Q, Value
 from django.contrib.postgres.aggregates import ArrayAgg
-from django.contrib.postgres.aggregates.general import StringAgg
 from django.db.models.functions import Concat
 import json
 import random
@@ -316,3 +315,4 @@ class Generate:
 
 
 # generate_questions(lids, marks, count, choices)
+
