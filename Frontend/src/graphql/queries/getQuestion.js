@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const getQuestionQuery = gql`
-  query getQuestion($id: GlobalID!) {
-    question(id: $id) {
+  query getQuestion($id: ID!) {
+    question(pk: $id) {
       id
       question
       answer
@@ -21,6 +21,11 @@ export const getQuestionQuery = gql`
         name
       }
       createdBy {
+        fullName
+        email
+      }
+      updatedBy {
+        fullName
         email
       }
       previousYears {

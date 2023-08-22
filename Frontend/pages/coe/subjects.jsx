@@ -3,13 +3,12 @@ import { useMutation } from "@apollo/client";
 import { useState } from "react";
 import { Button, CircularProgress, Grid } from "@mui/material";
 import { Stack } from "@mui/system";
-import { getID } from "@/src/utils";
 import { assignSubjectToFacultiesMutation } from "@/src/graphql/mutations/assignSubjectsToFacutlies";
 import Faculties from "components/coe/faculties";
 
 export default function AddSubjects() {
   const [AssignSubjects, { data, loading, error }] = useMutation(
-    assignSubjectToFacultiesMutation
+    assignSubjectToFacultiesMutation,
   );
 
   const [faculties, setFaculties] = useState([]);
@@ -20,7 +19,7 @@ export default function AddSubjects() {
     event.preventDefault();
     const facultyIds = [];
     faculties.map((faculty) => {
-      facultyIds.push(parseInt(getID(faculty["id"])));
+      facultyIds.push(parseInt(faculty["id"]));
     });
     AssignSubjects({
       variables: {

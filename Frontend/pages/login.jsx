@@ -22,7 +22,7 @@ export default function SignIn() {
 
   const { data: isAuthorized } = useQuery(isAuthorizedQuery);
 
-  const [Login, { data: loginData, loading: loginLoading, error: loginError }] =
+  const [Login, { data: loginData, loading: loginLoading }] =
     useMutation(loginMutation);
 
   useEffect(() => {
@@ -35,16 +35,14 @@ export default function SignIn() {
 
   useEffect(() => {
     if (loginData) {
-      setAuthorized(true);
-      client.refetchQueries({ include: "all" });
+      if (loginData.login?.messages) {
+        setLoginErrorMessage(loginData.login?.messages[0].message);
+      } else {
+        setAuthorized(true);
+        client.refetchQueries({ include: "all" });
+      }
     }
   }, [loginData]);
-
-  if (loginError) {
-    const err = loginError.networkError.result.errors[0]?.message;
-    if (err !== loginErrorMessage)
-      setLoginErrorMessage(loginError.networkError.result.errors[0]?.message);
-  }
 
   const handleSubmit = (event) => {
     event.preventDefault();

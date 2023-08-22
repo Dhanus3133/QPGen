@@ -1,5 +1,4 @@
 import { getCoursesQuery } from "@/src/graphql/queries/getCourses";
-import { getID } from "@/src/utils";
 import { useQuery } from "@apollo/client";
 import { Autocomplete, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -19,7 +18,7 @@ export default function Courses({ setCourse, setSemester }) {
       id="courses"
       options={courses}
       onChange={(_, course) => {
-        const id = course ? parseInt(getID(course["id"])) : null;
+        const id = course ? parseInt(course["id"]) : null;
         setCourse(id);
         setSemester && setSemester(course["semester"]);
       }}

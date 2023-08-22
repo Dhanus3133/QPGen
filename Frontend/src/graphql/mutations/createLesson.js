@@ -9,7 +9,7 @@ export const createLessonMutation = gql`
     $outcomeBtl: [Int!]!
   ) {
     createLesson(
-      input: {
+      data: {
         subject: $subject
         name: $name
         objective: $objective

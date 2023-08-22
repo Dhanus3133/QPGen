@@ -12,7 +12,6 @@ import { Alert, Grid } from "@mui/material";
 import { createLessonMutation } from "@/src/graphql/mutations/createLesson";
 import { getLessonsBySubjectIdQuery } from "@/src/graphql/queries/getLessonsBySubjectID";
 import BloomsTaxonomies from "./BloomsTaxonomies";
-import { getID } from "@/src/utils";
 
 export default function CreateLesson({ subject }) {
   const [open, setOpen] = useState(false);
@@ -41,7 +40,7 @@ export default function CreateLesson({ subject }) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const btlIDs = [];
-    btls.map((btl) => btlIDs.push(parseInt(getID(btl["id"]))));
+    btls.map((btl) => btlIDs.push(parseInt(btl["id"])));
     CreateLesson({
       variables: {
         subject: subject,

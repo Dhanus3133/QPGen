@@ -1,5 +1,4 @@
 import { getSubjectsByIdQuery } from "@/src/graphql/queries/getSubjectsByID";
-import { getID } from "@/src/utils";
 import { useLazyQuery } from "@apollo/client";
 import { Autocomplete, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -33,7 +32,7 @@ export default function Subjects({ course, setSubject }) {
       id="subjects"
       options={subjects}
       onChange={(event, subject) => {
-        const id = subject ? parseInt(getID(subject["id"])) : null;
+        const id = subject ? parseInt(subject["id"]) : null;
         setSubject(id);
       }}
       getOptionLabel={(option) => {

@@ -35,8 +35,6 @@ export default function EditQuestion() {
   const [priority, setPriority] = useState(0);
   const [scenarioBased, setScenarioBased] = useState(false);
 
-  const globalID = encodeBase64(`QuestionType:${questionNumber}`);
-
   const {
     regulation,
     programme,
@@ -169,7 +167,7 @@ export default function EditQuestion() {
     {
       skip: !router.isReady,
       variables: {
-        id: globalID,
+        id: questionNumber,
       },
     },
   );
@@ -320,14 +318,14 @@ export default function EditQuestion() {
                   const topicsQL = [];
                   const previousYearsQL = [];
                   topics?.map((topic) => {
-                    topicsQL.push({ id: topic["id"] });
+                    topicsQL.push(topic["id"]);
                   });
                   previousYears?.map((prevYear) => {
-                    previousYearsQL.push({ id: prevYear["id"] });
+                    previousYearsQL.push(prevYear["id"]);
                   });
                   updateQuestion({
                     variables: {
-                      id: globalID,
+                      id: questionNumber,
                       lesson: lesson,
                       question: vQuestion.getValue(),
                       answer: vAnswer.getValue(),
@@ -336,6 +334,7 @@ export default function EditQuestion() {
                       difficulty: difficulty,
                       topics: topicsQL,
                       previousYears: previousYearsQL,
+                      updatedBy: user,
                       priority: priority,
                       scenarioBased: scenarioBased,
                     },
@@ -357,10 +356,10 @@ export default function EditQuestion() {
                   const topicsQL = [];
                   const previousYearsQL = [];
                   topics?.map((topic) => {
-                    topicsQL.push({ id: topic["id"] });
+                    topicsQL.push(topic["id"]);
                   });
                   previousYears?.map((prevYear) => {
-                    previousYearsQL.push({ id: prevYear["id"] });
+                    previousYearsQL.push(prevYear["id"]);
                   });
                   createQuestion({
                     variables: {

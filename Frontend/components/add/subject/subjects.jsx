@@ -1,5 +1,4 @@
 import { getAllSubjectsQuery } from "@/src/graphql/queries/getAllSubjects";
-import { getID } from "@/src/utils";
 import { useQuery } from "@apollo/client";
 import { Autocomplete, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -22,7 +21,7 @@ export default function Subjects({ subject, setSubject }) {
         id="subjects"
         options={subjects ? subjects : []}
         onChange={(event, subject) => {
-          const id = subject ? parseInt(getID(subject["id"])) : null;
+          const id = subject ? parseInt(subject["id"]) : null;
           setSubject(id);
         }}
         getOptionLabel={(option) => {

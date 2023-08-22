@@ -18,22 +18,36 @@ import { Button } from "@mui/material";
 export default function MenuAppBar() {
   const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
-  const { data: isAuthorized } = useQuery(isAuthorizedQuery);
-  const [LogoutMutation] = useMutation(logoutMutation);
+  const { data: isAuthorized, loading } = useQuery(isAuthorizedQuery);
+  const [LogoutMutation, { data }] = useMutation(logoutMutation);
 
   useEffect(() => {
-    if (isAuthorized?.isAuthorized) {
-      setAuthorized(true);
-    } else {
-      setAuthorized(false);
+    if (!loading) {
+      if (isAuthorized?.isAuthorized) {
+        setAuthorized(true);
+      } else {
+        setAuthorized(false);
+        if (
+          router.pathname !== "/signup" &&
+          !router.pathname.startsWith("/verify/")
+        ) {
+          Router.push("/login");
+        }
+      }
     }
   }, [isAuthorized]);
 
+  useEffect(() => {
+    if (data?.logout) {
+      client.refetchQueries({ include: "active" });
+      router.push("/login");
+    }
+  }, [data]);
+
   const handleLogout = () => {
     LogoutMutation();
-    client.refetchQueries({ include: "active" });
-    Router.push("/");
   };
+
   return (
     <div id="navbar">
       <Box sx={{ flexGrow: 1 }}>

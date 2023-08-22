@@ -1,15 +1,6 @@
 import { getLessonsByIdQuery } from "@/src/graphql/queries/getLessonsByID";
-import { getID } from "@/src/utils";
 import { useLazyQuery } from "@apollo/client";
-import {
-  Checkbox,
-  FormControl,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  OutlinedInput,
-  Select,
-} from "@mui/material";
+import { Checkbox } from "@mui/material";
 import { useEffect, useState } from "react";
 
 export default function Lessons({
@@ -45,7 +36,7 @@ export default function Lessons({
     let l = [];
     lessons?.map((lesson) => {
       if (units.includes(lesson["unit"])) {
-        l.push(parseInt(getID(lesson["lesson"]["id"])));
+        l.push(parseInt(lesson["lesson"]["id"]));
       }
     });
     setLessonsIDs([...l]);

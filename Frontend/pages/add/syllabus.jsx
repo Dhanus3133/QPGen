@@ -8,7 +8,6 @@ import Lessons from "components/add/subject/lessons";
 import { Box } from "@mui/system";
 import ValidateSyllabus from "components/createSyllabus/validateSyllabus";
 import { createSyllabusesMutation } from "@/src/graphql/mutations/createSyllabuses";
-import { getID } from "@/src/utils";
 
 export default function AddSyllabus() {
   const [valid, setValid] = useState(false);
@@ -25,7 +24,7 @@ export default function AddSyllabus() {
     const units = [];
     const lessonIds = [];
     lessons.map((lesson) => {
-      lessonIds.push(parseInt(getID(lesson["id"])));
+      lessonIds.push(parseInt(lesson["id"]));
       units.push(lesson["unit"]);
     });
 

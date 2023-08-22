@@ -1,6 +1,5 @@
 import { updateTopicMutation } from "@/src/graphql/mutations/updateTopic";
 import { getTopicsQuery } from "@/src/graphql/queries/getTopics";
-import { getID } from "@/src/utils";
 import { useMutation, useQuery } from "@apollo/client";
 import { Button, CircularProgress, Grid, Switch } from "@mui/material";
 import { Box } from "@mui/system";
@@ -35,7 +34,7 @@ export default function Topics() {
           variables: topicsVariables,
         },
       ],
-    }
+    },
   );
 
   useEffect(() => {
@@ -82,7 +81,7 @@ export default function Topics() {
                 onClick={() => {
                   UpdateTopic({
                     variables: {
-                      topic: parseInt(getID(topic["id"])),
+                      topic: parseInt(topic["id"]),
                       active: topic["active"],
                     },
                   }).catch((error) => {

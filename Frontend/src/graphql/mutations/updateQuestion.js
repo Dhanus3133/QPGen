@@ -2,27 +2,27 @@ import { gql } from "@apollo/client";
 
 export const updateQuestionMutation = gql`
   mutation UpdateQuestion(
-    $id: GlobalID!
-    $lesson: GlobalID!
+    $id: ID!
     $question: String!
     $answer: String
-    $mark: GlobalID!
-    $btl: GlobalID!
+    $mark: ID!
+    $btl: ID!
     $difficulty: DifficultyEnum!
-    $topics: [NodeInputPartial!]
-    $previousYears: [NodeInputPartial!]
+    $updatedBy: ID!
+    $topics: [ID!]
+    $previousYears: [ID!]
     $priority: Int
     $scenarioBased: Boolean
   ) {
     updateQuestion(
-      input: {
+      data: {
         id: $id
-        lesson: { id: $lesson }
         question: $question
         answer: $answer
-        mark: { id: $mark }
-        btl: { id: $btl }
+        mark: { set: $mark }
+        btl: { set: $btl }
         difficulty: $difficulty
+        updatedBy: { set: $updatedBy }
         topics: { set: $topics }
         previousYears: { set: $previousYears }
         priority: $priority
@@ -48,6 +48,11 @@ export const updateQuestionMutation = gql`
           name
         }
         createdBy {
+          fullName
+          email
+        }
+        updatedBy {
+          fullName
           email
         }
         previousYears {

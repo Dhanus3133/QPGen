@@ -1,5 +1,4 @@
 import { getLessonsBySubjectIdQuery } from "@/src/graphql/queries/getLessonsBySubjectID";
-import { getID } from "@/src/utils";
 import { useLazyQuery } from "@apollo/client";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";

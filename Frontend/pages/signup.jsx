@@ -62,7 +62,7 @@ export default function SignUp() {
                 Gmail
               </Link>
             </Alert>
-            <Link href="login">Click here to Login!</Link>
+            <Link href="/login">Click here to Login!</Link>
           </Box>
         </Container>
       </>

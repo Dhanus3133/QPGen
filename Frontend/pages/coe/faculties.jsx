@@ -1,6 +1,5 @@
 import { assignFacultiesMutation } from "@/src/graphql/mutations/assignFaculties";
 import { FacultiesHandlingsQuery } from "@/src/graphql/queries/facultiesHandlings";
-import { getID } from "@/src/utils";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { Alert, Button, CircularProgress, Grid } from "@mui/material";
 import { Stack } from "@mui/system";
@@ -16,7 +15,7 @@ export default function FacultiesHandling() {
   const [faculties, setFaculties] = useState([]);
   const [success, setSuccess] = useState(false);
   const [FacultiesHandlings, { loading, error, data }] = useLazyQuery(
-    FacultiesHandlingsQuery
+    FacultiesHandlingsQuery,
   );
 
   const [AssignFaculties, { loading: ALoading, error: AErrror, data: AData }] =
@@ -58,7 +57,7 @@ export default function FacultiesHandling() {
   const handleSubmit = () => {
     const userIDs = [];
     faculties.map((f) => {
-      userIDs.push(parseInt(getID(f["id"])));
+      userIDs.push(parseInt(f["id"]));
     });
     AssignFaculties({
       variables: {

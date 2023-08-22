@@ -165,9 +165,7 @@ export default function Lesson() {
                     pathname: `${router.pathname}/[questionNumber]`,
                     query: {
                       ...router.query,
-                      questionNumber: parseInt(
-                        decodeBase64(q["id"]).split(":")[1]
-                      ),
+                      questionNumber: parseInt(q["id"]),
                     },
                   }}
                 >

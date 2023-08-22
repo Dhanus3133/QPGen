@@ -8,7 +8,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useMutation } from "@apollo/client";
 import { createSubjectMutation } from "@/src/graphql/mutations/createSubject";
 import { Box } from "@mui/system";
-import { getID } from "@/src/utils";
 import { useState, useEffect } from "react";
 import { getAllSubjectsQuery } from "@/src/graphql/queries/getAllSubjects";
 import { Alert } from "@mui/material";
