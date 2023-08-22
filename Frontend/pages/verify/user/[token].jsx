@@ -3,6 +3,7 @@ import { useMutation } from "@apollo/client";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { Button } from "@mui/material";
 
 export default function VerifyEmail() {
   const router = useRouter();
