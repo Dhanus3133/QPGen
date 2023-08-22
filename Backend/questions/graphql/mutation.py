@@ -1,4 +1,5 @@
 from typing import List, cast
+from asgiref.sync import sync_to_async
 from django.db import IntegrityError
 import strawberry
 from strawberry.types import Info
@@ -9,7 +10,7 @@ from coe.graphql.permission import IsACOE
 from questions.graphql.input import LessonInput, QuestionInput, QuestionInputPartial, SubjectInput
 from questions.graphql.permission import IsAFaculty
 
-from questions.graphql.types import LessonType, QuestionType, SubjectType, TopicType
+from questions.graphql.types import FacultiesHandlingType, LessonType, QuestionType, SubjectType, TopicType
 from questions.models import Course, CreateSyllabus, FacultiesHandling, Lesson, Subject, Syllabus, Topic
 from users.models import User
 
@@ -17,19 +18,19 @@ from users.models import User
 @strawberry.type
 class Mutation:
     create_question: QuestionType = mutations.create(
-        QuestionInput, extensions=[IsAFaculty()]
+        QuestionInput, permission_classes=[IsAFaculty]
     )
     update_question: QuestionType = mutations.update(
-        QuestionInputPartial, extensions=[IsAFaculty()]
+        QuestionInputPartial, permission_classes=[IsAFaculty]
     )
     create_subject: SubjectType = mutations.create(
-        SubjectInput, extensions=[IsAuthenticated()]
+        SubjectInput, extensions=[IsAuthenticated()], handle_django_errors=True
     )
     create_lesson: LessonType = mutations.create(
-        LessonInput, extensions=[IsAuthenticated()]
+        LessonInput, extensions=[IsAuthenticated()], handle_django_errors=True
     )
 
-    @mutations.input_mutation(extensions=[IsAFaculty()])
+    @mutations.input_mutation(permission_classes=[IsAFaculty])
     async def create_topic(
         self,
         info: Info,
@@ -45,7 +46,7 @@ class Mutation:
     ) -> TopicType:
         return cast(
             TopicType,
-            Topic.objects.acreate(
+            await Topic.objects.acreate(
                 name=name,
                 lesson=await Lesson.objects.aget(
                     syllabuses__course__regulation__year=regulation,
@@ -61,7 +62,7 @@ class Mutation:
 
     @strawberry_django.field(extensions=[IsACOE()])
     async def assign_subject_to_faculties(
-        self, _: Info, faculties: List[int]
+        self, info: Info, faculties: List[int]
     ) -> bool:
         objs = [
             CreateSyllabus(faculty=await User.objects.aget(id=faculty))
@@ -70,54 +71,54 @@ class Mutation:
         await CreateSyllabus.objects.abulk_create(objs=objs)
         return True
 
-    @strawberry_django.field
-    def create_syllabuses(
+    @strawberry_django.mutation(extensions=[IsAuthenticated()])
+    async def create_syllabuses(
         self, info: Info, course: int, units: List[int], lessons: List[int]
     ) -> bool:
-        c = Course.objects.get(id=course)
-        cs = CreateSyllabus.objects.filter(
+        c = await Course.objects.aget(id=course)
+        cs = await CreateSyllabus.objects.filter(
             is_completed=False, faculty=info.context.request.user
-        ).first()
+        ).alast()
         if not cs:
             raise ValueError("You don't have the permisson!")
         objs = [
             Syllabus(
                 course=c,
                 unit=units[i],
-                lesson=Lesson.objects.get(id=lessons[i])
+                lesson=await Lesson.objects.aget(id=lessons[i])
             )
             for i in range(len(units))
         ]
         try:
-            s = Syllabus.objects.bulk_create(objs=objs)
+            s = await Syllabus.objects.abulk_create(objs=objs)
         except IntegrityError as err:
             raise ValueError(
                 "Syllabus with this Course and Lesson already exists."
             )
         cs.is_completed = True
-        cs.syllabus.set(s)
-        cs.save(update_fields=["is_completed"])
+        await cs.syllabus.aset(s)
+        await cs.asave(update_fields=["is_completed"])
 
-        fh, _ = FacultiesHandling.objects.get_or_create(
+        fh, _ = await FacultiesHandling.objects.aget_or_create(
             course=c,
-            subject=Lesson.objects.get(id=lessons[0]).subject,
+            subject=await Subject.objects.aget(lessons=lessons[0]),
         )
-        fh.faculties.add(info.context.request.user)
+        await fh.faculties.aadd(info.context.request.user)
         return True
 
-    @strawberry_django.field(extensions=[IsACOE()])
-    def assign_faculties(
-        self, _: Info, course: int, subject: int, faculties: List[int]
+    @ strawberry_django.field(extensions=[IsACOE()])
+    async def assign_faculties(
+        self, info: Info, course: int, subject: int, faculties: List[int]
     ) -> bool:
-        fh, created = FacultiesHandling.objects.get_or_create(
-            course=Course.objects.get(id=course),
-            subject=Subject.objects.get(id=subject),
+        fh, created = await FacultiesHandling.objects.aget_or_create(
+            course=await Course.objects.aget(id=course),
+            subject=await Subject.objects.aget(id=subject),
         )
-        f = User.objects.filter(id__in=faculties)
-        fh.faculties.set(f)
+        f = await sync_to_async(User.objects.filter)(id__in=faculties)
+        await fh.faculties.aset(f)
         return True
 
-    @strawberry_django.field(extensions=[IsAFaculty()])
-    async def update_topic(self, _: Info, topic: int, active: bool) -> bool:
+    @ strawberry_django.field(permission_classes=[IsAFaculty])
+    async def update_topic(self, info: Info, topic: int, active: bool) -> bool:
         await Topic.objects.filter(id=topic).aupdate(active=active)
         return True

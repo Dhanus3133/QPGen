@@ -27,8 +27,8 @@ environ.Env.read_env()
 SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = []
+DEBUG = True  # if env("DEBUG") == "true" else False
+ALLOWED_HOSTS = env("ALLOWED_HOSTS").split(" ")
 
 
 # Application definition
@@ -44,14 +44,13 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    # "django_extensions",
-    # "debug_toolbar",
-    # "strawberry_django_jwt",
-    # "strawberry_django_jwt.refresh_token",
-    # "strawberry_django_plus",
+    "uvicorn",
+    "strawberry_django",
+    "django_extensions",
+    "debug_toolbar",
     # "corsheaders",
     # "storages",
-    # "import_export",
+    "import_export",
 ]
 
 INSTALLED_APPS = (
@@ -72,6 +71,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'strawberry_django.middlewares.debug_toolbar.DebugToolbarMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -170,9 +170,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "users.USER"
 
+
+if DEBUG:
+    import socket
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS = [
+        ip[: ip.rfind(".")] + ".1" for ip in ips] + ["127.0.0.1", "10.0.2.2"]
+
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_HOST_USER = env("EMAIL")
 EMAIL_HOST_PASSWORD = env("EMAIL_PASSWORD")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DOMAIN = env("DOMAIN")
+SITE_ID = 1

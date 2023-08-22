@@ -1,6 +1,7 @@
-from typing import List
+from typing import List, Optional
+# from strawberry.relay.types import GlobalID
 from strawberry.relay.types import GlobalID
-from strawberry.scalars import JSON
+from strawberry.scalars import ID, JSON
 import strawberry_django
 from strawberry import relay
 from strawberry import auto
@@ -15,7 +16,7 @@ class HelloType:
 
 @strawberry_django.type(BloomsTaxonomyLevel)
 class BloomsTaxonomyLevelType(relay.Node):
-    id: GlobalID
+    id: relay.GlobalID
     name: auto
     description: auto
 
@@ -127,6 +128,7 @@ class QuestionType(relay.Node):
     btl: BloomsTaxonomyLevelType
     difficulty: auto
     created_by: UserType
+    updated_by: Optional[UserType]
     topics: List[TopicType]
     previous_years: List[PreviousYearsQPType]
     priority: auto

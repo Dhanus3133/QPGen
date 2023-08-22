@@ -1,7 +1,7 @@
 from typing import Any, Callable, ClassVar
-from asgiref.sync import sync_to_async
+from django.core.exceptions import ValidationError
 from strawberry.types import Info
-from strawberry_django.permissions import DjangoNoPermission, DjangoPermissionExtension
+from strawberry_django.permissions import DjangoPermissionExtension
 
 from coe.models import COE
 from users.graphql.types import UserType
@@ -21,11 +21,9 @@ class IsACOE(DjangoPermissionExtension):
         info: Info,
         source: Any,
     ):
-        if not info.context.request.user.is_authenticated:
-            raise DjangoNoPermission
         user = info.context.request.user
         if not user:
-            raise DjangoNoPermission
+            raise ValidationError("You are not logged in.")
         if await COE.objects.filter(coe=user, active=True).aexists():
             return await resolver()
-        # raise DjangoNoPermission
+        raise ValidationError("You don't have the permission.")

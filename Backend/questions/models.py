@@ -22,6 +22,9 @@ class BloomsTaxonomyLevel(models.Model):
     name = models.CharField(max_length=3, unique=True)
     description = models.CharField(max_length=70)
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
         return f"{self.name} | {self.description}"
 
@@ -238,6 +241,7 @@ class MarkRange(models.Model):
         return f"{self.start} - {self.end}"
 
     class Meta:
+        ordering = ['start']
         unique_together = ["start", "end"]
 
 
@@ -290,7 +294,10 @@ class Question(TimeStampedModel):
     )
     difficulty = TextChoicesField(choices_enum=DifficultyEnum)
     created_by = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name="questions"
+        User, on_delete=models.PROTECT, related_name="created_questions"
+    )
+    updated_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name="updated_questions", null=True, blank=True
     )
     topics = models.ManyToManyField(
         Topic, related_name="questions", blank=True)

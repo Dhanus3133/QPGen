@@ -1,33 +1,44 @@
+from django.contrib import auth
 import strawberry_django
 import strawberry
-from typing import Optional
-from django.core.exceptions import ObjectDoesNotExist
+from typing import cast
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.utils.translation import gettext_lazy as _
 from strawberry.types import Info
-from strawberry_django import auth
-# from coe.graphql.permission import IsACOE
-# from users.graphql.input import UserInputPartial
-
 from users.graphql.types import UserType
 from users.models import NewUser
 
 
 @strawberry.type
 class Mutation:
-    login: Optional[UserType] = auth.login()
-    logout: bool = auth.logout()
+    @strawberry_django.mutation(handle_django_errors=True)
+    def login(
+        self,
+        info: Info,
+        email: str,
+        password: str,
+    ) -> UserType:
+        request = info.context.request
 
-    # @strawberry_django.field(extensions=[IsACOE()])
-    # def update_user(self, info: Info, data: UserInputPartial) -> UserType:
-    #     user = info.context.request.user
-    #     [
-    #         user.__setattr__(key, val) if val else ""
-    #         for key, val in data.__dict__.items()
-    #     ]
-    #     user.save()
-    #     return user
+        user = auth.authenticate(request, username=email, password=password)
+        if user is None:
+            raise ValidationError(_("Wrong credentials provided."))
+
+        auth.login(request, user)
+        return cast(UserType, user)
+
+    @strawberry_django.mutation
+    def logout(
+        self,
+        info: Info,
+    ) -> bool:
+        request = info.context.request
+        ret = request.user.is_authenticated
+        auth.logout(request)
+        return ret
 
     @strawberry_django.field
-    def create_new_user(self, _: Info, first_name: str, last_name: str, email: str, password: str) -> bool:
+    def create_new_user(self, info: Info, first_name: str, last_name: str, email: str, password: str) -> bool:
         user = NewUser(
             first_name=first_name,
             last_name=last_name,
@@ -39,7 +50,7 @@ class Mutation:
         return True
 
     @strawberry_django.field
-    def verify_email_signup(self, _: Info, token: str) -> bool:
+    def verify_email_signup(self, info: Info, token: str) -> bool:
         try:
             user = NewUser.objects.get(email_secret=token)
         except ObjectDoesNotExist:

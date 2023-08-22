@@ -2,6 +2,7 @@ import strawberry
 from strawberry.tools import merge_types
 from strawberry_django.optimizer import Schema
 from strawberry_django.optimizer import DjangoOptimizerExtension
+from strawberry.extensions.tracing import ApolloTracingExtension, DatadogTracingExtension
 from users.graphql.query import Query as UserQuery
 from users.graphql.mutation import Mutation as UserMutation
 from questions.graphql.query import Query as QuestionsQuery
@@ -32,6 +33,7 @@ schema = Schema(
         # AsyncJSONWebTokenMiddle,
         # SchemaDirectiveExtension,
         DjangoOptimizerExtension,
-        # ApolloTracingExtension,
+        ApolloTracingExtension,
+        # DatadogTracingExtension
     ],
 )

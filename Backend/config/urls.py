@@ -1,16 +1,17 @@
 from django.conf import settings
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import include, path, re_path
 from django.conf.urls.static import static
 from django.views.static import serve
-# from django.views.decorators.csrf import csrf_exempt
-
 from strawberry.django.views import AsyncGraphQLView
 from core.schema import schema
+from questions.views import upload_question_image
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("graphql/", AsyncGraphQLView.as_view(schema=schema)),
+    path("graphql/", AsyncGraphQLView.as_view(schema=schema, graphiql=settings.DEBUG)),
+    path("upload/", upload_question_image),
+    path("__debug__/", include("debug_toolbar.urls")),
 ]
 
 if settings.DEBUG:
@@ -31,4 +32,3 @@ else:
             {"document_root": settings.STATIC_ROOT},
         ),
     ]
-

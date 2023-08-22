@@ -95,9 +95,6 @@ class FacultiesHandlingModelAdmin(admin.ModelAdmin):
 
 @admin.register(Question)
 class QuestionModelAdmin(ImportExportModelAdmin):
-    # formfield_overrides = {
-    #     models.TextField: {'widget': VditorWidget}
-    # }
     list_filter = (
         "start_mark",
         "end_mark",
@@ -105,11 +102,6 @@ class QuestionModelAdmin(ImportExportModelAdmin):
     )
     search_fields = ("question",)
     raw_id_fields = ("lesson",)
-    # pass
-
-    def save_model(self, request, obj, form, change):
-        obj.created_by = request.user
-        obj.save()
 
 
 @admin.register(CreateSyllabus)

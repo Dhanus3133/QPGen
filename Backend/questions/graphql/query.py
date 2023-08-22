@@ -1,6 +1,6 @@
-from typing import List, Optional
+from typing import Any, List, Optional
 from asgiref.sync import sync_to_async
-from strawberry import extensions, relay
+from strawberry import relay
 from strawberry.scalars import JSON
 from strawberry.types import Info
 import strawberry_django
@@ -43,18 +43,20 @@ class HelloType:
 
 @strawberry.type
 class Query:
-    question: Optional[QuestionType] = relay.node(extensions=[IsAFaculty()])
-    mark_ranges: List[MarkRangeType] = relay.node(
+    question: Optional[QuestionType] = strawberry_django.field(
+        permission_classes=[IsAFaculty]
+    )
+    mark_ranges: List[MarkRangeType] = strawberry_django.field(
         extensions=[IsAuthenticated()]
     )
-    blooms_taxonomy_levels: BloomsTaxonomyLevelType = relay.node(
+    blooms_taxonomy_levels: List[BloomsTaxonomyLevelType] = strawberry_django.field(
         extensions=[IsAuthenticated()]
     )
-    previous_years: List[PreviousYearsQPType] = relay.node(
+    previous_years: List[PreviousYearsQPType] = strawberry_django.field(
         extensions=[IsAuthenticated()]
     )
 
-    @relay.connection(relay.ListConnection[QuestionType], extensions=[IsAFaculty()])
+    @strawberry_django.connection(strawberry_django.relay.ListConnectionWithTotalCount[QuestionType], permission_classes=[IsAFaculty])
     def question_contains_filter(self, question: str) -> Iterable[Question]:
         return Question.objects.filter(question__icontains=question)
 
@@ -82,7 +84,7 @@ class Query:
     @strawberry_django.field(extensions=[IsACOE()])
     def generate_questions(
         self,
-        _: Info,
+        info: Info,
         course: int,
         lids: List[int],
         marks: List[int],
@@ -132,13 +134,12 @@ class Query:
             ).order_by("unit")
         )
 
-    @relay.connection(relay.ListConnection[QuestionType], extensions=[IsAuthenticated()])
+    @strawberry_django.connection(strawberry_django.relay.ListConnectionWithTotalCount[QuestionType], extensions=[IsAuthenticated()], permission_classes=[IsAFaculty])
     def get_questions(
         self,
-        _: Info,
+        info: Info,
         regulation: int,
-        programme: str,
-        degree: str,
+        programme: str, degree: str,
         semester: int,
         department: str,
         subject_code: str,
@@ -178,10 +179,11 @@ class Query:
             ).order_by("unit")
         )
 
-    @strawberry_django.field(extensions=[IsAFaculty()])
+    # @strawberry_django.field()
+    @strawberry_django.field(permission_classes=[IsAFaculty])
     async def get_topics(
         self,
-        _: Info,
+        info: Info,
         regulation: int,
         programme: str,
         degree: str,
@@ -213,7 +215,7 @@ class Query:
             return False
 
     @strawberry_django.field(extensions=[IsACOE()])
-    async def get_all_subjects(self, _: Info) -> List[SubjectType]:
+    async def get_all_subjects(self, info: Info) -> List[SubjectType]:
         return await sync_to_async(list)(Subject.objects.all())
 
     @strawberry_django.field(extensions=[IsAuthenticated()])
@@ -222,7 +224,7 @@ class Query:
 
     @strawberry_django.field(extensions=[IsACOE()])
     async def faculties_handlings(
-        self, _: Info, course: int, subject: int
+        self, info: Info, course: int, subject: int
     ) -> List[FacultiesHandlingType]:
         return await sync_to_async(list)(
             FacultiesHandling.objects.filter(course=course, subject=subject)

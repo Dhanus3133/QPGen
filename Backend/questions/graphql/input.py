@@ -1,5 +1,6 @@
 from typing import List, Optional
-from strawberry import auto
+from strawberry import ID, auto
+from strawberry.relay.types import GlobalID
 from strawberry_django.auth.queries import strawberry_django
 from strawberry_django.fields.types import NodeInput
 from questions.models import Lesson, Question, Subject, Syllabus
@@ -30,13 +31,14 @@ class LessonInput:
 
 @strawberry_django.input(Question)
 class QuestionInput:
-    lesson: auto
+    lesson: ID
     question: auto
     answer: auto
-    mark: NodeInput
-    btl: NodeInput
+    mark: auto
+    btl: auto
     difficulty: auto
-    created_by: Optional[NodeInput]
+    created_by: auto
+    updated_by: auto
     topics: auto
     previous_years: auto
     priority: auto
@@ -44,13 +46,8 @@ class QuestionInput:
 
 
 @strawberry_django.partial(Question)
-class QuestionInputPartial(NodeInput, QuestionInput):
-    pass
-    # question: auto
-    # answer: auto
-    # mark: NodeInput
-    # btl: NodeInput
-    # difficulty: auto
-    # topics: Optional[List[NodeInput]]
-    # previous_years: Optional[List[NodeInput]]
-
+class QuestionInputPartial(QuestionInput):
+    id: ID
+    lesson: Optional[ID]
+    created_by: auto
+    updated_by: auto
