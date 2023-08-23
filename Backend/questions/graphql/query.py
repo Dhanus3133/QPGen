@@ -157,7 +157,7 @@ class Query:
             question__icontains=search,
         ).order_by("-updated_at", "-created_at")
 
-    @strawberry_django.field(extensions=[IsACOE()])
+    @strawberry_django.field(extensions=[IsAuthenticated()])
     async def get_courses(self) -> List[CourseType]:
         return await sync_to_async(list)(Course.objects.filter(active=True))
 
@@ -214,7 +214,7 @@ class Query:
         else:
             return False
 
-    @strawberry_django.field(extensions=[IsACOE()])
+    @strawberry_django.field(extensions=[IsAuthenticated()])
     async def get_all_subjects(self, info: Info) -> List[SubjectType]:
         return await sync_to_async(list)(Subject.objects.all())
 
