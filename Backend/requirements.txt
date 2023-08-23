@@ -16,6 +16,8 @@ django-extensions==3.2.3
 django-import-export==3.2.0
 envier==0.4.0
 et-xmlfile==1.1.0
+factory-boy==3.3.0
+Faker==19.3.0
 graphql-core==3.2.3
 h11==0.14.0
 importlib-metadata==6.8.0
