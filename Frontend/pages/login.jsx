@@ -26,7 +26,10 @@ export default function SignIn() {
     useMutation(loginMutation);
 
   useEffect(() => {
-    if (isAuthorized?.isAuthorized) setAuthorized(isAuthorized?.isAuthorized);
+    if (isAuthorized?.isAuthorized) {
+      setAuthorized(isAuthorized?.isAuthorized);
+      client.refetchQueries({ include: "all" });
+    }
   }, [isAuthorized]);
 
   if (authorized) {

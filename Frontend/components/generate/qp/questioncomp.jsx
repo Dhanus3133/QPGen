@@ -327,7 +327,7 @@ const QuestionPaperGen = (props) => {
             {!isAnswer && (
               <tr>
                 <td colSpan="2" className="text-right pr-4">
-                  RegNO.
+                  Reg. No.
                 </td>
                 <td colSpan="2"></td>
               </tr>
