@@ -135,3 +135,25 @@ class QuestionType(relay.Node):
     created_at: auto
     updated_at: auto
     scenario_based: auto
+
+
+@strawberry_django.filter(Exam)
+class ExamFilter:
+    active: bool
+
+    def filter(self, queryset):
+        return queryset.filter(active=True)
+
+
+@strawberry_django.type(Exam, filters=ExamFilter)
+class ExamType(relay.Node):
+    id: GlobalID
+    label: auto
+    name: auto
+    total: auto
+    marks: auto
+    counts: auto
+    choices: auto
+    units: auto
+    time: auto
+    active: auto

@@ -1,11 +1,20 @@
 from django.contrib import admin
+
+from questions.models import FacultiesHandling
 from .models import NewUser, User
 from django.contrib.auth.admin import UserAdmin as UserAdmin_
 from django.utils.translation import gettext_lazy as _
 
 
 class CustomUserAdmin(UserAdmin_):
-    list_display = ("email", "first_name", "last_name", "is_staff")
+    list_display = (
+        "email",
+        "first_name",
+        "last_name",
+        "is_active",
+        "is_staff",
+        "subject_handling",
+    )
     search_fields = ("first_name", "last_name", "email")
     ordering = ("email",)
     add_fieldsets = (
@@ -34,6 +43,10 @@ class CustomUserAdmin(UserAdmin_):
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
+
+    def subject_handling(self, obj):
+        return FacultiesHandling.objects.filter(faculties=obj, course__active=True).count()
+        # return subjects.filter(courses__active=True).count()
 
 
 admin.site.register(User, CustomUserAdmin)

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Courses from "components/generate/courses";
 import { Button, Grid, TextField } from "@mui/material";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 import Marks from "components/generate/marks";
 import Subjects from "components/generate/subjects";
 import Lessons from "components/generate/lessons";
@@ -17,12 +19,14 @@ export default function Generate() {
   const [dateTime, setDateTime] = useState(null);
   const [time, setTime] = useState(null);
   const [examTitle, setExamTitle] = useState(null);
+  const [exam, setExam] = useState(null);
   const [valid, setValid] = useState(false);
   const [subject, setSubject] = useState(null);
   const [units, setUnits] = useState([]);
   const [lessonsIDs, setLessonsIDs] = useState([]);
   const [generate, setGenerate] = useState(false);
   const [set, setSet] = useState(null);
+  const [saveAnalysis, setSaveAnalysis] = useState(false);
 
   if (!generate) {
     return (
@@ -30,7 +34,7 @@ export default function Generate() {
         <Grid container justifyContent="center">
           <div className="p-3 flex flex-col items-center">
             <DateTime dateTime={dateTime} setDateTime={setDateTime} />
-            <div className="py-6">
+            <div className="pt-3">
               <TextField
                 id="set"
                 label="Set"
@@ -39,7 +43,17 @@ export default function Generate() {
                 onChange={(e) => setSet(e.target.value)}
               />
             </div>
-            <div className="py-6">
+            <div className="py-4 text-center">
+              <FormControlLabel
+                required
+                control={
+                  <Checkbox
+                    color="success"
+                    onChange={(e) => setSaveAnalysis(e.target.checked)}
+                  />
+                }
+                label="Save Analysis?"
+              />
               <Courses setCourse={setCourse} setSemester={setSemester} />
             </div>
             <Subjects course={course} setSubject={setSubject} />
@@ -57,6 +71,7 @@ export default function Generate() {
               setTime={setTime}
               valid={valid}
               setValid={setValid}
+              setExam={setExam}
               examTitle={examTitle}
               setExamTitle={setExamTitle}
             />
@@ -101,6 +116,8 @@ export default function Generate() {
         exam={examTitle}
         dateTime={dateTime}
         set={set}
+        examID={exam}
+        saveAnalysis={saveAnalysis}
       />
     );
   }

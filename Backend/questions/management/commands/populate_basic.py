@@ -4,6 +4,7 @@ from questions.models import (
     BloomsTaxonomyLevel,
     Degree,
     Department,
+    Exam,
     MarkRange,
     PreviousYearsQP,
     Programme,
@@ -193,5 +194,57 @@ class Command(BaseCommand):
                 )
             except:
                 pass
+
+        try:
+            Exam.objects.bulk_create(
+                [
+                    Exam(
+                        label="Internal Assessment 1",
+                        name="Internal Assessment 1",
+                        total=50,
+                        marks=[2, 12, 16],
+                        counts=[5, 2, 1],
+                        choices=[False, True, True],
+                        units=[1],
+                        order=1,
+                        time="1.30",
+                    ),
+                    Exam(
+                        label="Internal Assessment 2",
+                        name="Internal Assessment 2",
+                        total=50,
+                        marks=[2, 12, 16],
+                        counts=[5, 2, 1],
+                        choices=[False, True, True],
+                        units=[2, 3],
+                        order=2,
+                        time="1.30",
+                    ),
+                    Exam(
+                        label="Model Exam",
+                        name="Model Exam",
+                        total=100,
+                        marks=[2, 16],
+                        counts=[10, 5],
+                        choices=[False, True],
+                        units=[1, 2, 3, 4, 5],
+                        order=3,
+                        time="3",
+                    ),
+                    Exam(
+                        label="Custom",
+                        name="Custom",
+                        total=0,
+                        marks=[],
+                        counts=[],
+                        choices=[],
+                        units=[],
+                        order=4,
+                        time="",
+                    )
+                ]
+            )
+        except:
+            pass
 
         self.stdout.write(self.style.SUCCESS(f"Basic Details Created!"))

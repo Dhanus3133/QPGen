@@ -11,6 +11,8 @@ const QuestionPaper = ({
   marks,
   counts,
   choices,
+  examID,
+  saveAnalysis,
   semester,
   total,
   time,
@@ -19,7 +21,15 @@ const QuestionPaper = ({
   set,
 }) => {
   const { data, loading, error } = useQuery(generateQuestionsQuery, {
-    variables: { course, lids, marks, counts, choices },
+    variables: {
+      course,
+      lids,
+      marks,
+      counts,
+      choices,
+      saveAnalysis,
+      exam: examID,
+    },
   });
 
   const [isAnswer, setIsAnswer] = useState(false);

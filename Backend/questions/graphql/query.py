@@ -12,6 +12,7 @@ from questions.graphql.permission import IsAFaculty
 from questions.graphql.types import (
     BloomsTaxonomyLevelType,
     CourseType,
+    ExamType,
     FacultiesHandlingType,
     LessonType,
     MarkRangeType,
@@ -34,13 +35,6 @@ from questions.models import (
 )
 
 
-@strawberry_django.type
-class HelloType:
-    hello: JSON
-    name: str
-    age: int
-
-
 @strawberry.type
 class Query:
     question: Optional[QuestionType] = strawberry_django.field(
@@ -53,6 +47,9 @@ class Query:
         extensions=[IsAuthenticated()]
     )
     previous_years: List[PreviousYearsQPType] = strawberry_django.field(
+        extensions=[IsAuthenticated()]
+    )
+    exams: Optional[List[ExamType]] = strawberry_django.field(
         extensions=[IsAuthenticated()]
     )
 
@@ -90,13 +87,15 @@ class Query:
         marks: List[int],
         counts: List[int],
         choices: List[bool],
+        exam: int,
+        save_analysis: bool,
     ) -> JSON:
         # lids = [3, 4]
         # lids = [1, 2]
         # marks = [2, 12, 16]
         # count = [5, 2, 1]
         # choices = [False, True, True]
-        return Generate(course, lids, marks, counts, choices).generate_questions()
+        return Generate(course, lids, marks, counts, choices, exam, save_analysis).generate_questions()
 
     @strawberry_django.field(extensions=[IsAuthenticated()])
     async def departments_access_to(self, info: Info) -> List[FacultiesHandlingType]:

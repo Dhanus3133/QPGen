@@ -2,11 +2,13 @@ import { gql } from "@apollo/client";
 
 export const generateQuestionsQuery = gql`
   query generateQuestions(
-    $course : Int!
+    $course: Int!
     $lids: [Int!]!
     $marks: [Int!]!
     $counts: [Int!]!
     $choices: [Boolean!]!
+    $exam: Int!
+    $saveAnalysis: Boolean!
   ) {
     generateQuestions(
       course: $course
@@ -14,6 +16,8 @@ export const generateQuestionsQuery = gql`
       marks: $marks
       counts: $counts
       choices: $choices
+      exam: $exam
+      saveAnalysis: $saveAnalysis
     )
   }
 `;

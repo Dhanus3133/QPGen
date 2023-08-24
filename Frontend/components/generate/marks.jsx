@@ -1,3 +1,5 @@
+import { useQuery } from "@apollo/client";
+import { examsQuery } from "@/src/graphql/queries/exams";
 import { Autocomplete, Button, Checkbox, TextField } from "@mui/material";
 
 function Marks({
@@ -13,9 +15,16 @@ function Marks({
   setTime,
   valid,
   setValid,
+  setExam,
   examTitle,
   setExamTitle,
 }) {
+  const { data, loading, error } = useQuery(examsQuery);
+
+  if (loading) return "Loading...";
+
+  if (error) return <p>Error: {error.message}</p>;
+
   let num = 0;
 
   for (let i = 0; i < marks.length; i++) {
@@ -34,53 +43,15 @@ function Marks({
     setValid(false);
   }
 
-  const types = [
-    {
-      label: "Internal Assessment 1",
-      total: 50,
-      marks: [2, 12, 16],
-      counts: [5, 2, 1],
-      choices: [false, true, true],
-      units: [1],
-      time: "1.30",
-    },
-    {
-      label: "Internal Assessment 2",
-      total: 50,
-      marks: [2, 12, 16],
-      counts: [5, 2, 1],
-      choices: [false, true, true],
-      units: [2, 3],
-      time: "1.30",
-    },
-    {
-      label: "Model Exam",
-      total: 100,
-      marks: [2, 16],
-      counts: [10, 5],
-      choices: [false, true],
-      units: [1, 2, 3, 4, 5],
-      time: "3",
-    },
-    {
-      label: "Custom",
-      total: null,
-      marks: [],
-      counts: [],
-      choices: [],
-      units: [],
-      time: null,
-    },
-  ];
-
   return (
     <>
       <Autocomplete
         id="type"
-        options={types}
+        options={data?.exams}
         onChange={(_, type) => {
           if (type) {
-            setExamTitle(type["label"]);
+            setExam(parseInt(type["id"]));
+            setExamTitle(type["name"]);
             setMarks(type["marks"]);
             setCounts(type["counts"]);
             setChoices(type["choices"]);
@@ -138,8 +109,9 @@ function Marks({
                     }}
                     onChange={(e) => {
                       const val = e.target.value;
-                      marks[idx] = val ? parseInt(val) : null;
-                      setMarks([...marks]);
+                      const updatedMarks = [...marks];
+                      updatedMarks[idx] = val ? parseInt(val) : null;
+                      setMarks(updatedMarks);
                     }}
                   />
                   <TextField
@@ -154,15 +126,17 @@ function Marks({
                     }}
                     onChange={(e) => {
                       const val = e.target.value;
-                      counts[idx] = val ? parseInt(val) : null;
-                      setCounts([...counts]);
+                      const updatedCounts = [...counts];
+                      updatedCounts[idx] = val ? parseInt(val) : null;
+                      setCounts(updatedCounts);
                     }}
                   />
                   <Checkbox
                     checked={choices[idx]}
                     onChange={(e) => {
-                      choices[idx] = e.target.checked;
-                      setChoices([...choices]);
+                      const updatedChoices = [...choices];
+                      updatedChoices[idx] = e.target.checked;
+                      setChoices(updatedChoices);
                     }}
                   />
                   <Button

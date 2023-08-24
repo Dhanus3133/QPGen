@@ -234,7 +234,8 @@ class MarkRange(models.Model):
     def clean(self, *args, **kwargs):
         if self.start > self.end:
             raise ValidationError(
-                "Ensure End must be lesser than or equal to Start")
+                "Ensure End must be lesser than or equal to Start"
+            )
         super().clean(*args, **kwargs)
 
     def __str__(self):
@@ -262,8 +263,6 @@ class FacultiesHandling(models.Model):
 
     class Meta:
         unique_together = ["course", "subject"]
-
-    # TODO: Check the subject in syllabus before saving
 
 
 class Question(TimeStampedModel):
@@ -327,3 +326,57 @@ class CreateSyllabus(TimeStampedModel):
         User, on_delete=models.CASCADE, related_name="create_subjects"
     )
     is_completed = models.BooleanField(default=False)
+
+
+class Exam(models.Model):
+    label = models.CharField(max_length=200, unique=True)
+    name = models.CharField(
+        max_length=200,
+        unique=True,
+        help_text="Displayed in Question Paper"
+    )
+    total = models.IntegerField()
+    marks = models.JSONField()
+    counts = models.JSONField()
+    choices = models.JSONField()
+    units = models.JSONField()
+    time = models.CharField(max_length=25)
+    order = models.PositiveIntegerField()
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["order"]
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class AnalysisBTL(models.Model):
+    analysis = models.ForeignKey(
+        "Analysis", on_delete=models.CASCADE, related_name="analysis_btl"
+    )
+    btl = models.ForeignKey(
+        BloomsTaxonomyLevel, on_delete=models.CASCADE, related_name="analysis_btl"
+    )
+    percentage = models.FloatField()
+
+    class Meta:
+        unique_together = ["analysis", "btl"]
+
+    def __str__(self):
+        return f"{self.analysis.exam} | {self.btl} | {self.percentage}"
+
+
+class Analysis(TimeStampedModel):
+    courses = models.ManyToManyField(
+        Course, related_name="analysis"
+    )
+    subject = models.ForeignKey(
+        Subject, on_delete=models.CASCADE, related_name="analysis"
+    )
+    exam = models.ForeignKey(
+        Exam, on_delete=models.CASCADE, related_name="analysis"
+    )
+
+    def __str__(self):
+        return f"{self.subject} | {self.exam}"

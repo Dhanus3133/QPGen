@@ -1,6 +1,9 @@
 from questions.models import (
+    Analysis,
+    AnalysisBTL,
     BloomsTaxonomyLevel,
     Course,
+    Exam,
     Lesson,
     Question,
     Subject,
@@ -33,14 +36,28 @@ def int_to_roman(number):
     return roman
 
 
+def convert_to_percentage(data):
+    result = {}
+
+    for category, values in data.items():
+        total = sum(values.values())
+        percentages = {key: round((value / total) * 100, 2)
+                       for key, value in values.items()}
+        result[category] = percentages
+
+    return result
+
+
 class Generate:
-    def __init__(self, course, lids, marks, count, choices):
+    def __init__(self, course, lids, marks, count, choices, exam, save_analysis):
         self.course = Course.objects.get(id=course)
         self.subject = Lesson.objects.get(id=lids[0]).subject
         self.lids = lids
         self.marks = marks
         self.count = count
         self.choices = choices
+        self.exam = exam
+        self.save_analysis = save_analysis
         self.questions = questions = (
             Question.objects.filter(lesson__in=lids).filter()
             .select_related("lesson", "mark", "btl", "lesson__subject")
@@ -287,13 +304,19 @@ class Generate:
             ).values_list("lesson__outcome", "all_btl_names")
         )
 
-        depts = (
-            Syllabus.objects.filter(
-                course__semester=self.course.semester, lesson__subject=subject
-            )
-            .distinct("course", "lesson__subject")
-            .values_list("course__department__branch_code", flat=True)
+        syllabuses = Syllabus.objects.filter(
+            course__semester=self.course.semester, lesson__subject=subject).distinct("course", "lesson__subject")
+        depts = syllabuses.values_list(
+            "course__department__branch_code", flat=True
         )
+
+        print("======================")
+        # print(Course.objects.filter(syllabuses=syllabuses))
+        print(syllabuses.values_list("course", flat=True))
+        # print(Course.objects.filter(
+        #     id=syllabuses.values_list("course", flat=True)
+        # ))
+        print("======================")
 
         options = {
             "marks": self.marks,
@@ -306,13 +329,29 @@ class Generate:
             "outcomes": outcomes,
             "branch": "/".join(depts),
         }
-        # print(data)
-        analytics = {"co": self.co_analytics, "btl": self.btl_analytics}
+
+        analytics = convert_to_percentage(
+            {"co": self.co_analytics, "btl": self.btl_analytics}
+        )
+        print(analytics)
         questionsData = {"questions": data,
                          "options": options, "analytics": analytics}
         j = json.dumps(questionsData)
+        if self.save_analysis:
+            analysis, _ = Analysis.objects.update_or_create(
+                subject=subject,
+                exam=Exam.objects.get(id=self.exam)
+            )
+            analysis.courses.set(syllabuses.values_list("course", flat=True))
+            analysis_btls = []
+            for btl in BloomsTaxonomyLevel.objects.all():
+                analysis_btls.append(
+                    AnalysisBTL(
+                        analysis=analysis,
+                        btl=btl,
+                        percentage=analytics['btl'][btl.name]
+                    )
+                )
+            AnalysisBTL.objects.bulk_create(objs=analysis_btls)
+
         return j
-
-
-# generate_questions(lids, marks, count, choices)
-
