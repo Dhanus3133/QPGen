@@ -8,6 +8,7 @@ from questions.models import (
     Question,
     Subject,
     Syllabus,
+    Topic
 )
 from django.db.models import Count, F, Q, Value
 from django.contrib.postgres.aggregates import ArrayAgg
@@ -64,15 +65,17 @@ class Generate:
             .prefetch_related("topics")
         )
         self.choosen_questions = []
+        self.choosen_topics = []
         self.co_analytics = {}
         self.btl_analytics = {}
         for btl in BloomsTaxonomyLevel.objects.all():
             self.btl_analytics[btl.name] = 0
 
-    def find_a_question_with_exact_mark(self, lesson, mark, add_to_list):
+    def find_a_question_with_exact_mark(self, lesson, mark, add_to_list, is_avoid_topics):
         questions = (
             self.questions.filter(lesson=lesson)
             .exclude(id__in=self.choosen_questions)
+            .exclude(topics__in=self.choosen_topics if is_avoid_topics else [])
             .filter(Q(start_mark__lte=mark) & Q(end_mark__gte=mark))
             .order_by("?")
         )
@@ -89,12 +92,13 @@ class Generate:
         return {"q": question, "m": mark}
 
     def find_a_question_with_exact_mark2(
-        self, lesson, mark, add_to_list, tags, avoid_ids, difficulties
+        self, lesson, mark, add_to_list, tags, avoid_ids, difficulties, is_avoid_topics
     ):
         questions = (
             self.questions.filter(lesson=lesson)
             .exclude(id__in=self.choosen_questions)
             .exclude(id__in=avoid_ids)
+            .exclude(topics__in=self.choosen_topics if is_avoid_topics else [])
             .filter(Q(start_mark__lte=mark) & Q(end_mark__gte=mark))
             .order_by("?")
         )
@@ -123,7 +127,7 @@ class Generate:
         return {"q": question, "m": mark}, question.id, tags, difficulties
 
     def get_different_questions(
-        self, lesson, mark, start_mark_range, question_number, part, option=None
+        self, lesson, mark, start_mark_range, question_number, part, is_avoid_topics, option=None
     ):
         selected = []
         start = start_mark_range
@@ -137,13 +141,13 @@ class Generate:
             difficulties = []
 
             res, id, t, difficulties = self.find_a_question_with_exact_mark2(
-                lesson, start, False, [], avoid_ids, difficulties
+                lesson, start, False, [], avoid_ids, difficulties, is_avoid_topics
             )
             another.append(res)
             avoid_ids.append(id)
 
             res, id, t, difficulties = self.find_a_question_with_exact_mark2(
-                lesson, end, False, t, avoid_ids, difficulties
+                lesson, end, False, t, avoid_ids, difficulties, is_avoid_topics
             )
             another.append(res)
             # avoid_ids.append(id)
@@ -152,13 +156,13 @@ class Generate:
             start += 1
             end -= 1
         selected.append(
-            [self.find_a_question_with_exact_mark(lesson, mark, False)]
+            [self.find_a_question_with_exact_mark(lesson, mark, False, is_avoid_topics)]
         )
         selected.append(
-            [self.find_a_question_with_exact_mark(lesson, mark, False)]
+            [self.find_a_question_with_exact_mark(lesson, mark, False, is_avoid_topics)]
         )
         selected.append(
-            [self.find_a_question_with_exact_mark(lesson, mark, False)]
+            [self.find_a_question_with_exact_mark(lesson, mark, False, is_avoid_topics)]
         )
         question = random.choice(selected)
         # print(selected)
@@ -176,6 +180,10 @@ class Generate:
             #                         pass
             selected.remove(question)
             if len(selected) == 0:
+                if not is_avoid_topics:
+                    return self.get_different_questions(
+                        lesson, mark, start_mark_range, question_number, part, False, option
+                    )
                 raise Exception(
                     f"Questions are too less to generarte for {Lesson.objects.get(id=lesson).name}"
                 )
@@ -183,6 +191,12 @@ class Generate:
 
         for arr in question:
             self.choosen_questions.append(arr["q"].id)
+
+            if arr['q'].mark.start != 2:
+                for t in arr['q'].topics.all():
+                    if t.id not in self.choosen_topics:
+                        self.choosen_topics.append(t.id)
+
             co = f"CO{Syllabus.objects.filter(course=self.course).get(lesson=lesson).unit}"
             if co not in self.co_analytics:
                 self.co_analytics[co] = 0
@@ -251,6 +265,7 @@ class Generate:
                             2 if total_mark == 2 else 3,
                             question_number,
                             part,
+                            True,
                             current_count % 2 if has_choice else None,
                         )
                     )
@@ -272,6 +287,7 @@ class Generate:
                             2 if total_mark == 2 else 3,
                             question_number,
                             part,
+                            True,
                             current_count % 2 if has_choice else None,
                         )
                     )
@@ -310,14 +326,6 @@ class Generate:
             "course__department__branch_code", flat=True
         )
 
-        print("======================")
-        # print(Course.objects.filter(syllabuses=syllabuses))
-        print(syllabuses.values_list("course", flat=True))
-        # print(Course.objects.filter(
-        #     id=syllabuses.values_list("course", flat=True)
-        # ))
-        print("======================")
-
         options = {
             "marks": self.marks,
             "counts": self.count,
@@ -333,7 +341,6 @@ class Generate:
         analytics = convert_to_percentage(
             {"co": self.co_analytics, "btl": self.btl_analytics}
         )
-        print(analytics)
         questionsData = {"questions": data,
                          "options": options, "analytics": analytics}
         j = json.dumps(questionsData)

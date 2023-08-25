@@ -84,7 +84,16 @@ class TopicType(relay.Node):
     active: auto
 
 
-@strawberry_django.type(Course)
+@strawberry_django.filter(Course)
+class CourseFilter:
+    id: auto
+    regulation: auto
+    semester: auto
+    department: auto
+    active: auto
+
+
+@strawberry_django.type(Course, filters=CourseFilter)
 class CourseType(relay.Node):
     id: GlobalID
     regulation: RegulationType
@@ -157,3 +166,29 @@ class ExamType(relay.Node):
     units: auto
     time: auto
     active: auto
+
+
+@strawberry_django.filter(Analysis, lookups=True)
+class AnalysisFilter:
+    id: auto
+    courses: auto
+    subject: auto
+    exam: auto
+
+    def filter(self, queryset):
+        return queryset.filter(active=True)
+
+
+@strawberry_django.type(Analysis, filters=AnalysisFilter)
+class AnalysisType:
+    id: GlobalID
+    courses: List[CourseType]
+    subject: SubjectType
+    exam: ExamType
+
+
+@strawberry_django.type(AnalysisBTL)
+class AnalysisBTLType:
+    analysis: AnalysisType
+    btl: BloomsTaxonomyLevelType
+    percentage: auto

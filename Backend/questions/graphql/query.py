@@ -10,6 +10,7 @@ from coe.graphql.permission import IsACOE
 from questions.generate import Generate
 from questions.graphql.permission import IsAFaculty
 from questions.graphql.types import (
+    AnalysisType,
     BloomsTaxonomyLevelType,
     CourseType,
     ExamType,
@@ -50,7 +51,10 @@ class Query:
         extensions=[IsAuthenticated()]
     )
     exams: Optional[List[ExamType]] = strawberry_django.field(
-        extensions=[IsAuthenticated()]
+        extensions=[IsACOE()]
+    )
+    analysis: Optional[List[AnalysisType]] = strawberry_django.field(
+        extensions=[IsACOE()]
     )
 
     @strawberry_django.connection(strawberry_django.relay.ListConnectionWithTotalCount[QuestionType], permission_classes=[IsAFaculty])
