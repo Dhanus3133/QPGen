@@ -25,8 +25,10 @@ from questions.graphql.types import (
 )
 
 from questions.models import (
+    Analysis,
     Course,
     CreateSyllabus,
+    Exam,
     FacultiesHandling,
     Lesson,
     Question,
@@ -49,12 +51,6 @@ class Query:
     )
     previous_years: List[PreviousYearsQPType] = strawberry_django.field(
         extensions=[IsAuthenticated()]
-    )
-    exams: Optional[List[ExamType]] = strawberry_django.field(
-        extensions=[IsACOE()]
-    )
-    analysis: Optional[List[AnalysisType]] = strawberry_django.field(
-        extensions=[IsACOE()]
     )
 
     @strawberry_django.connection(strawberry_django.relay.ListConnectionWithTotalCount[QuestionType], permission_classes=[IsAFaculty])
@@ -232,3 +228,11 @@ class Query:
         return await sync_to_async(list)(
             FacultiesHandling.objects.filter(course=course, subject=subject)
         )
+
+    @strawberry_django.field(extensions=[IsACOE()])
+    async def exams(self, info: Info) -> Optional[List[ExamType]]:
+        return await sync_to_async(list)(Exam.objects.filter(active=True))
+
+    @strawberry_django.field(extensions=[IsACOE()])
+    async def analysis(self, info: Info) -> Optional[List[AnalysisType]]:
+        return await sync_to_async(list)(Analysis.objects.filter(courses__active=True))
