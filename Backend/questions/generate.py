@@ -68,17 +68,27 @@ class Generate:
         self.choosen_topics = []
         self.co_analytics = {}
         self.btl_analytics = {}
+        self.scenarios = []
+
         for btl in BloomsTaxonomyLevel.objects.all():
             self.btl_analytics[btl.name] = 0
 
-    def find_a_question_with_exact_mark(self, lesson, mark, add_to_list, is_avoid_topics):
+        for mark in marks:
+            if mark >= 15:
+                self.scenarios.append([True])
+            else:
+                self.scenarios.append([True, False])
+
+    def find_a_question_with_exact_mark(self, lesson, mark, is_scenario, add_to_list, is_avoid_topics):
         questions = (
             self.questions.filter(lesson=lesson)
             .exclude(id__in=self.choosen_questions)
             .exclude(topics__in=self.choosen_topics if is_avoid_topics else [])
             .filter(Q(start_mark__lte=mark) & Q(end_mark__gte=mark))
+            .filter(scenario_based__in=is_scenario)
             .order_by("?")
         )
+
         if random.choice([True, False, False]):
             questions = questions.annotate(
                 total=(F("priority") * 2) + Count("previous_years")
@@ -92,14 +102,16 @@ class Generate:
         return {"q": question, "m": mark}
 
     def find_a_question_with_exact_mark2(
-        self, lesson, mark, add_to_list, tags, avoid_ids, difficulties, is_avoid_topics
+        self, lesson, mark, is_scenario, add_to_list, tags, avoid_ids, difficulties, is_avoid_topics
     ):
         questions = (
             self.questions.filter(lesson=lesson)
             .exclude(id__in=self.choosen_questions)
             .exclude(id__in=avoid_ids)
+            .filter(Q(start_mark__lte=mark) & Q(end_mark__gte=mark))
             .exclude(topics__in=self.choosen_topics if is_avoid_topics else [])
             .filter(Q(start_mark__lte=mark) & Q(end_mark__gte=mark))
+            .filter(scenario_based__in=is_scenario)
             .order_by("?")
         )
 
@@ -127,13 +139,15 @@ class Generate:
         return {"q": question, "m": mark}, question.id, tags, difficulties
 
     def get_different_questions(
-        self, lesson, mark, start_mark_range, question_number, part, is_avoid_topics, option=None
+        self, lesson, mark, start_mark_range, question_number, part, is_avoid_topics, option=None, scenario_retry=False
     ):
         selected = []
         start = start_mark_range
         end = mark - start_mark_range
+        is_scenario = self.scenarios[ord(part) - 65]
 
-        # difficulty_enum = {"E": 1, "M": 2, "H": 3}
+        if scenario_retry:
+            is_scenario = [True, False]
 
         while start <= end:
             avoid_ids = []
@@ -141,48 +155,41 @@ class Generate:
             difficulties = []
 
             res, id, t, difficulties = self.find_a_question_with_exact_mark2(
-                lesson, start, False, [], avoid_ids, difficulties, is_avoid_topics
+                lesson, start, is_scenario, False, [], avoid_ids, difficulties, is_avoid_topics,
             )
             another.append(res)
             avoid_ids.append(id)
 
             res, id, t, difficulties = self.find_a_question_with_exact_mark2(
-                lesson, end, False, t, avoid_ids, difficulties, is_avoid_topics
+                lesson, end, is_scenario, False, t, avoid_ids, difficulties, is_avoid_topics
             )
             another.append(res)
-            # avoid_ids.append(id)
 
             selected.append(another)
             start += 1
             end -= 1
         selected.append(
-            [self.find_a_question_with_exact_mark(lesson, mark, False, is_avoid_topics)]
+            [self.find_a_question_with_exact_mark(lesson, mark, is_scenario, False, is_avoid_topics)]
         )
         selected.append(
-            [self.find_a_question_with_exact_mark(lesson, mark, False, is_avoid_topics)]
+            [self.find_a_question_with_exact_mark(lesson, mark, is_scenario, False, is_avoid_topics)]
         )
         selected.append(
-            [self.find_a_question_with_exact_mark(lesson, mark, False, is_avoid_topics)]
+            [self.find_a_question_with_exact_mark(lesson, mark, is_scenario, False, is_avoid_topics)]
         )
         question = random.choice(selected)
         # print(selected)
         while None in question and len(selected) > 0:
-            # print(question)
-
-            # while None in question and len(selected) > 0:
-            #     for s in selected:
-            #         if s != question:
-            #             for q in s:
-            #                 if q != None:
-            #                     try:
-            #                         self.choosen_questions.remove(q.id)
-            #                     except:
-            #                         pass
             selected.remove(question)
+
             if len(selected) == 0:
-                if not is_avoid_topics:
+                if is_avoid_topics:
                     return self.get_different_questions(
-                        lesson, mark, start_mark_range, question_number, part, False, option
+                        lesson, mark, start_mark_range, question_number, part, False, option, scenario_retry
+                    )
+                if not scenario_retry:
+                    return self.get_different_questions(
+                        lesson, mark, start_mark_range, question_number, part, is_avoid_topics, option, True
                     )
                 raise Exception(
                     f"Questions are too less to generarte for {Lesson.objects.get(id=lesson).name}"
@@ -265,8 +272,9 @@ class Generate:
                             2 if total_mark == 2 else 3,
                             question_number,
                             part,
-                            True,
+                            [True],
                             current_count % 2 if has_choice else None,
+                            False
                         )
                     )
                     current_count += 1
@@ -287,8 +295,9 @@ class Generate:
                             2 if total_mark == 2 else 3,
                             question_number,
                             part,
-                            True,
+                            [True],
                             current_count % 2 if has_choice else None,
+                            False
                         )
                     )
                     current_count += 1
