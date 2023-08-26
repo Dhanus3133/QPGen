@@ -146,19 +146,25 @@ class QuestionType(relay.Node):
     scenario_based: auto
 
 
-@strawberry_django.filter(Exam)
-class ExamFilter:
+@strawberry_django.type(Exam)
+class ExamType(relay.Node):
+    id: GlobalID
+    name: auto
+
+
+@strawberry_django.filter(ExamMark)
+class ExamMarkFilter:
     active: bool
 
     def filter(self, queryset):
         return queryset.filter(active=True)
 
 
-@strawberry_django.type(Exam, filters=ExamFilter)
-class ExamType(relay.Node):
+@strawberry_django.type(ExamMark, filters=ExamMarkFilter)
+class ExamMarkType(relay.Node):
     id: GlobalID
     label: auto
-    name: auto
+    exam: ExamType
     total: auto
     marks: auto
     counts: auto
@@ -185,6 +191,7 @@ class AnalysisType:
     courses: List[CourseType]
     subject: SubjectType
     exam: ExamType
+    analysis_btl: List['AnalysisBTLType']
 
 
 @strawberry_django.type(AnalysisBTL)

@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { examsQuery } from "@/src/graphql/queries/exams";
+import { examMarksQuery } from "@/src/graphql/queries/examMarks";
 import { Autocomplete, Button, Checkbox, TextField } from "@mui/material";
 
 function Marks({
@@ -19,7 +19,7 @@ function Marks({
   examTitle,
   setExamTitle,
 }) {
-  const { data, loading, error } = useQuery(examsQuery);
+  const { data, loading, error } = useQuery(examMarksQuery);
 
   if (loading) return "Loading...";
 
@@ -47,11 +47,11 @@ function Marks({
     <>
       <Autocomplete
         id="type"
-        options={data?.exams}
+        options={data?.examMarks}
         onChange={(_, type) => {
           if (type) {
-            setExam(parseInt(type["id"]));
-            setExamTitle(type["name"]);
+            setExam(parseInt(type["exam"]["id"]));
+            setExamTitle(type["exam"]["name"]);
             setMarks(type["marks"]);
             setCounts(type["counts"]);
             setChoices(type["choices"]);

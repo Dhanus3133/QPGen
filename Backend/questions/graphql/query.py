@@ -13,6 +13,7 @@ from questions.graphql.types import (
     AnalysisType,
     BloomsTaxonomyLevelType,
     CourseType,
+    ExamMarkType,
     ExamType,
     FacultiesHandlingType,
     LessonType,
@@ -29,6 +30,7 @@ from questions.models import (
     Course,
     CreateSyllabus,
     Exam,
+    ExamMark,
     FacultiesHandling,
     Lesson,
     Question,
@@ -231,8 +233,12 @@ class Query:
 
     @strawberry_django.field(extensions=[IsACOE()])
     async def exams(self, info: Info) -> Optional[List[ExamType]]:
-        return await sync_to_async(list)(Exam.objects.filter(active=True))
+        return await sync_to_async(list)(Exam.objects.all())
 
     @strawberry_django.field(extensions=[IsACOE()])
-    async def analysis(self, info: Info) -> Optional[List[AnalysisType]]:
-        return await sync_to_async(list)(Analysis.objects.filter(courses__active=True))
+    async def exam_marks(self, info: Info) -> Optional[List[ExamMarkType]]:
+        return await sync_to_async(list)(ExamMark.objects.filter(active=True))
+
+    @strawberry_django.field(extensions=[IsACOE()])
+    async def analysis(self, info: Info, exam: str) -> Optional[List[AnalysisType]]:
+        return await sync_to_async(list)(Analysis.objects.filter(courses__active=True, exam=exam))

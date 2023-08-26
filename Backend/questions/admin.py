@@ -210,7 +210,7 @@ class QuestionModelAdmin(ImportExportModelAdmin):
         return obj.lesson.subject.code if obj.lesson else None
 
 
-@ admin.register(CreateSyllabus)
+@admin.register(CreateSyllabus)
 class CreateSyllabusModelAdmin(admin.ModelAdmin):
     list_display = (
         "faculty",
@@ -220,7 +220,7 @@ class CreateSyllabusModelAdmin(admin.ModelAdmin):
     filter_horizontal = ('syllabus',)
 
 
-@ admin.register(AnalysisBTL)
+@admin.register(AnalysisBTL)
 class AnalysisBTLModelAdmin(admin.ModelAdmin):
     list_display = ('analysis', 'btl', 'percentage',)
     list_filter = (
@@ -230,21 +230,37 @@ class AnalysisBTLModelAdmin(admin.ModelAdmin):
     )
 
 
-@ admin.register(Analysis)
+class AnalysisBTLInline(admin.TabularInline):
+    model = AnalysisBTL
+    extra = 0
+
+
+@admin.register(Analysis)
 class AnalysisModelAdmin(admin.ModelAdmin):
     filter_horizontal = ('courses',)
     list_display = (
         'exam',
         'subject',
     )
+    inlines = (AnalysisBTLInline,)
 
 
-@ admin.register(Exam)
-class ExamModelAdmin(admin.ModelAdmin):
+@admin.register(ExamMark)
+class ExamMarkModelAdmin(admin.ModelAdmin):
     list_display = (
         'label',
-        'name',
+        'exam',
         'active'
     )
     list_filter = ('active',)
     list_editable = ("active",)
+
+
+class ExamMarkInline(admin.StackedInline):
+    model = ExamMark
+    extra = 0
+
+
+@admin.register(Exam)
+class ExamModelAdmin(admin.ModelAdmin):
+    inlines = (ExamMarkInline,)

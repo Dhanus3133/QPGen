@@ -1,11 +1,14 @@
 import { gql } from "@apollo/client";
 
-export const examsQuery = gql`
-  query Exams {
-    exams {
+export const examMarksQuery = gql`
+  query ExamMarks {
+    examMarks {
       id
       label
-      name
+      exam {
+        id
+        name
+      }
       total
       marks
       counts

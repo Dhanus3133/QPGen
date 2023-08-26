@@ -330,12 +330,14 @@ class CreateSyllabus(TimeStampedModel):
 
 
 class Exam(models.Model):
+    name = models.CharField(max_length=200, unique=True, help_text="Displayed in Question Paper")
+
+    def __str__(self) -> str:
+        return self.name
+
+class ExamMark(models.Model):
     label = models.CharField(max_length=200, unique=True)
-    name = models.CharField(
-        max_length=200,
-        unique=True,
-        help_text="Displayed in Question Paper"
-    )
+    exam = models.ForeignKey(Exam, on_delete=models.CASCADE, related_name="marks")
     total = models.IntegerField()
     marks = models.JSONField()
     counts = models.JSONField()
@@ -349,7 +351,7 @@ class Exam(models.Model):
         ordering = ["order"]
 
     def __str__(self) -> str:
-        return self.name
+        return f'{self.label} | {self.exam}'
 
 
 class AnalysisBTL(models.Model):
@@ -363,6 +365,7 @@ class AnalysisBTL(models.Model):
 
     class Meta:
         unique_together = ["analysis", "btl"]
+        ordering = ["btl"]
 
     def __str__(self):
         return f"{self.analysis.exam} | {self.btl} | {self.percentage}"

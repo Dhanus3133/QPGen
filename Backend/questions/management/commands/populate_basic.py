@@ -5,6 +5,7 @@ from questions.models import (
     Degree,
     Department,
     Exam,
+    ExamMark,
     MarkRange,
     PreviousYearsQP,
     Programme,
@@ -198,9 +199,21 @@ class Command(BaseCommand):
         try:
             Exam.objects.bulk_create(
                 [
-                    Exam(
+                    Exam(name="Internal Assessment 1"),
+                    Exam(name="Internal Assessment 2"),
+                    Exam(name="Model Exam"),
+                ]
+            )
+        except:
+            pass
+
+        try:
+            exams = Exam.objects.all()
+            ExamMark.objects.bulk_create(
+                [
+                    ExamMark(
                         label="Internal Assessment 1",
-                        name="Internal Assessment 1",
+                        exam=exams.get(name="Internal Assessment 1"),
                         total=50,
                         marks=[2, 12, 16],
                         counts=[5, 2, 1],
@@ -209,9 +222,9 @@ class Command(BaseCommand):
                         order=1,
                         time="1.30",
                     ),
-                    Exam(
+                    ExamMark(
                         label="Internal Assessment 2",
-                        name="Internal Assessment 2",
+                        exam=exams.get(name="Internal Assessment 2"),
                         total=50,
                         marks=[2, 12, 16],
                         counts=[5, 2, 1],
@@ -220,9 +233,9 @@ class Command(BaseCommand):
                         order=2,
                         time="1.30",
                     ),
-                    Exam(
+                    ExamMark(
                         label="Model Exam",
-                        name="Model Exam",
+                        exam=exams.get(name="Model Exam"),
                         total=100,
                         marks=[2, 16],
                         counts=[10, 5],
@@ -231,17 +244,6 @@ class Command(BaseCommand):
                         order=3,
                         time="3",
                     ),
-                    Exam(
-                        label="Custom",
-                        name="Custom",
-                        total=0,
-                        marks=[],
-                        counts=[],
-                        choices=[],
-                        units=[],
-                        order=4,
-                        time="",
-                    )
                 ]
             )
         except:
