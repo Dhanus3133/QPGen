@@ -13,6 +13,7 @@ const QuestionPaper = ({
   choices,
   examID,
   saveAnalysis,
+  isRetest,
   semester,
   total,
   time,
@@ -82,6 +83,7 @@ const QuestionPaper = ({
         exam={exam}
         dateTime={dateTime}
         set={set}
+        isRetest={isRetest}
       />
       <Analytics
         co={generatedData["analytics"]["co"]}

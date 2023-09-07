@@ -27,6 +27,7 @@ export default function Generate() {
   const [generate, setGenerate] = useState(false);
   const [set, setSet] = useState(null);
   const [saveAnalysis, setSaveAnalysis] = useState(false);
+  const [isRetest, setIsRetest] = useState(false);
 
   if (!generate) {
     return (
@@ -53,6 +54,16 @@ export default function Generate() {
                   />
                 }
                 label="Save Analysis?"
+              />
+              <FormControlLabel
+                required
+                control={
+                  <Checkbox
+                    color="success"
+                    onChange={(e) => setIsRetest(e.target.checked)}
+                  />
+                }
+                label="Retest?"
               />
               <Courses setCourse={setCourse} setSemester={setSemester} />
             </div>
@@ -118,6 +129,7 @@ export default function Generate() {
         set={set}
         examID={exam}
         saveAnalysis={saveAnalysis}
+        isRetest={isRetest}
       />
     );
   }

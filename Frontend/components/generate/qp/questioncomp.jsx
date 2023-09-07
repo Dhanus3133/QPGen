@@ -14,6 +14,7 @@ const QuestionPaperGen = (props) => {
   const [vd, setVd] = useState(null);
   let b = props.data;
   let isAnswer = props.isAnswer;
+  let isRetest = props.isRetest;
   let courseObjectives = props.options.objectives;
   let courseOutcomes = props.options.outcomes;
   let subjectCO = props.options.subjectCO;
@@ -348,6 +349,7 @@ const QuestionPaperGen = (props) => {
                 Autonomous Institution, Affiliated to Anna University, Chennai
                 <br />
                 <b>
+                  {isRetest && "Retest - "}
                   {exam} {isAnswer && "Answer Key"}
                 </b>
               </td>
