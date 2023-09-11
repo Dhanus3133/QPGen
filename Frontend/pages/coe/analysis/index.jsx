@@ -76,7 +76,6 @@ const CoeAnalysis = () => {
     graphData = [];
     const selectedValue = e.target.value;
     setSelectedDepartment(e.target.value);
-    console.log(selectedValue);
     if (selectedSemester !== "") {
       handleDepartmentAndSemesterChange(selectedValue, selectedSemester);
     } else {
@@ -134,7 +133,6 @@ const CoeAnalysis = () => {
     if (dept != "" && sem != "") {
       const compData = dataBySemAndDept[dept][sem];
       const length = compData?.length;
-      console.log(dept, sem);
       if (!dept || !sem) {
         return;
       }
@@ -179,7 +177,7 @@ const CoeAnalysis = () => {
             ))}
           </select>
         </form>
-        <div style={{ width: "500px", height: "500px" }}>
+        <div style={{ width: "", height: "500px" }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               width={500}

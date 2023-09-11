@@ -27,7 +27,6 @@ const SubjectAnalysis = ({
     return (
       <div>
         {data.map((item) => {
-          console.log(item)
           const updatedGraphData = item.analysisBtl.map((it) => ({
             name: it.btl.name,
             value: it.percentage,
