@@ -1,4 +1,5 @@
 import { useQuery } from "@apollo/client";
+import { Autocomplete, TextField } from "@mui/material";
 import {
   BarChart,
   Bar,
@@ -134,7 +135,6 @@ const CoeAnalysis = () => {
       const compData = dataBySemAndDept[dept][sem];
       const length = compData?.length;
       if (!dept || !sem) {
-        return;
       }
       compData.map((dat) => {
         dat?.analysisBtl.map((it) => {
@@ -157,27 +157,42 @@ const CoeAnalysis = () => {
   };
 
   return (
-    <div className="flex h-[500px] w-[500px]">
-      <div>
-        <form>
-          <select value={selectedDepartment} onChange={handleDepartmentChange}>
-            <option value="">Select Department</option>
-            {departments?.map((d, index) => (
-              <option key={index} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
-          <select value={selectedSemester} onChange={handleSemesterChange}>
-            <option value="">Select Semester</option>
-            {semesters?.map((d, index) => (
-              <option key={index} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
-        </form>
-        <div style={{ width: "", height: "500px" }}>
+    <div className="h-screen w-screen">
+      <div className="m-10">
+        <div className="m-10 w-full mx-auto">
+          <Autocomplete
+            id="semester"
+            sx={{ maxWidth: 300 }}
+            className="m-10 mx-auto"
+            options={semesters}
+            value={selectedSemester}
+            getOptionLabel={(option) => {
+              return String(option);
+            }}
+            autoHighlight
+            onChange={handleSemesterChange}
+            renderInput={(params) => (
+              <TextField {...params} label="Semester" placeholder="Semester" />
+            )}
+          />
+          <Autocomplete
+            id="department"
+            sx={{ maxWidth: 300 }}
+            className="m-10 mx-auto"
+            options={departments}
+            value={selectedDepartment}
+            autoHighlight
+            onChange={handleDepartmentChange}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Department"
+                placeholder="Department"
+              />
+            )}
+          />
+        </div>
+        <div className="h-[500px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               width={500}
