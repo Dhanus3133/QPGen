@@ -24,7 +24,7 @@ const Question = ({ data, vd, setVd, span }) => {
       <td className="pl-2" colSpan={span || 1}>
         <div
           id="generated-question"
-          className="break-inside-avoid"
+          className="break-inside-avoid text-justify"
           dangerouslySetInnerHTML={{
             __html: vd ? vd.getHTML() : "Loading...",
           }}

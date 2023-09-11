@@ -76,6 +76,7 @@ const QuestionPaper = ({
       <QuestionPaperGen
         data={generatedData["questions"]}
         isAnswer={isAnswer}
+        isSem={false}
         options={generatedData["options"]}
         semester={semester}
         total={total}

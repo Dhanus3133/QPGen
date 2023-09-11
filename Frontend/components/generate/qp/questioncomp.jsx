@@ -14,6 +14,7 @@ const QuestionPaperGen = (props) => {
   const [vd, setVd] = useState(null);
   let b = props.data;
   let isAnswer = props.isAnswer;
+  let isSem = props.isSem;
   let isRetest = props.isRetest;
   let courseObjectives = props.options.objectives;
   let courseOutcomes = props.options.outcomes;
@@ -107,13 +108,13 @@ const QuestionPaperGen = (props) => {
               if (l["roman"] === null) {
                 q = (
                   <tr>
-                    <Number rs={r[null]} data={l["number"]} />
+                    <Number rs={r[null]} data={l["number"]} isSem={isSem} />
                     <Question
                       data={isAnswer ? l["answer"] : l["question"]}
                       vd={vd}
                       setVd={setVd}
                     />
-                    {!isAnswer && (
+                    {!isAnswer && !isSem && (
                       <>
                         <QuestionAttributes data={l["co"]} />
                         <QuestionAttributes data={l["btl"]} />
@@ -126,21 +127,24 @@ const QuestionPaperGen = (props) => {
               } else {
                 q = (
                   <tr>
-                    <Number rs={r[null]} data={l["number"]} />
+                    <Number rs={r[null]} data={l["number"]} isSem={isSem} />
                     <Question
                       data={isAnswer ? l["answer"] : l["question"]}
                       vd={vd}
                       setVd={setVd}
                     />
 
-                    {!isAnswer && (
+                    {!isAnswer && !isSem && (
                       <>
                         <QuestionAttributes data={l["co"]} />
                         <QuestionAttributes data={l["btl"]} />
                         {/*<QuestionAttributes data={l["QPRef"]} />*/}
                       </>
                     )}
-                    <QuestionAttributes data={l["MarkAllocated"]} />
+                    <QuestionAttributes
+                      data={l["MarkAllocated"]}
+                      isSem={isSem}
+                    />
                   </tr>
                 );
                 store.push(q);
@@ -150,43 +154,49 @@ const QuestionPaperGen = (props) => {
               if (l["roman"] === "i") {
                 q = (
                   <tr>
-                    <Number rs={r[null]} data={l["number"]} />
-                    {k.length > 1 && <Roman data={l["roman"]} />}
+                    <Number rs={r[null]} data={l["number"]} isSem={isSem} />
+                    {k.length > 1 && <Roman data={l["roman"]} isSem={isSem} />}
                     <Question
                       data={isAnswer ? l["answer"] : l["question"]}
                       vd={vd}
                       setVd={setVd}
                       span={k.length > 1 ? 1 : 2}
                     />
-                    {!isAnswer && (
+                    {!isAnswer && !isSem && (
                       <>
                         <QuestionAttributes data={l["co"]} />
                         <QuestionAttributes data={l["btl"]} />
                         {/*<QuestionAttributes data={l["QPRef"]} />*/}
                       </>
                     )}
-                    <QuestionAttributes data={l["MarkAllocated"]} />
+                    <QuestionAttributes
+                      data={l["MarkAllocated"]}
+                      isSem={isSem}
+                    />
                   </tr>
                 );
                 store.push(q);
               } else {
                 q = (
                   <tr>
-                    {k.length > 1 && <Roman data={l["roman"]} />}
+                    {k.length > 1 && <Roman data={l["roman"]} isSem={isSem} />}
                     <Question
                       data={isAnswer ? l["answer"] : l["question"]}
                       vd={vd}
                       setVd={setVd}
                       span={k.length > 1 ? 1 : 2}
                     />
-                    {!isAnswer && (
+                    {!isAnswer && !isSem && (
                       <>
                         <QuestionAttributes data={l["co"]} />
                         <QuestionAttributes data={l["btl"]} />
                         {/*<QuestionAttributes data={l["QPRef"]} />*/}
                       </>
                     )}
-                    <QuestionAttributes data={l["MarkAllocated"]} />
+                    <QuestionAttributes
+                      data={l["MarkAllocated"]}
+                      isSem={isSem}
+                    />
                   </tr>
                 );
                 store.push(q);
@@ -199,23 +209,30 @@ const QuestionPaperGen = (props) => {
                 subdivsel = 1;
                 opt = (
                   <tr>
-                    <Number rs={arrlen + 1} data={l["number"]} />
-                    <Option rs={r[l["option"]]} data={l["option"]} />
-                    {k.length > 1 && <Roman data={l["roman"]} />}
+                    <Number rs={arrlen + 1} data={l["number"]} isSem={isSem} />
+                    <Option
+                      rs={r[l["option"]]}
+                      data={l["option"]}
+                      isSem={isSem}
+                    />
+                    {k.length > 1 && <Roman data={l["roman"]} isSem={isSem} />}
                     <Question
                       data={isAnswer ? l["answer"] : l["question"]}
                       vd={vd}
                       setVd={setVd}
                       span={k.length > 1 ? 1 : 2}
                     />
-                    {!isAnswer && (
+                    {!isAnswer && !isSem && (
                       <>
                         <QuestionAttributes data={l["co"]} />
                         <QuestionAttributes data={l["btl"]} />
                         {/*<QuestionAttributes data={l["QPRef"]} />*/}
                       </>
                     )}
-                    <QuestionAttributes data={l["MarkAllocated"]} />
+                    <QuestionAttributes
+                      data={l["MarkAllocated"]}
+                      isSem={isSem}
+                    />
                   </tr>
                 );
                 store.push(opt);
@@ -223,21 +240,24 @@ const QuestionPaperGen = (props) => {
               } else {
                 opt = (
                   <tr>
-                    <Roman data={l["roman"]} />
+                    <Roman data={l["roman"]} isSem={isSem} />
                     <Question
                       data={isAnswer ? l["answer"] : l["question"]}
                       vd={vd}
                       setVd={setVd}
                       span={k.length > 1 ? 1 : 2}
                     />
-                    {!isAnswer && (
+                    {!isAnswer && !isSem && (
                       <>
                         <QuestionAttributes data={l["co"]} />
                         <QuestionAttributes data={l["btl"]} />
                         {/*<QuestionAttributes data={l["QPRef"]} />*/}
                       </>
                     )}
-                    <QuestionAttributes data={l["MarkAllocated"]} />
+                    <QuestionAttributes
+                      data={l["MarkAllocated"]}
+                      isSem={isSem}
+                    />
                   </tr>
                 );
                 store.push(opt);
@@ -246,24 +266,30 @@ const QuestionPaperGen = (props) => {
             } else {
               opt = (
                 <tr>
-                  <td rowSpan={r[l["option"]]} className="style-2 text-center">
+                  <td
+                    rowSpan={r[l["option"]]}
+                    className={`style-2 text-center${
+                      isSem ? " align-top" : ""
+                    }`}
+                  >
                     {l["option"]}
+                    {isSem ? ")" : ""}
                   </td>
-                  {k.length > 1 && <Roman data={l["roman"]} />}
+                  {k.length > 1 && <Roman data={l["roman"]} isSem={isSem} />}
                   <Question
                     data={isAnswer ? l["answer"] : l["question"]}
                     vd={vd}
                     setVd={setVd}
                     span={k.length > 1 ? 1 : 2}
                   />
-                  {!isAnswer && (
+                  {!isAnswer && !isSem && (
                     <>
                       <QuestionAttributes data={l["co"]} />
                       <QuestionAttributes data={l["btl"]} />
                       {/*<QuestionAttributes data={l["QPRef"]} />*/}
                     </>
                   )}
-                  <QuestionAttributes data={l["MarkAllocated"]} />
+                  <QuestionAttributes data={l["MarkAllocated"]} isSem={isSem} />
                 </tr>
               );
               let brl = (
@@ -295,6 +321,7 @@ const QuestionPaperGen = (props) => {
           optsel={optsel}
           store={store}
           isAnswer={isAnswer}
+          isSem={isSem}
         />
       );
     } else {
@@ -308,6 +335,7 @@ const QuestionPaperGen = (props) => {
           optsel={optsel}
           store={store}
           isAnswer={isAnswer}
+          isSem={isSem}
         />
       );
     }
@@ -317,6 +345,17 @@ const QuestionPaperGen = (props) => {
     store = [];
     optsel = 0;
     subdivsel = 0;
+  }
+
+  const tableElements = document.querySelectorAll("table, th, td, tr");
+  if (isSem && !isAnswer) {
+    tableElements.forEach((element) => {
+      element.style.border = "0";
+    });
+  } else {
+    tableElements.forEach((element) => {
+      element.style.border = "1px solid black";
+    });
   }
 
   return (
@@ -389,7 +428,7 @@ const QuestionPaperGen = (props) => {
         </table>
         <br />
         {/*TABLE FOR COURSE OBJECTIVES*/}
-        {!isAnswer && (
+        {!isAnswer && !isSem && (
           <>
             <b>Course Objectives:</b>
             <p>The Student should be able</p>
@@ -423,9 +462,11 @@ const QuestionPaperGen = (props) => {
           <div id="generated-questions" className="text-base leading-tight">
             {questions}
           </div>
-          {!isAnswer && <p className="text-center">~*All the Best*~</p>}
+          {!isAnswer && !isSem && (
+            <p className="text-center">~*All the Best*~</p>
+          )}
         </div>
-        {!isAnswer && (
+        {!isAnswer && !isSem && (
           <div className="flex justify-around pt-10">
             <div>Prepared by</div>
             <div>Verfied by</div>

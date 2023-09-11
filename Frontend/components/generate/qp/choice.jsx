@@ -1,8 +1,17 @@
-const Choice = ({ part, count, mark, subdivsel, optsel, store, isAnswer }) => {
+const Choice = ({
+  part,
+  count,
+  mark,
+  subdivsel,
+  optsel,
+  store,
+  isAnswer,
+  isSem,
+}) => {
   return (
     <table className="w-full">
       <tbody>
-        {part == "A" && !isAnswer && (
+        {part == "A" && !isAnswer && !isSem && (
           <tr>
             <td
               className="text-center break-inside-avoid"
@@ -18,14 +27,23 @@ const Choice = ({ part, count, mark, subdivsel, optsel, store, isAnswer }) => {
         )}
         <tr>
           <td
-            className="text-center font-bold"
-            colSpan={subdivsel + optsel + 2}
+            className={`text-center ${
+              isSem ? " relative font-bold" : "font-bold"
+            }`}
+            colSpan={subdivsel + optsel + 2 + isSem}
           >
-            Part-{part}-({count}x{mark}={count * mark} marks)
-            <br />
-            {count > 1 && !isAnswer && "(Answer all the questions)"}
+            Part-{part}{" "}
+            <span className={`${isSem ? "absolute right-0 font-bold" : ""}`}>
+              ({count}x{mark}={mark * count} marks)
+            </span>
+            {!isSem && (
+              <>
+                <br />
+                {count > 1 && !isAnswer && "(Answer all the questions)"}
+              </>
+            )}
           </td>
-          {!isAnswer && (
+          {!isAnswer && !isSem && (
             <>
               <td className="text-center font-bold px-1">CO</td>
               <td className="text-center font-bold px-1">
