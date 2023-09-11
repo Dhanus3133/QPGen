@@ -64,6 +64,13 @@ const CoeAnalysis = () => {
       }
     });
   }
+  for (const key in dataByDept) {
+    if (dataByDept.hasOwnProperty(key)) {
+      dataByDept[key].sort(
+        (a, b) => a.courses[0].semester - b.courses[0].semester,
+      );
+    }
+  }
 
   const handleDepartmentChange = (e) => {
     graphData = [];
