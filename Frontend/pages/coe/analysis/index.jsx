@@ -79,7 +79,6 @@ const CoeAnalysis = () => {
           const value = dataBySemAndDept[outerKey][innerKey];
           const uniqueIds = new Set();
           dataBySemAndDept[outerKey][innerKey] = value.filter((i) => {
-            console.log(i);
             if (!uniqueIds.has(i.id)) {
               uniqueIds.add(i.id);
               return true;
@@ -151,8 +150,6 @@ const CoeAnalysis = () => {
     if (dept != "" && sem != "") {
       const compData = dataBySemAndDept[dept][sem];
       const length = compData?.length;
-      if (!dept || !sem) {
-      }
       compData.map((dat) => {
         dat?.analysisBtl.map((it) => {
           if (!graphData.find((i) => i.name == it.btl.name)) {
@@ -170,9 +167,55 @@ const CoeAnalysis = () => {
         return { ...it, value: it.value / length };
       });
       setUpdatedGraphData(graphData);
+    } else if (dept == "") {
+      handleOnlySemChange(sem);
+    } else if (sem == "") {
+      handleOnlyDeptChange(dept);
     }
   };
+  const handleOnlyDeptChange = (dept) => {
+    graphData = [];
+    const length = dataByDept[dept]?.length;
+    dataByDept[dept]?.map((dep) => {
+      dep?.analysisBtl?.map((item) => {
+        if (!graphData?.find((i) => i.name == item.btl.name)) {
+          graphData.push({
+            name: item.btl.name,
+            value: item.percentage,
+          });
+        } else {
+          const index = graphData.findIndex((i) => i.name == item.btl.name);
+          graphData[index].value += item.percentage;
+        }
+      });
+    });
+    graphData = graphData.map((it) => {
+      return { ...it, value: it.value / length };
+    });
+    setUpdatedGraphData(graphData);
+  };
 
+  const handleOnlySemChange = (sem) => {
+    graphData = [];
+    const length = dataBySem[sem]?.length;
+    dataBySem[sem]?.map((s) => {
+      s?.analysisBtl?.map((item) => {
+        if (!graphData?.find((i) => i.name == item.btl.name)) {
+          graphData.push({
+            name: item.btl.name,
+            value: item.percentage,
+          });
+        } else {
+          const index = graphData.findIndex((i) => i.name == item.btl.name);
+          graphData[index].value += item.percentage;
+        }
+      });
+    });
+    graphData = graphData.map((it) => {
+      return { ...it, value: it.value / length };
+    });
+    setUpdatedGraphData(graphData);
+  };
   return (
     <div className="h-screen w-screen">
       <div className="m-10">
