@@ -13,12 +13,12 @@ const SubjectAnalysis = ({
     data = dataBySem[selectedSemester];
     return (
       <div className="grid grid-cols-3 gap-7 h-full w-full ml-5">
-        {data.map((item) => {
-          const updatedGraphData = item.analysisBtl.map((it) => ({
+        {data.map((item, index) => {
+          const updatedGraphData = item?.analysisBtl.map((it) => ({
             name: it.btl.name,
             value: it.percentage,
           }));
-          return <AnalysisGraph item={item} updatedGraphData={updatedGraphData} />;
+          return <AnalysisGraph key={index} item={item} updatedGraphData={updatedGraphData} />;
         })}
       </div>
     );
@@ -26,12 +26,12 @@ const SubjectAnalysis = ({
     data = dataByDept[selectedDepartment];
     return (
       <div className="grid grid-cols-3 gap-7 h-full w-full ml-5">
-        {data.map((item) => {
-          const updatedGraphData = item.analysisBtl.map((it) => ({
+        {data.map((item, index) => {
+          const updatedGraphData = item?.analysisBtl.map((it) => ({
             name: it.btl.name,
             value: it.percentage,
           }));
-          return <AnalysisGraph item={item} updatedGraphData={updatedGraphData} />;
+          return <AnalysisGraph key={index} item={item} updatedGraphData={updatedGraphData} />;
         })}
       </div>
     );
@@ -39,12 +39,12 @@ const SubjectAnalysis = ({
     data = dataBySemAndDept[selectedDepartment][selectedSemester];
     return (
       <div className="grid grid-cols-3 gap-7 h-full w-full ml-5">
-        {data.map((item) => {
-          const updatedGraphData = item.analysisBtl.map((it) => ({
+        {data.map((item, index) => {
+          const updatedGraphData = item?.analysisBtl.map((it) => ({
             name: it.btl.name,
             value: it.percentage,
           }));
-          return <AnalysisGraph item={item} updatedGraphData={updatedGraphData} />;
+          return <AnalysisGraph key={index} item={item} updatedGraphData={updatedGraphData} />;
         })}
       </div>
     );
