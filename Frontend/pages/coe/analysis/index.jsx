@@ -1,5 +1,4 @@
 import { useQuery } from "@apollo/client";
-import { Autocomplete, TextField } from "@mui/material";
 import {
   BarChart,
   Bar,
@@ -73,6 +72,24 @@ const CoeAnalysis = () => {
     }
   }
 
+  for (const outerKey in dataBySemAndDept) {
+    if (dataBySemAndDept.hasOwnProperty(outerKey)) {
+      for (const innerKey in dataBySemAndDept[outerKey]) {
+        if (dataBySemAndDept[outerKey].hasOwnProperty(innerKey)) {
+          const value = dataBySemAndDept[outerKey][innerKey];
+          const uniqueIds = new Set();
+          dataBySemAndDept[outerKey][innerKey] = value.filter((i) => {
+            console.log(i);
+            if (!uniqueIds.has(i.id)) {
+              uniqueIds.add(i.id);
+              return true;
+            }
+            return false;
+          });
+        }
+      }
+    }
+  }
   const handleDepartmentChange = (e) => {
     graphData = [];
     const selectedValue = e.target.value;
@@ -159,38 +176,33 @@ const CoeAnalysis = () => {
   return (
     <div className="h-screen w-screen">
       <div className="m-10">
-        <div className="m-10 w-full mx-auto">
-          <Autocomplete
-            id="semester"
-            sx={{ maxWidth: 300 }}
-            className="m-10 mx-auto"
-            options={semesters}
-            value={selectedSemester}
-            getOptionLabel={(option) => {
-              return String(option);
-            }}
-            autoHighlight
-            onChange={handleSemesterChange}
-            renderInput={(params) => (
-              <TextField {...params} label="Semester" placeholder="Semester" />
-            )}
-          />
-          <Autocomplete
-            id="department"
-            sx={{ maxWidth: 300 }}
-            className="m-10 mx-auto"
-            options={departments}
-            value={selectedDepartment}
-            autoHighlight
-            onChange={handleDepartmentChange}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Department"
-                placeholder="Department"
-              />
-            )}
-          />
+        <div className="m-10 w-full h-40">
+          <div className="w-full m-5">
+            <select
+              onChange={handleDepartmentChange}
+              className="w-96 h-10 px-4 mx-auto py-2 bg-gray-700 border rounded-md focus:outline-none focus:border-blue-500"
+              value={selectedDepartment}
+            >
+              <option value="">Select the department</option>
+              {departments?.map((d, index) => (
+                <option key={index}>{d}</option>
+              ))}
+            </select>
+          </div>
+          <div className="w-full m-5">
+            <select
+              className="w-96 h-10 px-4 mx-auto py-2 bg-gray-700 border rounded-md focus:outline-none focus:border-blue-500"
+              onChange={handleSemesterChange}
+              value={selectedSemester}
+            >
+              <option value="">Select the semester</option>
+              {semesters?.map((d, index) => (
+                <option value={d} key={index}>
+                  {d}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         <div className="h-[500px]">
           <ResponsiveContainer width="100%" height="100%">

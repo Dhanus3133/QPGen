@@ -12,7 +12,7 @@ const SubjectAnalysis = ({
   if (type == 3) {
     data = dataBySem[selectedSemester];
     return (
-      <div className="grid grid-cols-3 gap-10 h-full w-full">
+      <div className="grid grid-cols-3 gap-7 h-full w-full ml-5">
         {data.map((item) => {
           const updatedGraphData = item.analysisBtl.map((it) => ({
             name: it.btl.name,
@@ -25,7 +25,7 @@ const SubjectAnalysis = ({
   } else if (type == 2) {
     data = dataByDept[selectedDepartment];
     return (
-      <div className="grid grid-cols-3 gap-10 h-full w-full">
+      <div className="grid grid-cols-3 gap-7 h-full w-full ml-5">
         {data.map((item) => {
           const updatedGraphData = item.analysisBtl.map((it) => ({
             name: it.btl.name,
@@ -38,7 +38,7 @@ const SubjectAnalysis = ({
   } else if (type == 1) {
     data = dataBySemAndDept[selectedDepartment][selectedSemester];
     return (
-      <div className="grid grid-cols-3 gap-10 h-full w-full">
+      <div className="grid grid-cols-3 gap-7 h-full w-full ml-5">
         {data.map((item) => {
           const updatedGraphData = item.analysisBtl.map((it) => ({
             name: it.btl.name,
