@@ -49,7 +49,7 @@ const SubjectAnalysis = ({
       </div>
     );
   } else {
-    return <div>No filter selected</div>;
+    return <div className="text-3xl text-center w-full">No filter selected</div>;
   }
 };
 
