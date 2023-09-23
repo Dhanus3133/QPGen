@@ -500,8 +500,8 @@ const QuestionPaperGen = (props) => {
               <br />({options["dept"]})
               <br />
               (Regulation - {options["regulation"]})
-              <div class="flex justify-between pt-3">
-                <div class="mr-4">Time: {time} Hours</div>
+              <div className="flex justify-between pt-3">
+                <div className="mr-4">Time: {time} Hours</div>
                 <div>Maximum Marks: {total}</div>
               </div>
               {!isAnswer && (
