@@ -8,7 +8,6 @@ from questions.models import (
     Question,
     Subject,
     Syllabus,
-    Topic
 )
 from django.db.models import Count, F, Q, Value
 from django.contrib.postgres.aggregates import ArrayAgg
@@ -168,15 +167,21 @@ class Generate:
             selected.append(another)
             start += 1
             end -= 1
-        selected.append(
-            [self.find_a_question_with_exact_mark(lesson, mark, is_scenario, False, is_avoid_topics)]
-        )
-        selected.append(
-            [self.find_a_question_with_exact_mark(lesson, mark, is_scenario, False, is_avoid_topics)]
-        )
-        selected.append(
-            [self.find_a_question_with_exact_mark(lesson, mark, is_scenario, False, is_avoid_topics)]
-        )
+        selected.append([
+            self.find_a_question_with_exact_mark(
+                lesson, mark, is_scenario, False, is_avoid_topics
+            )
+        ])
+        selected.append([
+            self.find_a_question_with_exact_mark(
+                lesson, mark, is_scenario, False, is_avoid_topics
+            )
+        ])
+        selected.append([
+            self.find_a_question_with_exact_mark(
+                lesson, mark, is_scenario, False, is_avoid_topics
+            )
+        ])
         question = random.choice(selected)
         # print(selected)
         while None in question and len(selected) > 0:
@@ -330,10 +335,14 @@ class Generate:
         )
 
         syllabuses = Syllabus.objects.filter(
-            course__semester=self.course.semester, lesson__subject=subject).distinct("course", "lesson__subject")
+            course__semester=self.course.semester, lesson__subject=subject
+        ).distinct("course", "lesson__subject")
+
         depts = syllabuses.values_list(
             "course__department__branch_code", flat=True
         )
+
+        dept = syllabuses[0].course.department.branch
 
         options = {
             "marks": self.marks,
@@ -345,6 +354,8 @@ class Generate:
             "objectives": objectives,
             "outcomes": outcomes,
             "branch": "/".join(depts),
+            "regulation": self.course.regulation.year,
+            "dept": f"{'Common to ' + '/'.join(depts) if len(depts) > 1 else dept}",
         }
 
         analytics = convert_to_percentage(

@@ -8,7 +8,6 @@ from django.apps import apps
 from django.contrib.auth.hashers import make_password
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.db.models.fields import validators
 from django.utils.translation import gettext_lazy as _
 from django.utils.html import strip_tags
 from django.template.loader import render_to_string

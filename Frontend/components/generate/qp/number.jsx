@@ -1,7 +1,7 @@
 const Number = (props) => {
   return (
     <td
-      className={`style-2 text-center${props.isSem ? " align-top" : ""}`}
+      className={`style-2 text-center${props.isSem ? " align-top pb-3" : ""}`}
       rowSpan={props.rs}
     >
       {props.data}

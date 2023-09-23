@@ -1,7 +1,6 @@
 from typing import List, Optional
-# from strawberry.relay.types import GlobalID
 from strawberry.relay.types import GlobalID
-from strawberry.scalars import ID, JSON
+from strawberry.scalars import JSON
 import strawberry_django
 from strawberry import relay
 from strawberry import auto
@@ -63,9 +62,6 @@ class SubjectType(relay.Node):
     code: auto
     subject_name: auto
     co: auto
-    # co_description: auto
-    # course_outcome: auto
-    # coe: List[UserType]
 
 
 @strawberry_django.type(Lesson)
@@ -171,6 +167,7 @@ class ExamMarkType(relay.Node):
     choices: auto
     units: auto
     time: auto
+    is_end_sem_format: auto
     active: auto
 
 

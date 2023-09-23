@@ -16,6 +16,7 @@ function Marks({
   valid,
   setValid,
   setExam,
+  setIsSem,
   examTitle,
   setExamTitle,
 }) {
@@ -58,6 +59,7 @@ function Marks({
             setUnits(type["units"]);
             setTime(type["time"]);
             setTotal(type["total"]);
+            setIsSem(type["isEndSemFormat"]);
           } else {
             setExamTitle(null);
             setMarks([]);
@@ -66,6 +68,7 @@ function Marks({
             setUnits([]);
             setTime(null);
             setTotal(null);
+            setIsSem(false);
           }
         }}
         getOptionLabel={(option) => {

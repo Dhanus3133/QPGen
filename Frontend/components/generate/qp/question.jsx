@@ -1,7 +1,7 @@
 import Vditor from "vditor";
 import { useEffect } from "react";
 
-const Question = ({ data, vd, setVd, span }) => {
+const Question = ({ data, isSem, isAnswer, vd, setVd, span }) => {
   // console.log(data);
   useEffect(() => {
     if (!vd) {
@@ -24,7 +24,9 @@ const Question = ({ data, vd, setVd, span }) => {
       <td className="pl-2" colSpan={span || 1}>
         <div
           id="generated-question"
-          className="break-inside-avoid text-justify"
+          className={`break-inside-avoid text-justify${
+            isSem && !isAnswer ? " pb-3" : ""
+          }`}
           dangerouslySetInnerHTML={{
             __html: vd ? vd.getHTML() : "Loading...",
           }}

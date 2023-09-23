@@ -27,19 +27,22 @@ const Choice = ({
         )}
         <tr>
           <td
-            className={`text-center ${
-              isSem ? " relative font-bold" : "font-bold"
+            className={`text-center relative ${
+              isSem && !isAnswer ? " pb-3" : "font-bold"
             }`}
             colSpan={subdivsel + optsel + 2 + isSem}
           >
-            Part-{part}{" "}
+            PART - {part}{" "}
             <span className={`${isSem ? "absolute right-0 font-bold" : ""}`}>
               ({count}x{mark}={mark * count} marks)
             </span>
             {!isSem && (
               <>
                 <br />
-                {count > 1 && !isAnswer && "(Answer all the questions)"}
+                {count > 1 &&
+                  !isAnswer &&
+                  !isSem &&
+                  "(Answer all the questions)"}
               </>
             )}
           </td>

@@ -18,6 +18,7 @@ const QuestionPaper = ({
   total,
   time,
   exam,
+  isSem,
   dateTime,
   set,
 }) => {
@@ -76,7 +77,7 @@ const QuestionPaper = ({
       <QuestionPaperGen
         data={generatedData["questions"]}
         isAnswer={isAnswer}
-        isSem={false}
+        isSem={isSem}
         options={generatedData["options"]}
         semester={semester}
         total={total}

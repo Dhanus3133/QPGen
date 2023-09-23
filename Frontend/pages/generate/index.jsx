@@ -14,6 +14,7 @@ export default function Generate() {
   const [semester, setSemester] = useState(null);
   const [total, setTotal] = useState(null);
   const [marks, setMarks] = useState([]);
+  const [isSem, setIsSem] = useState(false);
   const [counts, setCounts] = useState([]);
   const [choices, setChoices] = useState([]);
   const [dateTime, setDateTime] = useState(null);
@@ -83,6 +84,7 @@ export default function Generate() {
               valid={valid}
               setValid={setValid}
               setExam={setExam}
+              setIsSem={setIsSem}
               examTitle={examTitle}
               setExamTitle={setExamTitle}
             />
@@ -125,6 +127,7 @@ export default function Generate() {
         total={total}
         time={time}
         exam={examTitle}
+        isSem={isSem}
         dateTime={dateTime}
         set={set}
         examID={exam}

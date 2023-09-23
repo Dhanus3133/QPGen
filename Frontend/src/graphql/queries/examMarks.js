@@ -14,6 +14,7 @@ export const examMarksQuery = gql`
       counts
       choices
       units
+      isEndSemFormat
       time
     }
   }

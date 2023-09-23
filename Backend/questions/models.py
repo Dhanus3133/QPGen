@@ -243,7 +243,7 @@ class MarkRange(models.Model):
         return f"{self.start} - {self.end}"
 
     class Meta:
-        ordering = ['start']
+        ordering = ["start"]
         unique_together = ["start", "end"]
 
 
@@ -330,14 +330,21 @@ class CreateSyllabus(TimeStampedModel):
 
 
 class Exam(models.Model):
-    name = models.CharField(max_length=200, unique=True, help_text="Displayed in Question Paper")
+    name = models.CharField(
+        max_length=200,
+        unique=True,
+        help_text="Displayed in Question Paper"
+    )
 
     def __str__(self) -> str:
         return self.name
 
+
 class ExamMark(models.Model):
     label = models.CharField(max_length=200, unique=True)
-    exam = models.ForeignKey(Exam, on_delete=models.CASCADE, related_name="marks")
+    exam = models.ForeignKey(
+        Exam, on_delete=models.CASCADE, related_name="marks"
+    )
     total = models.IntegerField()
     marks = models.JSONField()
     counts = models.JSONField()
@@ -345,6 +352,7 @@ class ExamMark(models.Model):
     units = models.JSONField()
     time = models.CharField(max_length=25)
     order = models.PositiveIntegerField()
+    is_end_sem_format = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
 
     class Meta:
@@ -372,9 +380,7 @@ class AnalysisBTL(models.Model):
 
 
 class Analysis(TimeStampedModel):
-    courses = models.ManyToManyField(
-        Course, related_name="analysis"
-    )
+    courses = models.ManyToManyField(Course, related_name="analysis")
     subject = models.ForeignKey(
         Subject, on_delete=models.CASCADE, related_name="analysis"
     )
