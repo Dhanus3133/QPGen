@@ -14,12 +14,11 @@ export default function FacultiesHandling() {
   const [subject, setSubject] = useState(null);
   const [faculties, setFaculties] = useState([]);
   const [success, setSuccess] = useState(false);
-  const [FacultiesHandlings, { loading, error, data }] = useLazyQuery(
-    FacultiesHandlingsQuery,
-  );
+  const [FacultiesHandlings, { data }] = useLazyQuery(FacultiesHandlingsQuery);
 
-  const [AssignFaculties, { loading: ALoading, error: AErrror, data: AData }] =
-    useMutation(assignFacultiesMutation, {
+  const [AssignFaculties, { loading: ALoading, data: AData }] = useMutation(
+    assignFacultiesMutation,
+    {
       refetchQueries: [
         {
           query: FacultiesHandlingsQuery,
@@ -29,7 +28,8 @@ export default function FacultiesHandling() {
           },
         },
       ],
-    });
+    },
+  );
 
   useEffect(() => {
     if (data?.facultiesHandlings.length > 0) {

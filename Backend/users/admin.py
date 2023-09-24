@@ -16,7 +16,7 @@ class CustomUserAdmin(UserAdmin_):
         "subject_handling",
     )
     search_fields = ("first_name", "last_name", "email")
-    ordering = ("email",)
+    ordering = ("-date_joined",)
     add_fieldsets = (
         (
             "Personal Info",
