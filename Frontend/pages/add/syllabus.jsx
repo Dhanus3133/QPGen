@@ -1,8 +1,7 @@
-import { useRouter } from "next/router";
 import { useState } from "react";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import Courses from "components/generate/courses";
-import { Alert, Autocomplete, Button } from "@mui/material";
+import { Alert, Button } from "@mui/material";
 import Subjects from "components/add/subject/subjects";
 import Lessons from "components/add/subject/lessons";
 import { Box } from "@mui/system";
@@ -12,12 +11,12 @@ import { createSyllabusesMutation } from "@/src/graphql/mutations/createSyllabus
 export default function AddSyllabus() {
   const [valid, setValid] = useState(false);
   const [course, setCourse] = useState(null);
-  const [semester, setSemester] = useState(null);
+  const [_semester, setSemester] = useState(null);
   const [subject, setSubject] = useState(null);
   const [lessons, setLessons] = useState([]);
 
-  const [CreateSyllabuses, { data, loading, error }] = useMutation(
-    createSyllabusesMutation
+  const [CreateSyllabuses, { data, error }] = useMutation(
+    createSyllabusesMutation,
   );
 
   const handleSubmit = () => {

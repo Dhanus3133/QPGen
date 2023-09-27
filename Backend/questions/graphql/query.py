@@ -1,6 +1,5 @@
-from typing import Any, List, Optional
+from typing import List, Optional
 from asgiref.sync import sync_to_async
-from strawberry import relay
 from strawberry.scalars import JSON
 from strawberry.types import Info
 import strawberry_django

@@ -4,7 +4,7 @@ import { Autocomplete, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import CreateSubject from "./createSubject";
 
-export default function Subjects({ subject, setSubject }) {
+export default function Subjects({ subject, setSubject, canCreate = true }) {
   const { data, loading, error } = useQuery(getAllSubjectsQuery);
   const [subjects, setSubjects] = useState([]);
 
@@ -27,10 +27,10 @@ export default function Subjects({ subject, setSubject }) {
         getOptionLabel={(option) => {
           return `${option["subjectName"]} | ${option["code"]}`;
         }}
-        sx={{ width: 300 }}
+        sx={{ width: 500 }}
         renderInput={(params) => <TextField {...params} label="Subjects" />}
       />
-      {!subject && <CreateSubject setSubject={setSubject} />}
+      {canCreate && !subject && <CreateSubject setSubject={setSubject} />}
     </>
   );
 }

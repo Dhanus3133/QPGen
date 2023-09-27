@@ -95,15 +95,16 @@ class Mutation:
             raise ValueError(
                 "Syllabus with this Course and Lesson already exists."
             )
-        cs.is_completed = True
-        await cs.syllabus.aset(s)
-        await cs.asave(update_fields=["is_completed"])
+        if not info.context.request.user.is_superuser:
+            await cs.syllabus.aset(s)
+            cs.is_completed = True
+            await cs.asave(update_fields=["is_completed"])
 
-        fh, _ = await FacultiesHandling.objects.aget_or_create(
-            course=c,
-            subject=await Subject.objects.aget(lessons=lessons[0]),
-        )
-        await fh.faculties.aadd(info.context.request.user)
+            fh, _ = await FacultiesHandling.objects.aget_or_create(
+                course=c,
+                subject=await Subject.objects.aget(lessons=lessons[0]),
+            )
+            await fh.faculties.aadd(info.context.request.user)
         return True
 
     @ strawberry_django.field(extensions=[IsACOE()])

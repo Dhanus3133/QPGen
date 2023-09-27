@@ -355,7 +355,7 @@ class Generate:
             "outcomes": outcomes,
             "branch": "/".join(depts),
             "regulation": self.course.regulation.year,
-            "dept": f"{'Common to ' + '/'.join(depts) if len(depts) > 1 else dept}",
+            "dept": f"{'Common to ' + ' / '.join(depts) if len(depts) > 1 else dept}",
         }
 
         analytics = convert_to_percentage(

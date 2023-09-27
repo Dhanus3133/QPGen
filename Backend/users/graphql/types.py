@@ -12,6 +12,7 @@ class UserType(relay.Node):
     email: auto
     first_name: auto
     last_name: auto
+    password: auto
     is_active: auto
 
     @strawberry_django.field(only=["first_name", "last_name"])

@@ -61,6 +61,7 @@ INSTALLED_APPS = (
         "users.apps.UsersConfig",
         "questions.apps.QuestionsConfig",
         "coe.apps.CoeConfig",
+        "endsem.apps.EndsemConfig",
     ]
 )
 
