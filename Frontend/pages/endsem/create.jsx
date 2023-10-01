@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Grid } from "@mui/material";
+import { Grid, TextField } from "@mui/material";
 import { Stack } from "@mui/system";
 import COEOnly from "components/coe/COEOnly";
 import Subjects from "components/add/subject/subjects";
@@ -7,7 +7,7 @@ import Marks from "components/generate/marks";
 
 import { useMutation } from "@apollo/client";
 import { Button, Alert } from "@mui/material";
-import { createEndSemSubjectMutation } from "@/src/graphql/mutations/createUserForSubject";
+import { createEndSemSubjectMutation } from "@/src/graphql/mutations/createEndSemSubject";
 
 export default function CreateEndSemSubject() {
   const [password, setPassword] = useState(null);
@@ -20,6 +20,7 @@ export default function CreateEndSemSubject() {
     setPassword(password);
     createUserForSubject({
       variables: {
+        semester: Number(semester),
         subject: subject,
         password: password,
         marks: marks,
@@ -29,6 +30,7 @@ export default function CreateEndSemSubject() {
     });
   }
   const [subject, setSubject] = useState(null);
+  const [semester, setSemester] = useState(null);
 
   const [total, setTotal] = useState(null);
   const [marks, setMarks] = useState([]);
@@ -47,6 +49,14 @@ export default function CreateEndSemSubject() {
       <COEOnly>
         <Grid container justifyContent="center" sx={{ pt: 4 }}>
           <Stack spacing={3} alignItems="center">
+            <TextField
+              id="semester"
+              label="Semester"
+              variant="outlined"
+              InputProps={{ inputProps: { min: 1 } }}
+              type="number"
+              onChange={(e) => setSemester(e.target.value)}
+            />
             <Subjects
               subject={subject}
               setSubject={setSubject}

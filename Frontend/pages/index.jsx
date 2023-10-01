@@ -1,6 +1,9 @@
+import Link from "next/link";
+import { Button } from "@mui/material";
 import { departmentsAccessToQuery } from "@/src/graphql/queries/deptAccess";
 import { useQuery } from "@apollo/client";
 import SuperCard from "components/SuperCard";
+import EndSemFacultyOnly from "components/endsem/EndSemFacultyOnly";
 
 export default function Dashboard() {
   const { data, loading, error } = useQuery(departmentsAccessToQuery, {
@@ -21,6 +24,19 @@ export default function Dashboard() {
 
   return (
     <>
+      <EndSemFacultyOnly>
+        <Link href="/endsem">
+          <Button
+            type="submit"
+            className="bg-[#1976d2] m-5"
+            variant="contained"
+            color="primary"
+          >
+            Click here to go to EndSem Page
+          </Button>
+        </Link>
+      </EndSemFacultyOnly>
+
       <SuperCard data={cleanData} currentPath="" type="Course" />
     </>
   );

@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { AiOutlineArrowLeft, AiFillHome } from "react-icons/ai";
+import { BiBook } from "react-icons/bi";
 import { FaSignOutAlt } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -14,6 +15,7 @@ import { client } from "@/lib/apollo-client";
 import { isAuthorizedQuery } from "@/src/graphql/queries/isAuthorized";
 import { logoutMutation } from "@/src/graphql/mutations/logout";
 import { Button } from "@mui/material";
+import EndSemFacultyOnly from "components/endsem/EndSemFacultyOnly";
 
 export default function MenuAppBar() {
   const router = useRouter();
@@ -73,6 +75,15 @@ export default function MenuAppBar() {
                     Home
                   </Button>
                 </Link>
+                <EndSemFacultyOnly>
+                  <Link href="/endsem">
+                    <Button color="inherit">
+                      {" "}
+                      <BiBook className="mr-2" />
+                      EndSem
+                    </Button>
+                  </Link>
+                </EndSemFacultyOnly>
                 <Link href="/login">
                   <Button color="inherit" onClick={handleLogout}>
                     <FaSignOutAlt />

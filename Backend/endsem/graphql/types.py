@@ -12,8 +12,12 @@ from users.graphql.types import UserType
 @strawberry_django.type(EndSemSubject)
 class EndSemSubjectType(relay.Node):
     id: GlobalID
+    semester: auto
     subject: SubjectType
-    faculty: List[UserType]
+    faculties: List[UserType]
+    marks: auto
+    counts: auto
+    choices: auto
 
 
 @strawberry_django.type(EndSemQuestion)

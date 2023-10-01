@@ -5,10 +5,10 @@ export default function RenderVditor({ id }) {
   useEffect(() => {
     const previewElement = document.getElementById(id);
     Vditor.setContentTheme("light");
-    Vditor.codeRender(previewElement);
+    // Vditor.codeRender(previewElement);
     Vditor.highlightRender(
       { enable: true, lineNumber: false, style: "github" },
-      previewElement
+      previewElement,
     );
     Vditor.mathRender(previewElement, {
       math: { engine: "KaTeX", inlineDigit: false, macros: {} },
@@ -19,16 +19,16 @@ export default function RenderVditor({ id }) {
     Vditor.chartRender(
       previewElement,
       // "https://unpkg.com/vditor@3.8.17",
-      "classic"
+      "classic",
     );
     Vditor.mindmapRender(
       previewElement,
       // "https://unpkg.com/vditor@3.8.17",
-      "classic"
+      "classic",
     );
     Vditor.abcRender(previewElement);
     Vditor.mediaRender(previewElement);
-    Vditor.speechRender(previewElement);
+    // Vditor.speechRender(previewElement);
   });
   // Vditor.mediaRender("preview");
 }

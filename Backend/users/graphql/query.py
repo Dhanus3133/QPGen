@@ -1,8 +1,7 @@
 import strawberry
-from typing import List, cast
+from typing import List
 from asgiref.sync import sync_to_async
 import strawberry_django
-from strawberry_django import auth
 from strawberry.types import Info
 from coe.graphql.permission import IsACOE
 

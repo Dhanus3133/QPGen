@@ -23,7 +23,7 @@ export default function CreateSubject({ setSubject }) {
           query: getAllSubjectsQuery,
         },
       ],
-    }
+    },
   );
 
   const handleClickOpen = () => {

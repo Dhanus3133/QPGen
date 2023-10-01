@@ -5,20 +5,24 @@ from users.models import User
 
 
 class EndSemSubject(TimeStampedModel):
+    semester = models.PositiveIntegerField()
     subject = models.ForeignKey(
         Subject, on_delete=models.CASCADE, related_name="endsem_faculties"
     )
     faculties = models.ManyToManyField(
         User, related_name="endsem_faculties", blank=True
     )
+    marks = models.JSONField(default=list)
+    counts = models.JSONField(default=list)
+    choices = models.JSONField(default=list)
 
     class Meta:
-        unique_together = ["subject"]
+        unique_together = ["semester", "subject"]
         verbose_name_plural = "End Sem Subjects"
         verbose_name = "End Sem Subject"
 
     def __str__(self):
-        return self.subject.code
+        return f'{self.semester} {self.subject.code}'
 
 
 class EndSemQuestion(TimeStampedModel):
@@ -38,3 +42,11 @@ class EndSemQuestion(TimeStampedModel):
 
     def __str__(self) -> str:
         return f"{self.question} | {self.subject.subject.code}"
+
+
+class EndSemImage(models.Model):
+    photo = models.ImageField(upload_to="endsem", null=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.photo.name

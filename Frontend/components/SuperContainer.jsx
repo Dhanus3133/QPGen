@@ -17,7 +17,9 @@ const SuperContainer = ({ data, currentPath }) => {
                 {item["text"]}
               </button>
             </Link>
-            <BsFillCaretRightFill className="basis-auto ml-5" />
+            <Link href={`${currentPath}/${item["href"]}`}>
+              <BsFillCaretRightFill className="basis-auto ml-5 cursor-pointer" />
+            </Link>
           </div>
         ))}
       </div>

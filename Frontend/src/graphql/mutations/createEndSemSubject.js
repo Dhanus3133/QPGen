@@ -2,6 +2,7 @@ import { gql } from "@apollo/client";
 
 export const createEndSemSubjectMutation = gql`
   mutation CreateEndSemSubject(
+    $semester: Int!
     $subject: Int!
     $password: String!
     $marks: [Int!]!
@@ -10,6 +11,7 @@ export const createEndSemSubjectMutation = gql`
   ) {
     createEndSemSubject(
       input: {
+        semester: $semester
         subject: $subject
         password: $password
         marks: $marks
