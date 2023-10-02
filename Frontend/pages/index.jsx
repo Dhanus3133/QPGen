@@ -24,7 +24,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <EndSemFacultyOnly>
+      <EndSemFacultyOnly errorDisplay={false}>
         <Link href="/endsem">
           <Button
             type="submit"

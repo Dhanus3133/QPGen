@@ -2,6 +2,7 @@ from typing import List
 from strawberry.types import Info
 import strawberry_django
 from strawberry_django.filters import strawberry
+from strawberry_django.permissions import IsAuthenticated
 from strawberry_django.relay import sync_to_async
 from endsem.graphql.permission import IsAEndSemFaculty, IsTheEndSemFaculty
 from endsem.graphql.types import EndSemQuestionType, EndSemSubjectType
@@ -10,9 +11,9 @@ from endsem.models import EndSemQuestion, EndSemSubject
 
 @strawberry.type
 class Query:
-    @strawberry_django.field(extensions=[IsAEndSemFaculty()])
+    @strawberry_django.field(extensions=[IsAuthenticated()])
     async def is_end_sem_faculty(self, info: Info) -> bool:
-        return True
+        return info.context.request.user.is_superuser or await EndSemSubject.objects.filter(faculties=info.context.request.user).aexists()
 
     @strawberry_django.field(extensions=[IsAEndSemFaculty()])
     async def get_end_sem_subjects(self, info: Info) -> List[EndSemSubjectType]:

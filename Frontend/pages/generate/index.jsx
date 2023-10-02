@@ -8,6 +8,7 @@ import Subjects from "components/generate/subjects";
 import Lessons from "components/generate/lessons";
 import QuestionPaper from "components/generate/questionPaper";
 import DateTime from "components/generate/qp/datetime";
+import COEOnly from "components/coe/COEOnly";
 
 export default function Generate() {
   const [course, setCourse] = useState(null);
@@ -32,7 +33,7 @@ export default function Generate() {
 
   if (!generate) {
     return (
-      <>
+      <COEOnly>
         <Grid container justifyContent="center">
           <div className="p-3 flex flex-col items-center">
             <DateTime dateTime={dateTime} setDateTime={setDateTime} />
@@ -111,7 +112,7 @@ export default function Generate() {
             </Button>
           </div>
         </Grid>
-      </>
+      </COEOnly>
     );
   } else {
     const navbar = document.getElementById("navbar");

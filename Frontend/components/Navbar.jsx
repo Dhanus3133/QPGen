@@ -75,7 +75,7 @@ export default function MenuAppBar() {
                     Home
                   </Button>
                 </Link>
-                <EndSemFacultyOnly>
+                <EndSemFacultyOnly errorDisplay={false}>
                   <Link href="/endsem">
                     <Button color="inherit">
                       {" "}
