@@ -1,3 +1,4 @@
+import requests
 from questions.models import (
     Analysis,
     AnalysisBTL,
@@ -12,8 +13,20 @@ from questions.models import (
 from django.db.models import Count, F, Q, Value
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.db.models.functions import Concat
+from django.conf import settings
 import json
 import random
+
+API_BASE_URL = f"https://api.cloudflare.com/client/v4/accounts/{settings.CLOUDFLARE_USER_ID }/ai/run/"
+headers = {"Authorization": "Bearer " + settings.API_TOKEN, }
+
+
+def run(model, inputs):
+    input = {"messages": inputs}
+    response = requests.post(
+        f"{API_BASE_URL}{model}", headers=headers, json=input
+    )
+    return response.json()
 
 # from django.db.models.query import sync_to_async
 # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
@@ -49,7 +62,7 @@ def convert_to_percentage(data):
 
 
 class Generate:
-    def __init__(self, course, lids, marks, count, choices, exam, save_analysis):
+    def __init__(self, course, lids, marks, count, choices, exam, save_analysis, use_ai):
         self.course = Course.objects.get(id=course)
         self.subject = Lesson.objects.get(id=lids[0]).subject
         self.lids = lids
@@ -58,6 +71,7 @@ class Generate:
         self.choices = choices
         self.exam = exam
         self.save_analysis = save_analysis
+        self.use_ai = use_ai
         self.questions = questions = (
             Question.objects.filter(lesson__in=lids).filter()
             .select_related("lesson", "mark", "btl", "lesson__subject")
@@ -200,6 +214,24 @@ class Generate:
                     f"Questions are too less to generarte for {Lesson.objects.get(id=lesson).name}"
                 )
             question = random.choice(selected)
+
+        if self.use_ai:
+            for i in range(len(question)):
+                if question[i]['q'].mark.start != 2:
+                    inputs = [
+                        {
+                            "role": "system",
+                            "content": "Enhance the depth of thinking in the following question without introducing scenarios unless the original question was scenario-based. Maintain a similar size. Avoid providing answers or hints. If the question is mathematical in nature, please retain the original question without any modifications."
+                        },
+                        {"role": "user", "content": question[i]["q"].question},
+                        {"role": "assistant",
+                         "content": "The output should be a single rewritten question and there should no further conversation. Question should be"}
+                    ]
+                    output = run("@cf/meta/llama-2-7b-chat-int8", inputs)
+                    try:
+                        question[i]["q"].question = output['result']['response']
+                    except:
+                        print("AIERROR: ", output)
 
         for arr in question:
             self.choosen_questions.append(arr["q"].id)

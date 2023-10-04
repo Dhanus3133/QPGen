@@ -13,6 +13,7 @@ const QuestionPaper = ({
   choices,
   examID,
   saveAnalysis,
+  useAi,
   isRetest,
   semester,
   total,
@@ -30,6 +31,7 @@ const QuestionPaper = ({
       counts,
       choices,
       saveAnalysis,
+      useAi,
       exam: examID,
     },
   });

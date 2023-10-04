@@ -30,6 +30,7 @@ export default function Generate() {
   const [set, setSet] = useState(null);
   const [saveAnalysis, setSaveAnalysis] = useState(false);
   const [isRetest, setIsRetest] = useState(false);
+  const [useAi, setUseAi] = useState(false);
 
   if (!generate) {
     return (
@@ -66,6 +67,16 @@ export default function Generate() {
                   />
                 }
                 label="Retest?"
+              />
+              <FormControlLabel
+                required
+                control={
+                  <Checkbox
+                    color="success"
+                    onChange={(e) => setUseAi(e.target.checked)}
+                  />
+                }
+                label="Use AI?"
               />
               <Courses setCourse={setCourse} setSemester={setSemester} />
             </div>
@@ -133,6 +144,7 @@ export default function Generate() {
         set={set}
         examID={exam}
         saveAnalysis={saveAnalysis}
+        useAi={useAi}
         isRetest={isRetest}
       />
     );

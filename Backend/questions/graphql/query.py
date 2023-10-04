@@ -90,13 +90,14 @@ class Query:
         choices: List[bool],
         exam: int,
         save_analysis: bool,
+        use_ai: bool
     ) -> JSON:
         # lids = [3, 4]
         # lids = [1, 2]
         # marks = [2, 12, 16]
         # count = [5, 2, 1]
         # choices = [False, True, True]
-        return Generate(course, lids, marks, counts, choices, exam, save_analysis).generate_questions()
+        return Generate(course, lids, marks, counts, choices, exam, save_analysis, use_ai).generate_questions()
 
     @strawberry_django.field(extensions=[IsAuthenticated()])
     async def departments_access_to(self, info: Info) -> List[FacultiesHandlingType]:
