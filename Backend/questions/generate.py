@@ -16,6 +16,7 @@ from django.db.models.functions import Concat
 from django.conf import settings
 import json
 import random
+import time
 
 API_BASE_URL = f"https://api.cloudflare.com/client/v4/accounts/{settings.CLOUDFLARE_USER_ID }/ai/run/"
 headers = {"Authorization": "Bearer " + settings.API_TOKEN, }
@@ -223,15 +224,21 @@ class Generate:
                             "role": "system",
                             "content": "Enhance the depth of thinking in the following question without introducing scenarios unless the original question was scenario-based. Maintain a similar size. Avoid providing answers or hints. If the question is mathematical in nature, please retain the original question without any modifications."
                         },
-                        {"role": "user", "content": question[i]["q"].question},
+                        {"role": "user", "content": json.dumps(
+                            question[i]["q"].question
+                        )},
                         {"role": "assistant",
                          "content": "The output should be a single rewritten question and there should no further conversation. Question should be"}
                     ]
                     output = run("@cf/meta/llama-2-7b-chat-int8", inputs)
                     try:
-                        question[i]["q"].question = output['result']['response']
-                    except:
-                        print("AIERROR: ", output)
+                        question[i]["q"].question = json.loads(
+                            output['result']['response']
+                        )
+                        time.sleep(5)
+                    except Exception as e:
+                        print(f"AIERROR: {output}")
+                        print(f"Error message: {str(e)}")
 
         for arr in question:
             self.choosen_questions.append(arr["q"].id)
