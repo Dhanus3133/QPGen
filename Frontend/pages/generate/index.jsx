@@ -31,6 +31,9 @@ export default function Generate() {
   const [saveAnalysis, setSaveAnalysis] = useState(false);
   const [isRetest, setIsRetest] = useState(false);
   const [useAi, setUseAi] = useState(false);
+  const [isAvoidQuestionIds, setIsAvoidQuestionIds] = useState(false);
+  const [avoidQuestionIdsError, setavoidQuestionIdsError] = useState(null);
+  const [avoidQuestionIds, setAvoidQuestionIds] = useState([]);
 
   if (!generate) {
     return (
@@ -78,10 +81,51 @@ export default function Generate() {
                 }
                 label="Use AI?"
               />
-              <Courses setCourse={setCourse} setSemester={setSemester} />
+              <FormControlLabel
+                required
+                control={
+                  <Checkbox
+                    color="success"
+                    onChange={(e) => {
+                      setIsAvoidQuestionIds(e.target.checked);
+                      if (!e.target.checked) {
+                        setAvoidQuestionIds([]);
+                      }
+                    }}
+                  />
+                }
+                label={"Avoid Question's?"}
+              />
             </div>
+            {isAvoidQuestionIds && (
+              <TextField
+                fullWidth
+                label={"Question ID's"}
+                id="fullWidth"
+                className="m-3"
+                error={Boolean(avoidQuestionIdsError)}
+                helperText={avoidQuestionIdsError}
+                onChange={(e) => {
+                  try {
+                    const parsedJson = JSON.parse(e.target.value);
+                    if (Array.isArray(parsedJson)) {
+                      setavoidQuestionIdsError("");
+                      setAvoidQuestionIds(parsedJson);
+                    } else {
+                      setavoidQuestionIdsError("Please provide an array.");
+                    }
+                  } catch (error) {
+                    setavoidQuestionIdsError(
+                      "Please provide a valid JSON array.",
+                    );
+                  }
+                }}
+              />
+            )}
+            <Courses setCourse={setCourse} setSemester={setSemester} />
+            <div className="p-3"></div>
             <Subjects course={course} setSubject={setSubject} />
-            <div className="p-6"></div>
+            <div className="p-3"></div>
             <Marks
               marks={marks}
               setMarks={setMarks}
@@ -145,6 +189,7 @@ export default function Generate() {
         examID={exam}
         saveAnalysis={saveAnalysis}
         useAi={useAi}
+        avoidQuestionIds={avoidQuestionIds}
         isRetest={isRetest}
       />
     );

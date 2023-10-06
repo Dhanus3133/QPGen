@@ -4,6 +4,7 @@ import { Button } from "@mui/material";
 import Analytics from "./qp/analytics";
 import QuestionPaperGen from "./qp/questioncomp";
 import { useState } from "react";
+import ShowIdsInDialog from "./qp/showIds";
 
 const QuestionPaper = ({
   course,
@@ -14,6 +15,7 @@ const QuestionPaper = ({
   examID,
   saveAnalysis,
   useAi,
+  avoidQuestionIds,
   isRetest,
   semester,
   total,
@@ -32,6 +34,7 @@ const QuestionPaper = ({
       choices,
       saveAnalysis,
       useAi,
+      avoidQuestionIds,
       exam: examID,
     },
   });
@@ -75,7 +78,11 @@ const QuestionPaper = ({
       >
         Print
       </Button>
-
+      <ShowIdsInDialog
+        title={"Selected Question ID's"}
+        ids={JSON.stringify(generatedData["options"]["choosenQuestionIds"])}
+        className="no-print"
+      />
       <QuestionPaperGen
         data={generatedData["questions"]}
         isAnswer={isAnswer}

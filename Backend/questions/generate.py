@@ -29,10 +29,6 @@ def run(model, inputs):
     )
     return response.json()
 
-# from django.db.models.query import sync_to_async
-# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
-# django.setup()
-
 
 def int_to_roman(number):
     num = [1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000]
@@ -63,7 +59,7 @@ def convert_to_percentage(data):
 
 
 class Generate:
-    def __init__(self, course, lids, marks, count, choices, exam, save_analysis, use_ai):
+    def __init__(self, course, lids, marks, count, choices, exam, save_analysis, use_ai, avoid_question_ids):
         self.course = Course.objects.get(id=course)
         self.subject = Lesson.objects.get(id=lids[0]).subject
         self.lids = lids
@@ -73,8 +69,9 @@ class Generate:
         self.exam = exam
         self.save_analysis = save_analysis
         self.use_ai = use_ai
-        self.questions = questions = (
-            Question.objects.filter(lesson__in=lids).filter()
+        self.questions = (
+            Question.objects.filter(lesson__in=lids)
+            .exclude(id__in=avoid_question_ids)
             .select_related("lesson", "mark", "btl", "lesson__subject")
             .prefetch_related("topics")
         )
@@ -395,6 +392,7 @@ class Generate:
             "branch": "/".join(depts),
             "regulation": self.course.regulation.year,
             "dept": f"{'Common to ' + ' / '.join(depts) if len(depts) > 1 else dept}",
+            "choosenQuestionIds": self.choosen_questions,
         }
 
         analytics = convert_to_percentage(

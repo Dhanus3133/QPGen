@@ -10,6 +10,7 @@ export const generateQuestionsQuery = gql`
     $exam: Int!
     $saveAnalysis: Boolean!
     $useAi: Boolean!
+    $avoidQuestionIds: [Int!]!
   ) {
     generateQuestions(
       course: $course
@@ -20,6 +21,7 @@ export const generateQuestionsQuery = gql`
       exam: $exam
       saveAnalysis: $saveAnalysis
       useAi: $useAi
+      avoidQuestionIds: $avoidQuestionIds
     )
   }
 `;
