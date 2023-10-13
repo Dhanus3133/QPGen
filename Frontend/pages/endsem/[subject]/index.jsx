@@ -98,8 +98,6 @@ export default function EndSemQuestions() {
     3: "iii",
   };
 
-  console.log(questionParts);
-
   const getPart = (num) => String.fromCharCode(65 + num);
 
   return (
