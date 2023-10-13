@@ -119,7 +119,8 @@ class Query:
             "branch": "/".join(depts),
             "regulation": str(regulation),
             "dept": f"{'Common to ' + ' / '.join(depts) if len(depts) > 1 else dept}",
-            "choosenQuestionIds": []
+            "choosenQuestionIds": [],
+            "semester": end_sem_subject.semester,
         }
 
         questionsData = {

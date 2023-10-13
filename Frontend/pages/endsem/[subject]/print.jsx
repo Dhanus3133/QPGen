@@ -30,10 +30,10 @@ export default function Print() {
         isAnswer={false}
         isSem={true}
         options={generatedData["options"]}
-        semester={"8"}
-        total={"3"}
-        time={"3"}
-        exam={"EndSem"}
+        semester={generatedData["options"]["semester"]}
+        total={"100"}
+        time={"Three"}
+        exam={"NOV / DEC 2023"}
         dateTime={""}
         set={""}
         isRetest={false}

@@ -51,7 +51,7 @@ export default function MenuAppBar() {
   };
 
   return (
-    <div id="navbar">
+    <div id="navbar" className="no-print">
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar sx={{ backgroundColor: "#333333" }}>

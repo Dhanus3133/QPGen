@@ -4,7 +4,7 @@ const Option = (props) => {
       rowSpan={props.rs}
       className={`style-2 text-center${props.isSem ? " align-top" : ""}`}
     >
-      {props.data}
+      {props.isSem ? props.data.toLowerCase() : props.data}
       {props.isSem ? ")" : ""}
     </td>
   );

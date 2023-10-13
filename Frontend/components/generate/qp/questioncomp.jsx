@@ -299,7 +299,7 @@ const QuestionPaperGen = (props) => {
                       isSem ? " align-top" : ""
                     }`}
                   >
-                    {l["option"]}
+                    {isSem ? l["option"].toLowerCase() : l["option"]}
                     {isSem ? ")" : ""}
                   </td>
                   {k.length > 1 && <Roman data={l["roman"]} isSem={isSem} />}
@@ -492,6 +492,7 @@ const QuestionPaperGen = (props) => {
             </div>
             <p className="text-lg leading-5">
               {isRetest && "Retest - "}
+              <p>B.E. / B.Tech. DEGREE END SEMESTER EXAMINATIONS</p>
               {exam} {isAnswer && "Answer Key"}
               <br />
               {numberToString[semester]} Semester
@@ -547,6 +548,7 @@ const QuestionPaperGen = (props) => {
           <div id="generated-questions" className="text-base leading-tight">
             {questions}
           </div>
+          {isSem && <hr className="border-1 border-black mb-5 mx-auto w-20" />}
           {!isAnswer && !isSem && (
             <p className="text-center">~*All the Best*~</p>
           )}
