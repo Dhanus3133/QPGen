@@ -146,12 +146,18 @@ function Marks({
                     variant="outlined"
                     color="error"
                     onClick={() => {
-                      marks.splice(idx, 1);
-                      counts.splice(idx, 1);
-                      choices.splice(idx, 1);
-                      setMarks([...marks]);
-                      setCounts([...counts]);
-                      setChoices([...choices]);
+                      const updatedMarks = [...marks];
+                      updatedMarks.splice(idx, 1);
+
+                      const updatedCounts = [...counts];
+                      updatedCounts.splice(idx, 1);
+
+                      const updatedChoices = [...choices];
+                      updatedChoices.splice(idx, 1);
+
+                      setMarks(updatedMarks);
+                      setCounts(updatedCounts);
+                      setChoices(updatedChoices);
                     }}
                   >
                     Delete

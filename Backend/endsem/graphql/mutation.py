@@ -4,12 +4,13 @@ from django.core.exceptions import ValidationError
 import strawberry
 from strawberry.types import Info
 from strawberry_django import mutations
-from coe.graphql.permission import IsACOE
+from strawberry_django.permissions import IsAuthenticated
 from endsem.graphql.input import EndSemQuestionInput, EndSemQuestionInputPartial
 from endsem.graphql.permission import IsTheEndSemFaculty
 from endsem.models import EndSemQuestion, EndSemSubject
 from endsem.graphql.types import EndSemQuestionType
-from questions.models import Subject
+from questions.generate import Generate
+from questions.models import Regulation, Subject
 from users.graphql.types import UserType
 from users.models import User
 
@@ -27,10 +28,11 @@ class Mutation:
         handle_django_errors=True
     )
 
-    @mutations.input_mutation(extensions=[IsACOE()], handle_django_errors=True)
-    async def create_end_sem_subject(
+    @mutations.input_mutation(extensions=[IsAuthenticated()], handle_django_errors=True)
+    def create_end_sem_subject(
         self,
         info: Info,
+        regulation: int,
         subject: int,
         password: str,
         semester: int,
@@ -38,53 +40,77 @@ class Mutation:
         counts: List[int],
         choices: List[bool],
     ) -> UserType:
-        sub = await Subject.objects.aget(id=subject)
-        email = f'{sub.code.lower()}_endsem@citchennai.net'
+        if not info.context.request.user.is_superuser:
+            raise ValidationError('No permission available')
+        sub = Subject.objects.get(id=subject)
+        reg = Regulation.objects.get(id=regulation)
+        email = f'{sub.code.lower()}{reg.year}endsem{semester}@citchennai.net'
+        lids = sub.lessons.order_by('id').values_list('id', flat=True)
 
-        if await User.objects.filter(email=email).aexists():
+        if User.objects.filter(email=email).exists():
             raise ValidationError(f'{email} already exists')
 
-        user = await User.objects.acreate(
+        user = User.objects.create(
             first_name=sub.code,
             email=email,
             password=make_password(password)
         )
-        endsem_subject = await EndSemSubject.objects.acreate(
+        endsem_subject = EndSemSubject.objects.create(
+            regulation=reg,
             semester=semester,
             subject=sub,
             marks=marks,
             counts=counts,
             choices=choices,
         )
-        await endsem_subject.faculties.aadd(user)
+        endsem_subject.faculties.add(user)
 
-        questions = []
-        q = 1
+        try:
+            g = Generate(
+                1,
+                lids,
+                marks,
+                counts,
+                choices,
+                3,
+                False,
+                False,
+                [],
+                endsem_subject.id
+            )
+            g.generate_questions()
+        except Exception as e:
+            print("===============================")
+            print("EndSemError: ", e)
+            print("===============================")
+            questions = []
+            q = 1
 
-        for i, (mark, count, choice) in enumerate(zip(marks, counts, choices)):
-            for _ in range(count):
-                questions.append(EndSemQuestion(
-                    subject=endsem_subject,
-                    part=i + 1,
-                    number=q,
-                    roman=1,
-                    option=1,
-                    mark=mark,
-                    question=f'Question {q}',
-                ))
-                if choice:
+            for i, (mark, count, choice) in enumerate(zip(marks, counts, choices)):
+                for _ in range(count):
                     questions.append(EndSemQuestion(
                         subject=endsem_subject,
                         part=i + 1,
                         number=q,
-                        roman=2,
+                        roman=1,
                         option=1,
                         mark=mark,
                         question=f'Question {q}',
                     ))
-                q += 1
+                    if choice:
+                        questions.append(EndSemQuestion(
+                            subject=endsem_subject,
+                            part=i + 1,
+                            number=q,
+                            roman=2,
+                            option=1,
+                            mark=mark,
+                            question=f'Question {q}',
+                        ))
+                    q += 1
 
-        await EndSemQuestion.objects.abulk_create(questions)
+            EndSemQuestion.objects.bulk_create(questions)
+
         return user
 
     @mutations.input_mutation(permission_classes=[IsTheEndSemFaculty], handle_django_errors=True)

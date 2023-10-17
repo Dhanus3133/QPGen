@@ -17,7 +17,12 @@ import { useMutation } from "@apollo/client";
 import { createEndSemQuestionMutation } from "@/src/graphql/mutations/createEndSemQuestion";
 import { endSemQuestionsQuery } from "@/src/graphql/queries/endSemQuestions";
 
-export default function AddQuestion({ subjectCode, subject, currentQuestion }) {
+export default function AddQuestion({
+  subjectCode,
+  subject,
+  currentQuestion,
+  is2Mark,
+}) {
   const [open, setOpen] = useState(false);
   const [vQuestion, vSetQuestion] = useState(null);
   const [createEndSemQuestion, { data, loading }] = useMutation(
@@ -91,8 +96,7 @@ export default function AddQuestion({ subjectCode, subject, currentQuestion }) {
           <DialogContent>
             <DialogContentText sx={{ pb: 1 }}>
               New Question - {currentQuestion.number})
-              {currentQuestion.part !== 1 &&
-                ` ${getPart(currentQuestion.roman - 1)}.`}
+              {!is2Mark && ` ${getPart(currentQuestion.roman - 1)}.`}
             </DialogContentText>
             <Box sx={{ pt: 1 }}>
               <FormControl style={{ minWidth: 120 }}>
@@ -102,7 +106,7 @@ export default function AddQuestion({ subjectCode, subject, currentQuestion }) {
                   name="option"
                   defaultValue={currentQuestion.option + 1}
                   label="Option"
-                  disabled={currentQuestion.part === 1}
+                  disabled={is2Mark}
                   required
                 >
                   <MenuItem value={1}>i</MenuItem>
@@ -116,7 +120,7 @@ export default function AddQuestion({ subjectCode, subject, currentQuestion }) {
                 label="Mark"
                 variant="outlined"
                 inputProps={{ min: 2 }}
-                disabled={currentQuestion.part === 1}
+                disabled={is2Mark}
                 type="number"
                 sx={{ ml: 2, mb: 2 }}
                 required

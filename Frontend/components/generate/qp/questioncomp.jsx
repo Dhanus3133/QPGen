@@ -466,29 +466,41 @@ const QuestionPaperGen = (props) => {
             {!isAnswer && (
               <div className="w-full flex justify-end items-center mb-3">
                 <p>Reg No.: </p>
-                <div className="grid grid-cols-12 pl-2 w-56 mr-2 h-7">
-                  <div className="border border-black">&nbsp;</div>
-                  <div className="border border-black">&nbsp;</div>
-                  <div className="border border-black">&nbsp;</div>
-                  <div className="border border-black">&nbsp;</div>
-                  <div className="border border-black">&nbsp;</div>
-                  <div className="border border-black">&nbsp;</div>
-                  <div className="border border-black">&nbsp;</div>
-                  <div className="border border-black">&nbsp;</div>
-                  <div className="border border-black">&nbsp;</div>
-                  <div className="border border-black">&nbsp;</div>
-                  <div className="border border-black">&nbsp;</div>
-                  <div className="border border-black">&nbsp;</div>
-                </div>
+                {options["regulation"] !== "2022" ? (
+                  <div className="grid grid-cols-12 pl-2 mr-2 h-7">
+                    <div className="border border-black w-6">&nbsp;</div>
+                    <div className="border border-black w-6">&nbsp;</div>
+                    <div className="border border-black w-6">&nbsp;</div>
+                    <div className="border border-black w-6">&nbsp;</div>
+                    <div className="border border-black w-6">&nbsp;</div>
+                    <div className="border border-black w-6">&nbsp;</div>
+                    <div className="border border-black w-6">&nbsp;</div>
+                    <div className="border border-black w-6">&nbsp;</div>
+                    <div className="border border-black w-6">&nbsp;</div>
+                    <div className="border border-black w-6">&nbsp;</div>
+                    <div className="border border-black w-6">&nbsp;</div>
+                    <div className="border border-black w-6">&nbsp;</div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-7 pl-2 mr-2 h-7">
+                    <div className="border border-black w-6">&nbsp;</div>
+                    <div className="border border-black w-6">&nbsp;</div>
+                    <div className="border border-black w-6">&nbsp;</div>
+                    <div className="border border-black w-6">&nbsp;</div>
+                    <div className="border border-black w-6">&nbsp;</div>
+                    <div className="border border-black w-6">&nbsp;</div>
+                    <div className="border border-black w-6">&nbsp;</div>
+                  </div>
+                )}
               </div>
             )}
             <div className="font-bold leading-4">
               <h2 className="text-xl">CHENNAI INSTITUTE OF TECHNOLOGY</h2>
-              <p>
+              <p className="text-[10px]">
                 (An Autonomous Institution, Affiliated to Anna University,
                 Chennai)
               </p>
-              <h2 className="text-md pb-1.5">CHENNAI - 600 069</h2>
+              <h2 className="text-[12px] pb-1.5">CHENNAI - 600 069</h2>
             </div>
             <p className="text-lg leading-5">
               {isRetest && "Retest - "}

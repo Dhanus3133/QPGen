@@ -8,7 +8,7 @@ from strawberry_django.relay import sync_to_async
 from endsem.graphql.permission import IsAEndSemFaculty, IsTheEndSemFaculty
 from endsem.graphql.types import EndSemQuestionType, EndSemSubjectType
 from endsem.models import EndSemQuestion, EndSemSubject
-from questions.models import Course, Subject, Syllabus
+from questions.models import Subject, Syllabus
 
 
 @strawberry.type
@@ -40,7 +40,7 @@ class Query:
         end_sem_subject = EndSemSubject.objects.get(subject=sub)
 
         data = {}
-        question_counts = {'A': 0, 'B': 10, 'C': 15}
+        question_counts = {'A': 0}
 
         get_roman = {
             1: "i",
@@ -51,19 +51,12 @@ class Query:
         for question in questions:
             part = chr(64 + question.part)
 
-            # if part not in question_counts:
-            #     vals = sum(question_counts.values())
-            #     print("-------------------")
-            #     print(question_counts.values())
-            #     print(vals)
-            #     print(end_sem_subject.counts[question.part - 1])
-            #     print("-------------------")
-            #     question_counts[part] = vals + end_sem_subject.counts[question.part - 1]
+            if part not in question_counts.keys():
+                question_counts[part] = question_counts[
+                    chr(question.part - 2 + 65)
+                ] + end_sem_subject.counts[question.part-2]
 
             number = question.number - question_counts[part]
-            # number = question.number if part == 'A' else question.number - \
-            #     question_counts[part]
-            # sum(end_sem_subject.counts[:ord(part)-2])
             roman = question.roman
 
             if part not in data:
@@ -101,11 +94,7 @@ class Query:
             "course__department__branch_code", flat=True
         )
 
-        dept = syllabuses[0].course.department.branch
-
-        regulation = Course.objects.filter(
-            semester=end_sem_subject.semester
-        ).first().regulation
+        dept = syllabuses[0].course.department.branch if len(depts) > 0 else ''
 
         options = {
             "marks": end_sem_subject.marks,
@@ -117,7 +106,7 @@ class Query:
             "objectives": [],
             "outcomes": [],
             "branch": "/".join(depts),
-            "regulation": str(regulation),
+            "regulation": end_sem_subject.regulation.year,
             "dept": f"{'Common to ' + ' / '.join(depts) if len(depts) > 1 else dept}",
             "choosenQuestionIds": [],
             "semester": end_sem_subject.semester,

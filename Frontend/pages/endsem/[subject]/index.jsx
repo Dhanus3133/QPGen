@@ -104,7 +104,7 @@ export default function EndSemQuestions() {
     <div className="p-8">
       {Object.keys(questionParts).map((part, i) => (
         <div className="w-full bg-white text-black p-4" key={`mainpart-${i}`}>
-          <p className=" text-center font-bold text-2xl">
+          <p className=" text-center font-bold text-2xl pb-5">
             Part {getPart(i)} (
             {`${counts[i]}x${marks[i]}=${marks[i] * counts[i]}`})
           </p>
@@ -128,7 +128,7 @@ export default function EndSemQuestions() {
                             {". "}
                             {part.length > 1 &&
                               `${getPart(option.roman - 1)}) `}
-                            {option.part !== 1 &&
+                            {marks[option.part - 1] !== 2 &&
                               `${getRoman[option.option]}) `}
                             <p
                               id={`display-question-${option.id}`}
@@ -144,6 +144,7 @@ export default function EndSemQuestions() {
                             <EditQuestion
                               question={option}
                               subjectCode={subject}
+                              is2Mark={marks[option.part - 1] === 2}
                             />
                             {roman.length > 1 && (
                               <DeleteQuestion
@@ -151,15 +152,14 @@ export default function EndSemQuestions() {
                                 subjectCode={subject}
                               />
                             )}
-                            {option.part !== 1 &&
-                              roman.length < 3 &&
-                              roman.length === k + 1 && (
-                                <AddQuestion
-                                  subjectCode={subject}
-                                  subject={subjectID}
-                                  currentQuestion={option}
-                                />
-                              )}
+                            {roman.length < 3 && roman.length === k + 1 && (
+                              <AddQuestion
+                                subjectCode={subject}
+                                subject={subjectID}
+                                currentQuestion={option}
+                                is2Mark={marks[option.part - 1] === 2}
+                              />
+                            )}
                             {part.length > 1 &&
                             roman.length === k + 1 &&
                             count !== notOrAt ? (

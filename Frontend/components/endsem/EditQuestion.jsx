@@ -17,7 +17,7 @@ import { useMutation } from "@apollo/client";
 import { endSemQuestionsQuery } from "@/src/graphql/queries/endSemQuestions";
 import { updateEndSemQuestionMutation } from "@/src/graphql/mutations/updateEndSemQuestion";
 
-export default function EditQuestion({ question, subjectCode }) {
+export default function EditQuestion({ question, subjectCode, is2Mark }) {
   const [open, setOpen] = useState(false);
   const [vQuestion, vSetQuestion] = useState(null);
   const [updateEndSemQuestion, { data, loading }] = useMutation(
@@ -93,7 +93,7 @@ export default function EditQuestion({ question, subjectCode }) {
           <DialogContent>
             <DialogContentText sx={{ pb: 1 }}>
               Question - {question.number})
-              {question.part !== 1 &&
+              {!is2Mark &&
                 open &&
                 ` ${getPart(question.roman - 1)}. ${
                   getRoman[question.option]
@@ -107,7 +107,7 @@ export default function EditQuestion({ question, subjectCode }) {
                   name="option"
                   defaultValue={question.option}
                   label="Option"
-                  disabled={question.part === 1}
+                  disabled={is2Mark}
                 >
                   <MenuItem value={1}>i</MenuItem>
                   <MenuItem value={2}>ii</MenuItem>
@@ -120,7 +120,7 @@ export default function EditQuestion({ question, subjectCode }) {
                 label="Mark"
                 variant="outlined"
                 defaultValue={question.mark}
-                disabled={question.part === 1}
+                disabled={is2Mark}
                 type="number"
                 sx={{ ml: 2, mb: 2 }}
               />

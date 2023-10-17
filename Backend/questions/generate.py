@@ -1,4 +1,5 @@
 import requests
+from endsem.models import EndSemQuestion, EndSemSubject
 from questions.models import (
     Analysis,
     AnalysisBTL,
@@ -59,7 +60,7 @@ def convert_to_percentage(data):
 
 
 class Generate:
-    def __init__(self, course, lids, marks, count, choices, exam, save_analysis, use_ai, avoid_question_ids):
+    def __init__(self, course, lids, marks, count, choices, exam, save_analysis, use_ai, avoid_question_ids, end_sem_sub=None):
         self.course = Course.objects.get(id=course)
         self.subject = Lesson.objects.get(id=lids[0]).subject
         self.lids = lids
@@ -69,6 +70,8 @@ class Generate:
         self.exam = exam
         self.save_analysis = save_analysis
         self.use_ai = use_ai
+        self.end_sem_sub = EndSemSubject.objects.get(
+            id=end_sem_sub) if end_sem_sub else None
         self.questions = (
             Question.objects.filter(lesson__in=lids)
             .exclude(id__in=avoid_question_ids)
@@ -80,6 +83,7 @@ class Generate:
         self.co_analytics = {}
         self.btl_analytics = {}
         self.scenarios = []
+        self.endsem_questions = []
 
         for btl in BloomsTaxonomyLevel.objects.all():
             self.btl_analytics[btl.name] = 0
@@ -245,7 +249,7 @@ class Generate:
                     if t.id not in self.choosen_topics:
                         self.choosen_topics.append(t.id)
 
-            co = f"CO{Syllabus.objects.filter(course=self.course).get(lesson=lesson).unit}"
+            co = f"CO{Syllabus.objects.filter(course=self.course).get(lesson=lesson).unit}" if not self.end_sem_sub else ""
             if co not in self.co_analytics:
                 self.co_analytics[co] = 0
             else:
@@ -257,10 +261,22 @@ class Generate:
 
         questions = []
         for i in range(len(question)):
+            if self.end_sem_sub:
+                self.endsem_questions.append(
+                    EndSemQuestion(
+                        subject=self.end_sem_sub,
+                        part=ord(part) - 64,
+                        number=question_number,
+                        roman=option-64 if option != None else 1,
+                        option=1+i,
+                        question=question[i]["q"].question,
+                        answer=question[i]["q"].answer,
+                        mark=question[i]["m"]
+                    )
+                )
             dataQuestion = {}
             # print(f'\t{question_number}{chr(option) if option!=None else ""}. ', end='')
-            # print(f'({int_to_roman(1+i)})' if option else '', end='')
-            # print(question[i]['q'].question)
+            # print(f'({int_to_roman(1+i)})' if option else '', end='') print(question[i]['q'].question)
             dataQuestion["number"] = question_number
             dataQuestion["option"] = chr(option) if option != None else None
             dataQuestion["roman"] = int_to_roman(1 + i) if mark > 2 else None
@@ -378,7 +394,7 @@ class Generate:
             "course__department__branch_code", flat=True
         )
 
-        dept = syllabuses[0].course.department.branch
+        dept = syllabuses[0].course.department.branch if len(depts) > 0 else ""
 
         options = {
             "marks": self.marks,
@@ -401,6 +417,8 @@ class Generate:
         questionsData = {"questions": data,
                          "options": options, "analytics": analytics}
         j = json.dumps(questionsData)
+        if self.end_sem_sub:
+            EndSemQuestion.objects.bulk_create(self.endsem_questions)
         if self.save_analysis:
             analysis, _ = Analysis.objects.update_or_create(
                 subject=subject,

@@ -8,6 +8,7 @@ import Marks from "components/generate/marks";
 import { useMutation } from "@apollo/client";
 import { Button, Alert } from "@mui/material";
 import { createEndSemSubjectMutation } from "@/src/graphql/mutations/createEndSemSubject";
+import Regulation from "@/components/endsem/Regulation";
 
 export default function CreateEndSemSubject() {
   const [password, setPassword] = useState(null);
@@ -20,6 +21,7 @@ export default function CreateEndSemSubject() {
     setPassword(password);
     createUserForSubject({
       variables: {
+        regulation: Number(regulation),
         semester: Number(semester),
         subject: subject,
         password: password,
@@ -31,6 +33,7 @@ export default function CreateEndSemSubject() {
   }
   const [subject, setSubject] = useState(null);
   const [semester, setSemester] = useState(null);
+  const [regulation, setRegulation] = useState(null);
 
   const [total, setTotal] = useState(null);
   const [marks, setMarks] = useState([]);
@@ -42,13 +45,13 @@ export default function CreateEndSemSubject() {
   const [_exam, setExam] = useState(null);
   const [valid, setValid] = useState(false);
   const [_units, setUnits] = useState([]);
-  console.log(data?.createEndSemSubject);
 
   return (
     <>
       <COEOnly>
         <Grid container justifyContent="center" sx={{ pt: 4 }}>
           <Stack spacing={3} alignItems="center">
+            <Regulation regulation={regulation} setRegulation={setRegulation} />
             <TextField
               id="semester"
               label="Semester"

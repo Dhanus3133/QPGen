@@ -1,13 +1,16 @@
 from django.db import models
 from core.models import TimeStampedModel
-from questions.models import Subject
+from questions.models import Regulation, Subject
 from users.models import User
 
 
 class EndSemSubject(TimeStampedModel):
+    regulation = models.ForeignKey(
+        Regulation, on_delete=models.CASCADE, related_name="endsem_regulations"
+    )
     semester = models.PositiveIntegerField()
     subject = models.ForeignKey(
-        Subject, on_delete=models.CASCADE, related_name="endsem_faculties"
+        Subject, on_delete=models.CASCADE, related_name="endsem_subjects"
     )
     faculties = models.ManyToManyField(
         User, related_name="endsem_faculties", blank=True
@@ -17,7 +20,7 @@ class EndSemSubject(TimeStampedModel):
     choices = models.JSONField(default=list)
 
     class Meta:
-        unique_together = ["semester", "subject"]
+        unique_together = ["regulation", "semester", "subject"]
         verbose_name_plural = "End Sem Subjects"
         verbose_name = "End Sem Subject"
 

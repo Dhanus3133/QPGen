@@ -19,6 +19,7 @@ from questions.graphql.types import (
     MarkRangeType,
     PreviousYearsQPType,
     QuestionType,
+    RegulationType,
     SubjectType,
     SyllabusType,
     TopicType,
@@ -43,6 +44,9 @@ from questions.models import (
 class Query:
     question: Optional[QuestionType] = strawberry_django.field(
         permission_classes=[IsAFaculty]
+    )
+    regulations: List[RegulationType] = strawberry_django.field(
+        extensions=[IsAuthenticated()]
     )
     mark_ranges: List[MarkRangeType] = strawberry_django.field(
         extensions=[IsAuthenticated()]
