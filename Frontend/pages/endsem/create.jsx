@@ -131,27 +131,24 @@ export default function CreateEndSemSubject() {
                   <p>Password: {password}</p>
                 </Alert>
               )) ||
-                (
-                  data?.createEndSemSubject?.messages && (
-                    <Alert
-                      sx={{ mt: 3, mb: 2 }}
-                      variant="filled"
-                      severity="error"
-                    >
-                      {data?.createEndSemSubject?.messages[0].message}
-                    </Alert>
-                  )
-                ) || (
-                  err && (
-                    <Alert
-                      sx={{ mt: 3, mb: 2 }}
-                      variant="filled"
-                      severity="error"
-                    >
-                      {err}
-                    </Alert>
-                  ),
-                )}
+                (data?.createEndSemSubject?.messages && (
+                  <Alert
+                    sx={{ mt: 3, mb: 2 }}
+                    variant="filled"
+                    severity="error"
+                  >
+                    {data?.createEndSemSubject?.messages[0].message}
+                  </Alert>
+                )) ||
+                (err && (
+                  <Alert
+                    sx={{ mt: 3, mb: 2 }}
+                    variant="filled"
+                    severity="error"
+                  >
+                    {err}
+                  </Alert>
+                ))}
               {subject && (
                 <Button
                   type="submit"

@@ -107,7 +107,7 @@ export default function EndSemQuestions() {
     <div className="p-8">
       <COEOnly displayError={false}>
         <div className="p-2">
-          <a href={`${router.asPath}/print`} target="_blank">
+          <a href={`${router.asPath}/print`} target="_blank" rel="noreferrer">
             <Button
               className="bg-[#1976d2]"
               variant="contained"
