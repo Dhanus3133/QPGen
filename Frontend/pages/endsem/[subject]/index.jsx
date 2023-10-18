@@ -1,13 +1,16 @@
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useQuery } from "@apollo/client";
 import { endSemQuestionsQuery } from "@/src/graphql/queries/endSemQuestions";
+import { Button } from "@mui/material";
 import Vditor from "vditor";
 import EditQuestion from "components/endsem/EditQuestion";
 import RenderVditor from "components/renderVditor";
 import { getEndSemSubjectsQuery } from "@/src/graphql/queries/getEndSemSubjects";
 import DeleteQuestion from "components/endsem/DeleteQuestion";
 import AddQuestion from "components/endsem/AddQuestion";
+import COEOnly from "@/components/coe/COEOnly";
 
 export default function EndSemQuestions() {
   const router = useRouter();
@@ -102,6 +105,19 @@ export default function EndSemQuestions() {
 
   return (
     <div className="p-8">
+      <COEOnly displayError={false}>
+        <div className="p-2">
+          <a href={`${router.asPath}/print`} target="_blank">
+            <Button
+              className="bg-[#1976d2]"
+              variant="contained"
+              color="primary"
+            >
+              Print
+            </Button>
+          </a>
+        </div>
+      </COEOnly>
       {Object.keys(questionParts).map((part, i) => (
         <div className="w-full bg-white text-black p-4" key={`mainpart-${i}`}>
           <p className=" text-center font-bold text-2xl pb-5">
@@ -152,14 +168,16 @@ export default function EndSemQuestions() {
                                 subjectCode={subject}
                               />
                             )}
-                            {roman.length < 3 && roman.length === k + 1 && (
-                              <AddQuestion
-                                subjectCode={subject}
-                                subject={subjectID}
-                                currentQuestion={option}
-                                is2Mark={marks[option.part - 1] === 2}
-                              />
-                            )}
+                            {marks[option.part - 1] !== 2 &&
+                              roman.length < 3 &&
+                              roman.length === k + 1 && (
+                                <AddQuestion
+                                  subjectCode={subject}
+                                  subject={subjectID}
+                                  currentQuestion={option}
+                                  is2Mark={marks[option.part - 1] === 2}
+                                />
+                              )}
                             {part.length > 1 &&
                             roman.length === k + 1 &&
                             count !== notOrAt ? (

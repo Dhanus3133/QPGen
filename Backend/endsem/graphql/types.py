@@ -19,6 +19,8 @@ class EndSemSubjectType(relay.Node):
     marks: auto
     counts: auto
     choices: auto
+    is_internal: auto
+    is_external: auto
 
 
 @strawberry_django.type(EndSemQuestion)

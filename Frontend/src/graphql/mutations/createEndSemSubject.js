@@ -9,6 +9,8 @@ export const createEndSemSubjectMutation = gql`
     $marks: [Int!]!
     $counts: [Int!]!
     $choices: [Boolean!]!
+    $isInternal: Boolean!
+    $isExternal: Boolean!
   ) {
     createEndSemSubject(
       input: {
@@ -19,6 +21,8 @@ export const createEndSemSubjectMutation = gql`
         marks: $marks
         counts: $counts
         choices: $choices
+        isInternal: $isInternal
+        isExternal: $isExternal
       }
     ) {
       ... on UserType {

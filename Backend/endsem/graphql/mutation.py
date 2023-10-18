@@ -1,3 +1,4 @@
+from concurrent.futures import wait
 from typing import List, Optional, cast
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
@@ -39,6 +40,8 @@ class Mutation:
         marks: List[int],
         counts: List[int],
         choices: List[bool],
+        is_internal: bool,
+        is_external: bool,
     ) -> UserType:
         if not info.context.request.user.is_superuser:
             raise ValidationError('No permission available')
@@ -47,14 +50,18 @@ class Mutation:
         email = f'{sub.code.lower()}{reg.year}endsem{semester}@citchennai.net'
         lids = sub.lessons.order_by('id').values_list('id', flat=True)
 
-        if User.objects.filter(email=email).exists():
-            raise ValidationError(f'{email} already exists')
+        if is_external:
+            if User.objects.filter(email=email).exists():
+                raise ValidationError(f'{email} already exists')
 
-        user = User.objects.create(
-            first_name=sub.code,
-            email=email,
-            password=make_password(password)
-        )
+            user = User.objects.create(
+                first_name=sub.code,
+                email=email,
+                password=make_password(password)
+            )
+        else:
+            user = info.context.request.user
+
         endsem_subject = EndSemSubject.objects.create(
             regulation=reg,
             semester=semester,
@@ -62,10 +69,14 @@ class Mutation:
             marks=marks,
             counts=counts,
             choices=choices,
+            is_internal=is_internal,
+            is_external=is_external,
         )
-        endsem_subject.faculties.add(user)
 
-        try:
+        if is_external:
+            endsem_subject.faculties.add(user)
+
+        if is_internal:
             g = Generate(
                 1,
                 lids,
@@ -79,10 +90,7 @@ class Mutation:
                 endsem_subject.id
             )
             g.generate_questions()
-        except Exception as e:
-            print("===============================")
-            print("EndSemError: ", e)
-            print("===============================")
+        if is_external:
             questions = []
             q = 1
 

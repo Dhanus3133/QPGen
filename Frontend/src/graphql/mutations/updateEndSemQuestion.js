@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-
 export const updateEndSemQuestionMutation = gql`
   mutation UpdateEndSemQuestion(
     $id: ID!

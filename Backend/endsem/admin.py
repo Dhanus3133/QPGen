@@ -5,10 +5,13 @@ from .models import *
 
 @admin.register(EndSemSubject)
 class EndSemSubjectModelAdmin(admin.ModelAdmin):
-    list_filter = ("subject",)
+    list_filter = ("is_internal", "is_external", "semester", "subject",)
     list_display = (
         "subject",
+        "regulation",
         "semester",
+        "is_internal",
+        "is_external",
     )
     search_fields = (
         "subject",

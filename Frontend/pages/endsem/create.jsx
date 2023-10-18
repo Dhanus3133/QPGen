@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Grid, TextField } from "@mui/material";
 import { Stack } from "@mui/system";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 import COEOnly from "components/coe/COEOnly";
 import Subjects from "components/add/subject/subjects";
 import Marks from "components/generate/marks";
@@ -12,7 +14,7 @@ import Regulation from "@/components/endsem/Regulation";
 
 export default function CreateEndSemSubject() {
   const [password, setPassword] = useState(null);
-  const [createUserForSubject, { data }] = useMutation(
+  const [createUserForSubject, { data, loading }] = useMutation(
     createEndSemSubjectMutation,
   );
 
@@ -28,8 +30,16 @@ export default function CreateEndSemSubject() {
         marks: marks,
         counts: counts,
         choices: choices,
+        isInternal: isInternal,
+        isExternal: !isInternal,
       },
-    });
+    })
+      .then((_) => {
+        setErr(null);
+      })
+      .catch((error) => {
+        setErr(error?.message);
+      });
   }
   const [subject, setSubject] = useState(null);
   const [semester, setSemester] = useState(null);
@@ -45,6 +55,8 @@ export default function CreateEndSemSubject() {
   const [_exam, setExam] = useState(null);
   const [valid, setValid] = useState(false);
   const [_units, setUnits] = useState([]);
+  const [isInternal, setIsInternal] = useState(true);
+  const [err, setErr] = useState(null);
 
   return (
     <>
@@ -65,6 +77,31 @@ export default function CreateEndSemSubject() {
               setSubject={setSubject}
               canCreate={false}
             />
+            <div className="text-center">
+              <FormControlLabel
+                required
+                control={
+                  <Checkbox
+                    color="success"
+                    checked={isInternal}
+                    onChange={(e) => setIsInternal(e.target.checked)}
+                  />
+                }
+                label="Internal?"
+              />
+              <FormControlLabel
+                required
+                control={
+                  <Checkbox
+                    color="success"
+                    checked={!isInternal}
+                    onChange={(e) => setIsInternal(!e.target.checked)}
+                  />
+                }
+                label="External?"
+              />
+            </div>
+
             <Marks
               marks={marks}
               setMarks={setMarks}
@@ -94,21 +131,34 @@ export default function CreateEndSemSubject() {
                   <p>Password: {password}</p>
                 </Alert>
               )) ||
-                (data?.createEndSemSubject?.messages && (
-                  <Alert
-                    sx={{ mt: 3, mb: 2 }}
-                    variant="filled"
-                    severity="error"
-                  >
-                    {data?.createEndSemSubject?.messages[0].message}
-                  </Alert>
-                ))}
+                (
+                  data?.createEndSemSubject?.messages && (
+                    <Alert
+                      sx={{ mt: 3, mb: 2 }}
+                      variant="filled"
+                      severity="error"
+                    >
+                      {data?.createEndSemSubject?.messages[0].message}
+                    </Alert>
+                  )
+                ) || (
+                  err && (
+                    <Alert
+                      sx={{ mt: 3, mb: 2 }}
+                      variant="filled"
+                      severity="error"
+                    >
+                      {err}
+                    </Alert>
+                  ),
+                )}
               {subject && (
                 <Button
                   type="submit"
                   className="bg-[#1976d2]"
                   variant="contained"
                   color="primary"
+                  disabled={loading}
                   onClick={handleCreateEndSemSubject}
                 >
                   Create EndSem Subject

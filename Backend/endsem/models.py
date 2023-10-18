@@ -18,6 +18,8 @@ class EndSemSubject(TimeStampedModel):
     marks = models.JSONField(default=list)
     counts = models.JSONField(default=list)
     choices = models.JSONField(default=list)
+    is_internal = models.BooleanField(default=False)
+    is_external = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ["regulation", "semester", "subject"]
