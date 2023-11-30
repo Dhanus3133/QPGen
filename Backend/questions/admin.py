@@ -187,12 +187,15 @@ class QuestionModelAdmin(ImportExportModelAdmin):
         'subject_code',
         'start_mark',
         'end_mark',
+        'priority',
     )
     list_filter = (
         "start_mark",
         "end_mark",
         "lesson__subject",
         ("lesson", admin.RelatedOnlyFieldListFilter),
+        "priority",
+        "scenario_based",
     )
     search_fields = (
         'question',
