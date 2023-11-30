@@ -155,6 +155,7 @@ class SyllabusModelAdmin(admin.ModelAdmin):
         "unit",
         "lesson",
     )
+    raw_id_fields = ('course', 'lesson',)
 
 
 @admin.register(MarkRange)
