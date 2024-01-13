@@ -93,6 +93,7 @@ const QuestionPaper = ({
             id="total-marks"
             key="total"
             label="Total Marks"
+            className="no-print"
             type="number"
             variant="outlined"
             value={total}
