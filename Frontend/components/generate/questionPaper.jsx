@@ -1,6 +1,8 @@
 import { generateQuestionsQuery } from "@/src/graphql/queries/generateQuestions";
 import { useQuery } from "@apollo/client";
 import { Button } from "@mui/material";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import { Checkbox, TextField } from "@mui/material";
 import Analytics from "./qp/analytics";
 import QuestionPaperGen from "./qp/questioncomp";
 import { useState } from "react";
@@ -19,9 +21,11 @@ const QuestionPaper = ({
   isRetest,
   semester,
   total,
+  setTotal,
   time,
   exam,
   isSem,
+  isGate,
   dateTime,
   set,
 }) => {
@@ -83,6 +87,25 @@ const QuestionPaper = ({
         ids={JSON.stringify(generatedData["options"]["choosenQuestionIds"])}
         className="no-print"
       />
+      <div>
+        {isGate && (
+          <TextField
+            id="total-marks"
+            key="total"
+            label="Total Marks"
+            type="number"
+            variant="outlined"
+            value={total}
+            InputProps={{
+              inputProps: { min: 1 },
+            }}
+            onChange={(e) => {
+              const val = e.target.value;
+              setTotal(val ? parseInt(val) : null);
+            }}
+          />
+        )}
+      </div>
       <QuestionPaperGen
         data={generatedData["questions"]}
         isAnswer={isAnswer}
@@ -95,11 +118,14 @@ const QuestionPaper = ({
         dateTime={dateTime}
         set={set}
         isRetest={isRetest}
+        isGate={isGate}
       />
-      <Analytics
-        co={generatedData["analytics"]["co"]}
-        btl={generatedData["analytics"]["btl"]}
-      />
+      {!isSem && (
+        <Analytics
+          co={generatedData["analytics"]["co"]}
+          btl={generatedData["analytics"]["btl"]}
+        />
+      )}
     </>
   );
 };

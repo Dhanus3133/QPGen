@@ -15,6 +15,7 @@ const QuestionPaperGen = (props) => {
   let b = props.data;
   let isAnswer = props.isAnswer;
   let isSem = props.isSem;
+  let isGate = props.isGate;
   let isRetest = props.isRetest;
   let courseObjectives = props.options.objectives;
   let courseOutcomes = props.options.outcomes;
@@ -137,6 +138,12 @@ const QuestionPaperGen = (props) => {
                         <QuestionAttributes data={l["btl"]} />
                         {/*<QuestionAttributes data={l["QPRef"]} />*/}
                       </>
+                    )}
+                    {isGate && (
+                      <QuestionAttributes
+                        data={l["MarkAllocated"]}
+                        isSem={isSem}
+                      />
                     )}
                   </tr>
                 );
@@ -356,6 +363,7 @@ const QuestionPaperGen = (props) => {
           store={store}
           isAnswer={isAnswer}
           isSem={isSem}
+          isGate={isGate}
         />
       );
     } else {
@@ -370,6 +378,7 @@ const QuestionPaperGen = (props) => {
           store={store}
           isAnswer={isAnswer}
           isSem={isSem}
+          isGate={isGate}
         />
       );
     }
@@ -503,16 +512,25 @@ const QuestionPaperGen = (props) => {
               <h2 className="text-[12px] pb-1.5">CHENNAI - 600 069</h2>
             </div>
             <p className="text-lg leading-5">
-              {isRetest && "Retest - "}
-              <p>B.E. / B.Tech. DEGREE END SEMESTER EXAMINATIONS</p>
-              {exam} {isAnswer && "Answer Key"}
-              <br />
-              {numberToString[semester]} Semester
-              <br />
-              {options["subjectCode"]} - {options["subjectName"].toUpperCase()}
+              {!isGate ? (
+                <>
+                  {isRetest && "Retest - "}
+                  <p>B.E. / B.Tech. DEGREE END SEMESTER EXAMINATIONS</p>
+                  {exam} {isAnswer && "Answer Key"}
+                  <br />
+                  {numberToString[semester]} Semester
+                  <br />
+                  {options["subjectCode"]} -{` `}
+                </>
+              ) : (
+                <>
+                  {exam} <br />
+                </>
+              )}
+              {options["subjectName"].toUpperCase()}
               <br />({options["dept"]})
               <br />
-              (Regulation - {options["regulation"]})
+              {!isGate && <>(Regulation - {options["regulation"]})</>}
               <div className="flex justify-between pt-3">
                 <div className="mr-4">Time: {time} Hours</div>
                 <div>Maximum Marks: {total}</div>

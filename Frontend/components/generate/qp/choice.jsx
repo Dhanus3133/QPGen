@@ -7,6 +7,7 @@ const Choice = ({
   store,
   isAnswer,
   isSem,
+  isGate,
 }) => {
   return (
     <table className="w-full">
@@ -25,48 +26,50 @@ const Choice = ({
             </td>
           </tr>
         )}
-        <tr>
-          <td
-            className={`text-center relative ${
-              isSem && !isAnswer ? " pb-3" : "font-bold"
-            }`}
-            colSpan={subdivsel + optsel + 2 + isSem}
-          >
-            PART - {part}{" "}
-            <span className={`${isSem ? "absolute right-0 font-bold" : ""}`}>
-              ({count}x{mark}={mark * count} marks)
-            </span>
-            {!isSem && (
+        {!isGate && (
+          <tr>
+            <td
+              className={`text-center relative ${
+                isSem && !isAnswer ? " pb-3" : "font-bold"
+              }`}
+              colSpan={subdivsel + optsel + 2 + isSem}
+            >
+              PART - {part}{" "}
+              <span className={`${isSem ? "absolute right-0 font-bold" : ""}`}>
+                ({count}x{mark}={mark * count} marks)
+              </span>
+              {!isSem && (
+                <>
+                  <br />
+                  {count > 1 &&
+                    !isAnswer &&
+                    !isSem &&
+                    "(Answer all the questions)"}
+                </>
+              )}
+            </td>
+            {!isAnswer && !isSem && (
               <>
-                <br />
-                {count > 1 &&
-                  !isAnswer &&
-                  !isSem &&
-                  "(Answer all the questions)"}
-              </>
-            )}
-          </td>
-          {!isAnswer && !isSem && (
-            <>
-              <td className="text-center font-bold px-1">CO</td>
-              <td className="text-center font-bold px-1">
-                BT
-                <br />
-                Level
-              </td>
-              {/*<td className="text-center font-bold px-1">
+                <td className="text-center font-bold px-1">CO</td>
+                <td className="text-center font-bold px-1">
+                  BT
+                  <br />
+                  Level
+                </td>
+                {/*<td className="text-center font-bold px-1">
                 Univ
                 <br />
                 QP
               </td>*/}
-              <td className="text-center font-bold px-1">
-                Mark
-                <br />
-                Allocated
-              </td>
-            </>
-          )}
-        </tr>
+                <td className="text-center font-bold px-1">
+                  Mark
+                  <br />
+                  Allocated
+                </td>
+              </>
+            )}
+          </tr>
+        )}
       </tbody>
       <tbody>{store}</tbody>
     </table>

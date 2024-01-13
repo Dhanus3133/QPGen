@@ -16,6 +16,7 @@ export default function Generate() {
   const [total, setTotal] = useState(null);
   const [marks, setMarks] = useState([]);
   const [isSem, setIsSem] = useState(false);
+  const [isGate, setIsGate] = useState(false);
   const [counts, setCounts] = useState([]);
   const [choices, setChoices] = useState([]);
   const [dateTime, setDateTime] = useState(null);
@@ -95,6 +96,16 @@ export default function Generate() {
                   />
                 }
                 label={"Avoid Question's?"}
+              />
+              <FormControlLabel
+                required
+                control={
+                  <Checkbox
+                    color="success"
+                    onChange={(e) => setIsGate(e.target.checked)}
+                  />
+                }
+                label="Is Gate?"
               />
             </div>
             {isAvoidQuestionIds && (
@@ -181,9 +192,11 @@ export default function Generate() {
         choices={choices}
         semester={semester}
         total={total}
+        setTotal={setTotal}
         time={time}
         exam={examTitle}
         isSem={isSem}
+        isGate={isGate}
         dateTime={dateTime}
         set={set}
         examID={exam}
