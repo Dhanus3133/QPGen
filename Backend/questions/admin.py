@@ -69,7 +69,8 @@ class SubjectModelAdmin(admin.ModelAdmin):
         "code",
         "co",
         'courses_count',
-        'users_count'
+        'users_count',
+        'questions_count',
     )
     search_fields = ("subject_name", "code",)
     list_filter = ("co",)
@@ -81,6 +82,9 @@ class SubjectModelAdmin(admin.ModelAdmin):
 
     def courses_count(self, obj):
         return Syllabus.objects.filter(lesson__subject=obj, course__active=True).distinct('course').count()
+
+    def questions_count(self, obj):
+        return Question.objects.filter(lesson__subject=obj).count()
 
 
 @admin.register(Lesson)
