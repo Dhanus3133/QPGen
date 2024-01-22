@@ -4,7 +4,6 @@ import { Checkbox } from "@mui/material";
 import { useEffect, useState } from "react";
 
 export default function Lessons({
-  course,
   subject,
   units,
   setUnits,
@@ -20,17 +19,16 @@ export default function Lessons({
   }, [data]);
 
   useEffect(() => {
-    if (course !== null && subject !== null) {
+    if (subject !== null) {
       getLessons({
         variables: {
-          courseId: course,
           subjectId: subject,
         },
       });
     } else {
       setLessons([]);
     }
-  }, [course, subject]);
+  }, [subject]);
 
   useEffect(() => {
     let l = [];

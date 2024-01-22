@@ -156,7 +156,6 @@ export default function Generate() {
               setExamTitle={setExamTitle}
             />
             <Lessons
-              course={course}
               subject={subject}
               units={units}
               setUnits={setUnits}

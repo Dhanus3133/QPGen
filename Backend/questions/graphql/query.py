@@ -177,11 +177,11 @@ class Query:
 
     @strawberry_django.field(extensions=[IsAuthenticated()])
     async def get_lessons_by_id(
-        self, course_id: int, subject_id: int
+        self, subject_id: int
     ) -> List[SyllabusType]:
         return await sync_to_async(list)(
             Syllabus.objects.filter(
-                course=course_id, lesson__subject=subject_id
+                lesson__subject=subject_id
             ).order_by("unit")
         )
 
