@@ -227,10 +227,10 @@ class MarkRange(models.Model):
     """Mark Range Model"""
 
     start = models.IntegerField(
-        validators=[MinValueValidator(2), MaxValueValidator(25)]
+        validators=[MinValueValidator(1), MaxValueValidator(25)]
     )
     end = models.IntegerField(
-        validators=[MinValueValidator(2), MaxValueValidator(25)])
+        validators=[MinValueValidator(1), MaxValueValidator(25)])
 
     def clean(self, *args, **kwargs):
         if self.start > self.end:
