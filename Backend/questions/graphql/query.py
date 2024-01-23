@@ -1,3 +1,4 @@
+import json
 from typing import List, Optional
 from asgiref.sync import sync_to_async
 from strawberry.scalars import JSON
@@ -6,6 +7,7 @@ import strawberry_django
 from strawberry_django.filters import strawberry
 from strawberry_django.permissions import IsAuthenticated, Iterable
 from coe.graphql.permission import IsACOE
+from questions.gate import generate_gate_questions
 from questions.generate import Generate
 from questions.graphql.permission import IsAFaculty
 from questions.graphql.types import (
@@ -182,7 +184,7 @@ class Query:
         return await sync_to_async(list)(
             Syllabus.objects.filter(
                 lesson__subject=subject_id
-            ).order_by("unit")
+            ).order_by("lesson", "unit").distinct("lesson")
         )
 
     # @strawberry_django.field()
@@ -247,3 +249,36 @@ class Query:
     @strawberry_django.field(extensions=[IsACOE()])
     async def analysis(self, info: Info, exam: str) -> Optional[List[AnalysisType]]:
         return await sync_to_async(list)(Analysis.objects.filter(courses__active=True, exam=exam))
+
+    @strawberry_django.field(extensions=[IsACOE()])
+    def generate_questions_gate(
+        self,
+        info: Info,
+        course: int,
+        lids: List[List[int]],
+        marks: List[List[int]],
+        counts: List[List[int]],
+        choices: List[List[bool]],
+        exam: int,
+        use_ai: bool,
+        avoid_question_ids: List[int],
+    ) -> JSON:
+        return generate_gate_questions(course, lids, marks, counts, choices, exam, use_ai, avoid_question_ids)
+        # data = {}
+        # options = {}
+        # data_sets = []
+        # for i in range(len(lids)):
+        #     qD = Generate(
+        #         course, lids, marks, counts, choices, exam, False, use_ai, avoid_question_ids, None, True
+        #     ).generate_questions()
+        #     if isinstance(qD, dict):
+        #         if i == 0 and 'options' in qD:
+        #             options = qD.get('options')
+        #         questions = qD.get('questions')
+        #
+        # questionsData = {
+        #     "questions": data,
+        #     "options": options,
+        #     "analytics": {"co": 0, "btl": 0}
+        # }
+        # return json.dumps(questionsData)

@@ -59,6 +59,18 @@ def convert_to_percentage(data):
     return result
 
 
+def strip_options_from_question(question):
+    lines = question.strip().split('\n')
+    filtered_lines = []
+
+    for line in lines:
+        if not line.strip().lower().startswith(('a)', 'b)', 'c)', 'd)', 'a.', 'b.', 'c.', 'd.', '(a', '(b', '(c', '(d')):
+            filtered_lines.append(line)
+    while filtered_lines and not filtered_lines[-1].strip():
+        filtered_lines.pop()
+    return '\n'.join(filtered_lines)
+
+
 class Generate:
     def __init__(self, course, lids, marks, count, choices, exam, save_analysis, use_ai, avoid_question_ids, end_sem_sub=None):
         self.course = Course.objects.get(id=course)
@@ -213,7 +225,7 @@ class Generate:
                         lesson, mark, start_mark_range, question_number, part, is_avoid_topics, option, True
                     )
                 raise Exception(
-                    f"Questions are too less to generarte for {Lesson.objects.get(id=lesson).name}"
+                    f"Questions are too less to generarte for {Subject.objects.get(lessons=self.lids[0]).subject_name} - {Lesson.objects.get(id=lesson).name}"
                 )
             question = random.choice(selected)
 
@@ -249,7 +261,11 @@ class Generate:
                     if t.id not in self.choosen_topics:
                         self.choosen_topics.append(t.id)
 
-            co = f"CO{Syllabus.objects.filter(course=self.course).get(lesson=lesson).unit}" if not self.end_sem_sub else ""
+            co = ""
+            try:
+                co = f"CO{Syllabus.objects.filter(course=self.course).get(lesson=lesson).unit}" if not self.end_sem_sub else ""
+            except:
+                pass
             if co not in self.co_analytics:
                 self.co_analytics[co] = 0
             else:
@@ -394,7 +410,8 @@ class Generate:
             "course__department__branch_code", flat=True
         )
 
-        dept = syllabuses[0].course.department.branch if len(depts) > 0 else ""
+        dept = syllabuses[0].course.department.branch if len(
+            depts) > 0 else self.course.department.branch
 
         options = {
             "marks": self.marks,
@@ -411,9 +428,12 @@ class Generate:
             "choosenQuestionIds": self.choosen_questions,
         }
 
-        analytics = convert_to_percentage(
-            {"co": self.co_analytics, "btl": self.btl_analytics}
-        )
+        try:
+            analytics = convert_to_percentage(
+                {"co": self.co_analytics, "btl": self.btl_analytics}
+            )
+        except:
+            analytics = {"co": self.co_analytics, "btl": self.btl_analytics}
         questionsData = {"questions": data,
                          "options": options, "analytics": analytics}
         j = json.dumps(questionsData)
