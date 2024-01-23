@@ -10,7 +10,8 @@ import DateTime from "components/generate/qp/datetime";
 import COEOnly from "components/coe/COEOnly";
 import Subjects from "@/components/add/subject/subjects";
 import { getAllSubjectsQuery } from "@/src/graphql/queries/getAllSubjects";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import { getLessonsByIdQuery } from "@/src/graphql/queries/getLessonsByID";
 
 export default function Generate() {
   const [course, setCourse] = useState(null);
@@ -41,6 +42,11 @@ export default function Generate() {
 
   const { data, loading, error } = useQuery(getAllSubjectsQuery);
   const [allSubjects, setAllSubjects] = useState([]);
+
+  const [
+    getLessons,
+    { loading: lessonsLoading, error: lessonsError, data: lessonsData },
+  ] = useLazyQuery(getLessonsByIdQuery);
 
   useEffect(() => {
     setAllSubjects(data?.getAllSubjects);
@@ -153,18 +159,28 @@ export default function Generate() {
             <div className="p-3"></div>
             {subjects.map((subject, idx) => {
               return (
-                <div key={idx} className="p-3 pl-0">
-                  <h4>Subject {idx + 1}</h4>
+                <div className="p-3 pl-0">
+                  <h4 className="mb-3">Subject {idx + 1}</h4>
                   <Autocomplete
                     id="subjects"
                     options={allSubjects}
                     onChange={(event, subject) => {
                       const id = subject ? parseInt(subject["id"]) : null;
                       const tempSubjects = [...subjects];
-                      tempSubjects[idx] = {
-                        subject: id,
-                        lessons: [],
-                      };
+                      getLessons({
+                        variables: {
+                          subjectId: id,
+                        },
+                      })
+                        .then((response) => {
+                          tempSubjects[idx]["lessons"] =
+                            response.data?.getLessonsById;
+                        })
+                        .catch((err) => {
+                          console.error("Error fetching data:", err);
+                        });
+                      tempSubjects[idx]["units"] = [];
+                      tempSubjects[idx]["subject"] = id;
                       setSubjects(tempSubjects);
                     }}
                     getOptionLabel={(option) => {
@@ -175,20 +191,55 @@ export default function Generate() {
                       <TextField {...params} label={`Subject ${idx + 1}`} />
                     )}
                   />
-                  <Button
-                    variant="outlined"
-                    onClick={() => {
-                      const tempSubjects = [...subjects];
-                      tempSubjects.splice(idx, 1);
-                      setSubjects(tempSubjects);
-                    }}
-                  >
-                    Delete
-                  </Button>
+                  <div className="p-3">
+                    <h3>Lessons</h3>
+                    {subjects[idx]["lessons"].map((lesson) => {
+                      return (
+                        <h3 key={`lesson-${lesson["lesson"]["id"]}`}>
+                          <Checkbox
+                            color="success"
+                            onChange={(e) => {
+                              let tempSubjects = [...subjects];
+                              if (e.target.checked) {
+                                tempSubjects[idx]["units"].push({
+                                  lesson: lesson["lesson"]["id"],
+                                  unit: lesson["unit"],
+                                  marks: {},
+                                });
+                              } else {
+                                tempSubjects[idx]["units"].splice(
+                                  tempSubjects[idx]["units"].findIndex(
+                                    (x) => x.lesson === lesson["lesson"]["id"],
+                                  ),
+                                  1,
+                                );
+                              }
+                              setSubjects(tempSubjects);
+                            }}
+                          />
+
+                          {lesson["lesson"]["name"]}
+                        </h3>
+                      );
+                    })}
+                  </div>
+                  {idx === subjects.length - 1 && (
+                    <div className="mt-3 text-center">
+                      <Button
+                        variant="outlined"
+                        onClick={() => {
+                          const tempSubjects = [...subjects];
+                          tempSubjects.splice(idx, 1);
+                          setSubjects(tempSubjects);
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  )}
                 </div>
               );
             })}
-            <div className="p-3"></div>
 
             <div className="text-center">
               <Button
@@ -199,6 +250,7 @@ export default function Generate() {
                     {
                       subject: null,
                       lessons: [],
+                      units: [],
                     },
                   ]);
                 }}
