@@ -162,7 +162,7 @@ export default function Generate() {
             <div className="p-3"></div>
             {subjects.map((subject, idx) => {
               return (
-                <div className="py-2">
+                <div className="py-2" key={idx}>
                   <h4 className="mb-3">Subject {idx + 1}</h4>
                   <Autocomplete
                     id="subjects"
