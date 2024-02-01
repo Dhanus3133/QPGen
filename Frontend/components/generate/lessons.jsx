@@ -1,34 +1,37 @@
-import { getLessonsByIdQuery } from "@/src/graphql/queries/getLessonsByID";
+import { getLessonsByCourseSubjectIdQuery } from "@/src/graphql/queries/getLessonsByCourseSubjectId";
 import { useLazyQuery } from "@apollo/client";
 import { Checkbox } from "@mui/material";
 import { useEffect, useState } from "react";
 
 export default function Lessons({
+  course,
   subject,
   units,
   setUnits,
   lessonsIDs,
   setLessonsIDs,
 }) {
-  const [getLessons, { loading, error, data }] =
-    useLazyQuery(getLessonsByIdQuery);
+  const [getLessons, { loading, error, data }] = useLazyQuery(
+    getLessonsByCourseSubjectIdQuery,
+  );
   const [lessons, setLessons] = useState([]);
 
   useEffect(() => {
-    setLessons(data?.getLessonsById);
+    setLessons(data?.getLessonsByCourseSubjectId);
   }, [data]);
 
   useEffect(() => {
-    if (subject !== null) {
+    if (course !== null && subject !== null) {
       getLessons({
         variables: {
+          courseId: course,
           subjectId: subject,
         },
       });
     } else {
       setLessons([]);
     }
-  }, [subject]);
+  }, [course, subject]);
 
   useEffect(() => {
     let l = [];

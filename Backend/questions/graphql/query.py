@@ -187,6 +187,16 @@ class Query:
             ).order_by("lesson", "unit").distinct("lesson")
         )
 
+    @strawberry_django.field(extensions=[IsAuthenticated()])
+    async def get_lessons_by_course_subject_id(
+        self, course_id: int, subject_id: int
+    ) -> List[SyllabusType]:
+        return await sync_to_async(list)(
+            Syllabus.objects.filter(
+                course=course_id, lesson__subject=subject_id
+            ).order_by("unit")
+        )
+
     # @strawberry_django.field()
     @strawberry_django.field(permission_classes=[IsAFaculty])
     async def get_topics(
