@@ -349,6 +349,11 @@ export default function Generate() {
                       });
                       return null;
                     }
+                  });
+                  subjects.forEach((subject, idx) => {
+                    if (idx === 0) {
+                      return null;
+                    }
                     subject["units"].forEach((unit) => {
                       if (unit["marks"][0] > 0) {
                         lids.push(parseInt(unit["lesson"]));
@@ -357,6 +362,11 @@ export default function Generate() {
                         choices.push([false]);
                       }
                     });
+                  });
+                  subjects.forEach((subject, idx) => {
+                    if (idx === 0) {
+                      return null;
+                    }
                     subject["units"].forEach((unit) => {
                       if (unit["marks"][1] > 0) {
                         lids.push(parseInt(unit["lesson"]));
