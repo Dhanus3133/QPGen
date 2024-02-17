@@ -187,11 +187,13 @@ class FacultiesHandlingModelAdmin(admin.ModelAdmin):
 class QuestionModelAdmin(ImportExportModelAdmin):
     list_display = (
         'question',
+        'lesson_name',
         'subject_name',
         'subject_code',
         'start_mark',
         'end_mark',
         'priority',
+        'all_topics',
     )
     list_filter = (
         "start_mark",
@@ -214,8 +216,14 @@ class QuestionModelAdmin(ImportExportModelAdmin):
     def subject_name(self, obj):
         return obj.lesson.subject.subject_name if obj.lesson else None
 
+    def lesson_name(self, obj):
+        return obj.lesson.name
+
     def subject_code(self, obj):
         return obj.lesson.subject.code if obj.lesson else None
+
+    def all_topics(self, obj):
+        return ", ".join([topic.name for topic in obj.topics.all()]) if obj.topics.exists() else '-'
 
 
 @admin.register(CreateSyllabus)
