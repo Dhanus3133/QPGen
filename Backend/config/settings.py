@@ -171,6 +171,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "users.USER"
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://' + host if not host.startswith('localhost') else 'http://' + host
+    for host in ALLOWED_HOSTS
+]
 
 if DEBUG:
     import socket
