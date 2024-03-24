@@ -62,6 +62,7 @@ class Mutation:
         else:
             user = info.context.request.user
 
+        counts[0] = 16
         endsem_subject = EndSemSubject.objects.create(
             regulation=reg,
             semester=semester,

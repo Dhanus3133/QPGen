@@ -71,12 +71,33 @@ def strip_options_from_question(question):
     return '\n'.join(filtered_lines)
 
 
+get_topic_for_question = {
+    1: "MCQ",
+    2: "MCQ",
+    3: "MCQ",
+    4: "MCQ",
+    5: "MCQ",
+    6: "MCQ",
+    7: "MSQ",
+    8: "MSQ",
+    9: "MSQ",
+    10: "MSQ",
+    11: "MSQ",
+    12: "MSQ",
+    13: "NAT",
+    14: "NAT",
+    15: "NAT",
+    16: "NAT",
+}
+
+
 class Generate:
     def __init__(self, course, lids, marks, count, choices, exam, save_analysis, use_ai, avoid_question_ids, end_sem_sub=None):
         self.course = Course.objects.get(id=course)
         self.subject = Lesson.objects.get(id=lids[0]).subject
         self.lids = lids
         self.marks = marks
+        count[0] = 16
         self.count = count
         self.choices = choices
         self.exam = exam
@@ -172,86 +193,100 @@ class Generate:
         start = start_mark_range
         end = mark - start_mark_range
         is_scenario = self.scenarios[ord(part) - 65]
+        question = []
 
-        if scenario_retry:
-            is_scenario = [True, False]
-
-        while start <= end:
-            avoid_ids = []
-            another = []
-            difficulties = []
-
-            res, id, t, difficulties = self.find_a_question_with_exact_mark2(
-                lesson, start, is_scenario, False, [], avoid_ids, difficulties, is_avoid_topics,
+        if question_number <= 16:
+            q = (
+                self.questions.exclude(id__in=self.choosen_questions)
+                .filter(topics__name__iexact=get_topic_for_question[question_number])
+                .order_by("?")
+                .first()
             )
-            another.append(res)
-            avoid_ids.append(id)
-
-            res, id, t, difficulties = self.find_a_question_with_exact_mark2(
-                lesson, end, is_scenario, False, t, avoid_ids, difficulties, is_avoid_topics
-            )
-            another.append(res)
-
-            selected.append(another)
-            start += 1
-            end -= 1
-        selected.append([
-            self.find_a_question_with_exact_mark(
-                lesson, mark, is_scenario, False, is_avoid_topics
-            )
-        ])
-        selected.append([
-            self.find_a_question_with_exact_mark(
-                lesson, mark, is_scenario, False, is_avoid_topics
-            )
-        ])
-        selected.append([
-            self.find_a_question_with_exact_mark(
-                lesson, mark, is_scenario, False, is_avoid_topics
-            )
-        ])
-        question = random.choice(selected)
-        # print(selected)
-        while None in question and len(selected) > 0:
-            selected.remove(question)
-
-            if len(selected) == 0:
-                if is_avoid_topics:
-                    return self.get_different_questions(
-                        lesson, mark, start_mark_range, question_number, part, False, option, scenario_retry
-                    )
-                if not scenario_retry:
-                    return self.get_different_questions(
-                        lesson, mark, start_mark_range, question_number, part, is_avoid_topics, option, True
-                    )
+            if q == None:
                 raise Exception(
-                    f"Questions are too less to generarte for {Subject.objects.get(lessons=self.lids[0]).subject_name} - {Lesson.objects.get(id=lesson).name}"
+                    f"Questions are too less to generarte for the question number {question_number}: {get_topic_for_question[question_number]}"
                 )
-            question = random.choice(selected)
+            question = [{"q": q, "m": 2}]
+        else:
+            if scenario_retry:
+                is_scenario = [True, False]
 
-        if self.use_ai:
-            for i in range(len(question)):
-                if question[i]['q'].mark.start != 2:
-                    inputs = [
-                        {
-                            "role": "system",
-                            "content": "Enhance the depth of thinking in the following question without introducing scenarios unless the original question was scenario-based. Maintain a similar size. Avoid providing answers or hints. If the question is mathematical in nature, please retain the original question without any modifications."
-                        },
-                        {"role": "user", "content": json.dumps(
-                            question[i]["q"].question
-                        )},
-                        {"role": "assistant",
-                         "content": "The output should be a single rewritten question and there should no further conversation. Question should be"}
-                    ]
-                    output = run("@cf/meta/llama-2-7b-chat-int8", inputs)
-                    try:
-                        question[i]["q"].question = json.loads(
-                            output['result']['response']
+            while start <= end:
+                avoid_ids = []
+                another = []
+                difficulties = []
+
+                res, id, t, difficulties = self.find_a_question_with_exact_mark2(
+                    lesson, start, is_scenario, False, [], avoid_ids, difficulties, is_avoid_topics,
+                )
+                another.append(res)
+                avoid_ids.append(id)
+
+                res, id, t, difficulties = self.find_a_question_with_exact_mark2(
+                    lesson, end, is_scenario, False, t, avoid_ids, difficulties, is_avoid_topics
+                )
+                another.append(res)
+
+                selected.append(another)
+                start += 1
+                end -= 1
+            selected.append([
+                self.find_a_question_with_exact_mark(
+                    lesson, mark, is_scenario, False, is_avoid_topics
+                )
+            ])
+            selected.append([
+                self.find_a_question_with_exact_mark(
+                    lesson, mark, is_scenario, False, is_avoid_topics
+                )
+            ])
+            selected.append([
+                self.find_a_question_with_exact_mark(
+                    lesson, mark, is_scenario, False, is_avoid_topics
+                )
+            ])
+            question = random.choice(selected)
+            # print(selected)
+            while None in question and len(selected) > 0:
+                selected.remove(question)
+
+                if len(selected) == 0:
+                    if is_avoid_topics:
+                        return self.get_different_questions(
+                            lesson, mark, start_mark_range, question_number, part, False, option, scenario_retry
                         )
-                        time.sleep(5)
-                    except Exception as e:
-                        print(f"AIERROR: {output}")
-                        print(f"Error message: {str(e)}")
+                    if not scenario_retry:
+                        return self.get_different_questions(
+                            lesson, mark, start_mark_range, question_number, part, is_avoid_topics, option, True
+                        )
+                    raise Exception(
+                        f"Questions are too less to generarte for {Subject.objects.get(lessons=self.lids[0]).subject_name} - {Lesson.objects.get(id=lesson).name}"
+                    )
+                question = random.choice(selected)
+
+            if self.use_ai:
+                for i in range(len(question)):
+                    if question[i]['q'].mark.start != 2:
+                        inputs = [
+                            {
+                                "role": "system",
+                                "content": "Enhance the depth of thinking in the following question without introducing scenarios unless the original question was scenario-based. Maintain a similar size. Avoid providing answers or hints. If the question is mathematical in nature, please retain the original question without any modifications."
+                            },
+                            {"role": "user", "content": json.dumps(
+                                question[i]["q"].question
+                            )},
+                            {"role": "assistant",
+                             "content": "The output should be a single rewritten question and there should no further conversation. Question should be"}
+                        ]
+                        output = run("@cf/meta/llama-2-7b-chat-int8", inputs)
+                        try:
+                            question[i]["q"].question = json.loads(
+                                output['result']['response']
+                            )
+                            time.sleep(5)
+                        except Exception as e:
+                            print(f"AIERROR: {output}")
+                            print(f"Error message: {str(e)}")
 
         for arr in question:
             self.choosen_questions.append(arr["q"].id)
@@ -342,7 +377,7 @@ class Generate:
                         self.get_different_questions(
                             current_lesson,
                             total_mark,
-                            2 if total_mark == 2 else 3,
+                            total_mark if total_mark <= 2 else 3,
                             question_number,
                             part,
                             [True],
@@ -365,7 +400,7 @@ class Generate:
                         self.get_different_questions(
                             random.choice(self.lids),
                             total_mark,
-                            2 if total_mark == 2 else 3,
+                            total_mark if total_mark <= 2 else 3,
                             question_number,
                             part,
                             [True],
