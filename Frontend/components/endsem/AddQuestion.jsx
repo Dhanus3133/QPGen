@@ -16,6 +16,7 @@ import Select from "@mui/material/Select";
 import { useMutation } from "@apollo/client";
 import { createEndSemQuestionMutation } from "@/src/graphql/mutations/createEndSemQuestion";
 import { endSemQuestionsQuery } from "@/src/graphql/queries/endSemQuestions";
+import BloomsTaxonomies from "../question/BloomsTaxonomies";
 
 export default function AddQuestion({
   subjectCode,
@@ -25,6 +26,8 @@ export default function AddQuestion({
 }) {
   const [open, setOpen] = useState(false);
   const [vQuestion, vSetQuestion] = useState(null);
+  const [btl, setBtl] = useState(parseInt(1));
+  const [co, setCo] = useState(parseInt(1));
   const [createEndSemQuestion, { data, loading }] = useMutation(
     createEndSemQuestionMutation,
     {
@@ -65,6 +68,8 @@ export default function AddQuestion({
         option: parseInt(dataForm.get("option")),
         mark: parseInt(dataForm.get("mark")) || currentQuestion.mark,
         question: vQuestion.getValue(),
+        co: co,
+        btl: parseInt(btl),
       },
     });
   };
@@ -124,6 +129,18 @@ export default function AddQuestion({
                 type="number"
                 sx={{ ml: 2, mb: 2 }}
                 required
+              />
+              <BloomsTaxonomies btl={btl} setBtl={setBtl} />
+              <TextField
+                id="new-co"
+                name="co"
+                label="CO"
+                variant="outlined"
+                value={co}
+                type="number"
+                sx={{ ml: 2, mb: 2 }}
+                inputProps={{ min: 1, max: 5 }}
+                onChange={(e) => setCo(parseInt(e.target.value))}
               />
               <CustomVditor
                 id={`question-${currentQuestion.id}`}

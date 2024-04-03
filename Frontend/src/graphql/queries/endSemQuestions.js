@@ -8,6 +8,11 @@ export const endSemQuestionsQuery = gql`
       number
       roman
       option
+      btl {
+        id
+        name
+      }
+      co
       mark
       question
       answer

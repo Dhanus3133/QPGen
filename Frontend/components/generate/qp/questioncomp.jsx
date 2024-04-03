@@ -132,10 +132,10 @@ const QuestionPaperGen = (props) => {
                       vd={vd}
                       setVd={setVd}
                     />
-                    {!isAnswer && !isSem && (
+                    {!isAnswer && (
                       <>
-                        <QuestionAttributes data={l["co"]} />
-                        <QuestionAttributes data={l["btl"]} />
+                        <QuestionAttributes data={l["co"]} isSem={isSem} />
+                        <QuestionAttributes data={l["btl"]} isSem={isSem} />
                         {/*<QuestionAttributes data={l["QPRef"]} />*/}
                       </>
                     )}
@@ -143,6 +143,7 @@ const QuestionPaperGen = (props) => {
                       <QuestionAttributes
                         data={l["MarkAllocated"]}
                         isSem={isSem}
+                        isBold={isSem}
                       />
                     )}
                   </tr>
@@ -160,16 +161,17 @@ const QuestionPaperGen = (props) => {
                       setVd={setVd}
                     />
 
-                    {!isAnswer && !isSem && (
+                    {!isAnswer && (
                       <>
-                        <QuestionAttributes data={l["co"]} />
-                        <QuestionAttributes data={l["btl"]} />
+                        <QuestionAttributes data={l["co"]} isSem={isSem} />
+                        <QuestionAttributes data={l["btl"]} isSem={isSem} />
                         {/*<QuestionAttributes data={l["QPRef"]} />*/}
                       </>
                     )}
                     <QuestionAttributes
                       data={l["MarkAllocated"]}
                       isSem={isSem}
+                      isBold={isSem}
                     />
                   </tr>
                 );
@@ -190,16 +192,17 @@ const QuestionPaperGen = (props) => {
                       setVd={setVd}
                       span={k.length > 1 ? 1 : 2}
                     />
-                    {!isAnswer && !isSem && (
+                    {!isAnswer && (
                       <>
-                        <QuestionAttributes data={l["co"]} />
-                        <QuestionAttributes data={l["btl"]} />
+                        <QuestionAttributes data={l["co"]} isSem={isSem} />
+                        <QuestionAttributes data={l["btl"]} isSem={isSem} />
                         {/*<QuestionAttributes data={l["QPRef"]} />*/}
                       </>
                     )}
                     <QuestionAttributes
                       data={l["MarkAllocated"]}
                       isSem={isSem}
+                      isBold={isSem}
                     />
                   </tr>
                 );
@@ -216,16 +219,17 @@ const QuestionPaperGen = (props) => {
                       setVd={setVd}
                       span={k.length > 1 ? 1 : 2}
                     />
-                    {!isAnswer && !isSem && (
+                    {!isAnswer && (
                       <>
-                        <QuestionAttributes data={l["co"]} />
-                        <QuestionAttributes data={l["btl"]} />
+                        <QuestionAttributes data={l["co"]} isSem={isSem} />
+                        <QuestionAttributes data={l["btl"]} isSem={isSem} />
                         {/*<QuestionAttributes data={l["QPRef"]} />*/}
                       </>
                     )}
                     <QuestionAttributes
                       data={l["MarkAllocated"]}
                       isSem={isSem}
+                      isBold={isSem}
                     />
                   </tr>
                 );
@@ -254,16 +258,17 @@ const QuestionPaperGen = (props) => {
                       setVd={setVd}
                       span={k.length > 1 ? 1 : 2}
                     />
-                    {!isAnswer && !isSem && (
+                    {!isAnswer && (
                       <>
-                        <QuestionAttributes data={l["co"]} />
-                        <QuestionAttributes data={l["btl"]} />
+                        <QuestionAttributes data={l["co"]} isSem={isSem} />
+                        <QuestionAttributes data={l["btl"]} isSem={isSem} />
                         {/*<QuestionAttributes data={l["QPRef"]} />*/}
                       </>
                     )}
                     <QuestionAttributes
                       data={l["MarkAllocated"]}
                       isSem={isSem}
+                      isBold={isSem}
                     />
                   </tr>
                 );
@@ -281,16 +286,17 @@ const QuestionPaperGen = (props) => {
                       setVd={setVd}
                       span={k.length > 1 ? 1 : 2}
                     />
-                    {!isAnswer && !isSem && (
+                    {!isAnswer && (
                       <>
-                        <QuestionAttributes data={l["co"]} />
-                        <QuestionAttributes data={l["btl"]} />
+                        <QuestionAttributes data={l["co"]} isSem={isSem} />
+                        <QuestionAttributes data={l["btl"]} isSem={isSem} />
                         {/*<QuestionAttributes data={l["QPRef"]} />*/}
                       </>
                     )}
                     <QuestionAttributes
                       data={l["MarkAllocated"]}
                       isSem={isSem}
+                      isBold={isSem}
                     />
                   </tr>
                 );
@@ -318,14 +324,18 @@ const QuestionPaperGen = (props) => {
                     setVd={setVd}
                     span={k.length > 1 ? 1 : 2}
                   />
-                  {!isAnswer && !isSem && (
+                  {!isAnswer && (
                     <>
-                      <QuestionAttributes data={l["co"]} />
-                      <QuestionAttributes data={l["btl"]} />
+                      <QuestionAttributes data={l["co"]} isSem={isSem} />
+                      <QuestionAttributes data={l["btl"]} isSem={isSem} />
                       {/*<QuestionAttributes data={l["QPRef"]} />*/}
                     </>
                   )}
-                  <QuestionAttributes data={l["MarkAllocated"]} isSem={isSem} />
+                  <QuestionAttributes
+                    data={l["MarkAllocated"]}
+                    isSem={isSem}
+                    isBold={isSem}
+                  />
                 </tr>
               );
               let brl = (
@@ -586,7 +596,7 @@ const QuestionPaperGen = (props) => {
         {!isAnswer && !isSem && (
           <div className="flex justify-around pt-10">
             <div>Prepared by</div>
-            <div>Verfied by</div>
+            <div>Verified by</div>
             <div>IQAC</div>
             <div>Approved by</div>
           </div>

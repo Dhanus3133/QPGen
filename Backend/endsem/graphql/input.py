@@ -14,6 +14,8 @@ class EndSemQuestionInput:
     question: str
     answer: Optional[str]
     mark: int
+    co: int
+    btl: int
 
 
 @strawberry_django.partial(EndSemQuestion)
@@ -23,3 +25,5 @@ class EndSemQuestionInputPartial:
     question: Optional[str]
     answer: Optional[str]
     mark: Optional[int]
+    co: int
+    btl: int

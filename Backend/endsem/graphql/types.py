@@ -4,7 +4,7 @@ import strawberry_django
 from strawberry import relay
 from strawberry import auto
 from endsem.models import EndSemQuestion, EndSemSubject
-from questions.graphql.types import SubjectType
+from questions.graphql.types import BloomsTaxonomyLevelType, SubjectType
 from questions.models import *
 from users.graphql.types import UserType
 
@@ -34,3 +34,5 @@ class EndSemQuestionType(relay.Node):
     question: auto
     answer: auto
     mark: auto
+    btl: BloomsTaxonomyLevelType
+    co: auto

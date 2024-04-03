@@ -1,6 +1,6 @@
 from django.db import models
 from core.models import TimeStampedModel
-from questions.models import Regulation, Subject
+from questions.models import BloomsTaxonomyLevel, Regulation, Subject
 from users.models import User
 
 
@@ -41,6 +41,8 @@ class EndSemQuestion(TimeStampedModel):
     question = models.TextField()
     answer = models.TextField(null=True, blank=True)
     mark = models.PositiveIntegerField()
+    co = models.PositiveIntegerField()
+    btl = models.ForeignKey(BloomsTaxonomyLevel, on_delete=models.PROTECT)
 
     class Meta:
         ordering = ["subject", "part", "number", "roman", "option"]

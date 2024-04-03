@@ -7,6 +7,8 @@ export const createEndSemQuestionMutation = gql`
     $number: Int!
     $roman: Int!
     $option: Int!
+    $co: Int!
+    $btl: Int!
     $question: String!
     $answer: String
     $mark: Int!
@@ -18,6 +20,8 @@ export const createEndSemQuestionMutation = gql`
         number: $number
         roman: $roman
         option: $option
+        co: $co
+        btl: $btl
         question: $question
         answer: $answer
         mark: $mark

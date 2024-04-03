@@ -97,7 +97,6 @@ class Generate:
         self.subject = Lesson.objects.get(id=lids[0]).subject
         self.lids = lids
         self.marks = marks
-        count[0] = 16
         self.count = count
         self.choices = choices
         self.exam = exam
@@ -117,6 +116,9 @@ class Generate:
         self.btl_analytics = {}
         self.scenarios = []
         self.endsem_questions = []
+
+        if not self.end_sem_sub and self.course.semester >= 3:
+            count[0] = 16
 
         for btl in BloomsTaxonomyLevel.objects.all():
             self.btl_analytics[btl.name] = 0
@@ -195,7 +197,7 @@ class Generate:
         is_scenario = self.scenarios[ord(part) - 65]
         question = []
 
-        if question_number <= 16:
+        if not self.end_sem_sub and self.course.semester >= 3 and question_number <= 16:
             q = (
                 self.questions.exclude(id__in=self.choosen_questions)
                 .filter(topics__name__iexact=get_topic_for_question[question_number])
@@ -322,7 +324,9 @@ class Generate:
                         option=1+i,
                         question=question[i]["q"].question,
                         answer=question[i]["q"].answer,
-                        mark=question[i]["m"]
+                        mark=question[i]["m"],
+                        btl=question[i]["q"].btl,
+                        co=question[i]["q"].lesson.syllabuses.first().unit
                     )
                 )
             dataQuestion = {}

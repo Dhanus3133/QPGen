@@ -80,8 +80,8 @@ class Query:
                 "roman": get_roman[question.option] if end_sem_subject.choices[question.part-1] else None,
                 "question": question.question,
                 "answer": "",
-                "btl": "",
-                "co": "",
+                "btl": question.btl.name,
+                "co": f"CO{question.co}",
                 "MarkAllocated": question.mark,
                 "QPRef": []
             })

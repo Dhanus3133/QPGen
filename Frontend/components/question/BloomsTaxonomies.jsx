@@ -17,7 +17,7 @@ export default function BloomsTaxonomies({ btl, setBtl }) {
 
   return (
     btls && (
-      <FormControl sx={{ m: 1, minWidth: 80 }}>
+      <FormControl sx={{ ml: 1, minWidth: 80 }}>
         <InputLabel id="btl-label">BTL</InputLabel>
         <Select
           labelId="btl-label"

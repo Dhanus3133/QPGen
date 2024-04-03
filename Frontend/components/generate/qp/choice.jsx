@@ -12,7 +12,7 @@ const Choice = ({
   return (
     <table className="w-full">
       <tbody>
-        {part == "A" && !isAnswer && !isSem && (
+        {part == "A" && !isAnswer && isSem && (
           <tr>
             <td
               className="text-center break-inside-avoid"

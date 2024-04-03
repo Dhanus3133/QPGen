@@ -139,62 +139,65 @@ export default function EndSemQuestions() {
                         count += 1;
                         vd ? vd.setValue(option.question) : "";
                         return (
-                          <p key={`roman-${k}`}>
-                            {option.number}
-                            {". "}
-                            {part.length > 1 &&
-                              `${getPart(option.roman - 1)}) `}
-                            {marks[option.part - 1] !== 2 &&
-                              `${getRoman[option.option]}) `}
-                            <p
-                              id={`display-question-${option.id}`}
-                              className="inline-flex pr-4"
-                              dangerouslySetInnerHTML={{
-                                __html: vd ? vd.getHTML() : "Loading...",
-                              }}
-                            ></p>
-                            ({option.mark}){" "}
-                            <RenderVditor
-                              id={`display-question-${option.id}`}
-                            />
-                            <EditQuestion
-                              question={option}
-                              subjectCode={subject}
-                              is2Mark={marks[option.part - 1] === 2}
-                            />
-                            {roman.length > 1 && (
-                              <DeleteQuestion
-                                question={option.id}
-                                subjectCode={subject}
+                          <div key={`roman-${k}`} className="flex flex-col">
+                            <div className="flex m-2">
+                              <span>
+                                {option.number}.{" "}
+                                {part.length > 1 &&
+                                  `${getPart(option.roman - 1)}) `}
+                                {marks[option.part - 1] !== 2 &&
+                                  `${getRoman[option.option]})`}{" "}
+                                &nbsp;
+                              </span>
+                              <p
+                                id={`display-question-${option.id}`}
+                                className="pr-4"
+                                dangerouslySetInnerHTML={{
+                                  __html: vd ? vd.getHTML() : "Loading...",
+                                }}
+                              ></p>
+                              <span>
+                                ({option.btl?.name}) (CO{option.co}) (
+                                {option.mark}){" "}
+                              </span>
+                              <RenderVditor
+                                id={`display-question-${option.id}`}
                               />
-                            )}
-                            {marks[option.part - 1] !== 2 &&
-                              roman.length < 3 &&
-                              roman.length === k + 1 && (
-                                <AddQuestion
+                              <EditQuestion
+                                question={option}
+                                subjectCode={subject}
+                                is2Mark={marks[option.part - 1] === 2}
+                              />
+                              {roman.length > 1 && (
+                                <DeleteQuestion
+                                  question={option.id}
                                   subjectCode={subject}
-                                  subject={subjectID}
-                                  currentQuestion={option}
-                                  is2Mark={marks[option.part - 1] === 2}
                                 />
                               )}
+                              {marks[option.part - 1] !== 2 &&
+                                roman.length < 3 &&
+                                roman.length === k + 1 && (
+                                  <AddQuestion
+                                    subjectCode={subject}
+                                    subject={subjectID}
+                                    currentQuestion={option}
+                                    is2Mark={marks[option.part - 1] === 2}
+                                  />
+                                )}
+                            </div>
                             {part.length > 1 &&
-                            roman.length === k + 1 &&
-                            count !== notOrAt ? (
-                              <div>
-                                <br />
-                                <p className="text-center font-bold">OR</p>
-                                <br />
-                              </div>
-                            ) : (
-                              <div>
-                                <br />
-                              </div>
-                            )}
+                              roman.length === k + 1 &&
+                              count !== notOrAt && (
+                                <>
+                                  <br />
+                                  <p className="text-center font-bold">OR</p>
+                                  <br />
+                                </>
+                              )}
                             {count === notOrAt && (
                               <hr className="border-2 border-black mb-5 w-full" />
                             )}
-                          </p>
+                          </div>
                         );
                       });
                     })}

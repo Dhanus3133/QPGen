@@ -14,24 +14,21 @@ function NoChoice({
       <tbody>
         {!isGate && (
           <>
-            {(part == "A" && !isAnswer) ||
-              (!isSem && (
-                <tr>
-                  <td
-                    className="text-center break-inside-avoid"
-                    colSpan={subdivsel + optsel + 5}
-                  >
-                    <div className="font-bold">
-                      REVISED BLOOMS TAXONOMY(RBT)
-                    </div>
-                    <div>
-                      L1-Remembering, L2-Understanding, L3-Applying,
-                      L4-Analyzing, L5-Evaluating, <br />
-                      L6-Creating
-                    </div>
-                  </td>
-                </tr>
-              ))}
+            {part == "A" && isSem && !isAnswer && (
+              <tr>
+                <td
+                  className="text-center break-inside-avoid"
+                  colSpan={subdivsel + optsel + 5}
+                >
+                  <div className="font-bold">REVISED BLOOMS TAXONOMY(RBT)</div>
+                  <div>
+                    L1-Remembering, L2-Understanding, L3-Applying, L4-Analyzing,
+                    L5-Evaluating, <br />
+                    L6-Creating
+                  </div>
+                </td>
+              </tr>
+            )}
             <tr>
               <td
                 className={`text-center ${
